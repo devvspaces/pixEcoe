@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Gexco-Ecoe",
+    "name": "Gexco Ecoe",
     "slug": "Gexco-Ecoe",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.lilkizarmie.GexcoEcoe"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c950b6e3-bc2e-43e8-a1e7-ea9959ca6f0d"
+      }
     }
   }
 }
