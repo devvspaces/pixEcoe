@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
-import { StyleSheet, Text, View, Image, Platform } from "react-native";
+import React, { useState, useEffect }from "react";
+import { StyleSheet, Text, View, Image, Platform, ActivityIndicator} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 //Bottom tab navigator screens
 import Setup from "../screens/Setup";
 import Evaluation from "../screens/Evaluation";
@@ -16,8 +16,15 @@ import Filter from "../screens/Filter";
 import Test from "../screens/Test";
 import CompetitorsList from "../screens/CompetitorsList";
 import Eco from "../screens/Eco";
+import DevicePassword from "../screens/DevicePassword";
 
 const Tab = createBottomTabNavigator();
+
+const Loading = () => (
+  <View>
+    <ActivityIndicator size="large" />
+  </View>
+);
 
 const TabNavigator = () => {
   return (
@@ -99,9 +106,39 @@ const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
 
+  const [loading, setLoading] = useState(true);
+  const [appPassword, setAppPassword] = useState(false);
+
+  const checkOnboarding = async () => {
+    try {
+      const value = await AsyncStorage.getItem("@appPassword");
+
+      if (value !== null) {
+        setAppPassword(true);
+        console.log("Saved password:", value);
+      }
+    } catch (err) {
+      console.log("Error @checkOnboarding: ", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkOnboarding();
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        initialRouteName={appPassword ? "Home" : "Auth"}
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name="Auth" component={DevicePassword} />
         <Stack.Screen name="Home" component={TabNavigator} />
         <Stack.Screen name="evalutaionProcess" component={EvaluationProcess} />
         <Stack.Screen name="helpdetails" component={HelpDetails} />

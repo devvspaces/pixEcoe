@@ -1,54 +1,151 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from "react";
 import {
   View,
   TouchableOpacity,
-  Image,
-  ScrollView,
   StyleSheet,
   Text,
   StatusBar,
   TextInput,
-  Pressable,
   SafeAreaView,
+  Dimensions,
+  ActivityIndicator
 } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import DropdownSelector from '../components/DropdownSelector';
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import DropdownSelector from "../components/DropdownSelector";
+const { width } = Dimensions.get("window");
+const cardWidth = (width - 60) / 2;
 
 const Setup = () => {
-
+  const [evaluationOption, setEvaluationOption] = useState("api");
+  const [loading, setLoading] = useState(false);
+  const loadingRef = useRef(null);
+  const [loadingd, setLoadingd] = useState(false);
+  const loadingdRef = useRef(null);
+  const [selectedEvaluation, setSelectedEvaluation] = useState(null);
   const [refreeID, setRefreeID] = useState("");
   const [refreeEmail, setRefreeEmail] = useState("");
+  const [serverUrl, setServerUrl] = useState("");
+  const [subjectId, setSubjectId] = useState("");
+  const [password, setPassword] = useState("");
+  const [evaluationOptions, setEvaluationOptions] = useState([]);
 
-  const [passwordState, setPasswordState] = useState({
-    password: "",
-    isSecure: true,
-  });
+  useEffect(() => {
+    const loadStoredValues = async () => {
+      try {
+        const storedRefreeID = await AsyncStorage.getItem("refreeID");
+        const storedRefreeEmail = await AsyncStorage.getItem("refreeEmail");
+        const storedServerUrl = await AsyncStorage.getItem("serverUrl");
+        const storedSubjectId = await AsyncStorage.getItem("subjectId");
+        const storedPassword = await AsyncStorage.getItem("password");
 
-  const [confirmPasswordState, setConfirmPasswordState] = useState({
-    confirmPassword: "",
-    isSecure: true,
-  });
+        setRefreeID(storedRefreeID || "");
+        setRefreeEmail(storedRefreeEmail || "");
+        setServerUrl(storedServerUrl || "");
+        setSubjectId(storedSubjectId || "");
+        setPassword(storedPassword || "");
+      } catch (error) {
+        console.error("Error loading stored values:", error);
+      }
+    };
 
-  const handlePasswordVisibility = (field) => {
-    if (field === "password") {
-      setPasswordState((prevState) => ({
-        ...prevState,
-        isSecure: !prevState.isSecure,
-      }));
-    } else if (field === "confirmPassword") {
-      setConfirmPasswordState((prevState) => ({
-        ...prevState,
-        isSecure: !prevState.isSecure,
-      }));
+    loadStoredValues();
+  }, []);
+
+  const storeInputValues = async () => {
+    try {
+      await AsyncStorage.setItem("refreeID", refreeID);
+      await AsyncStorage.setItem("refreeEmail", refreeEmail);
+      await AsyncStorage.setItem("serverUrl", serverUrl);
+      await AsyncStorage.setItem("subjectId", subjectId);
+      await AsyncStorage.setItem("password", password);
+    } catch (error) {
+      console.error("Error storing input values:", error);
     }
   };
 
-  const updatePassword = (password) => {
-    setPasswordState((prevState) => ({ ...prevState, password }));
+  const handleLoadEvaluation = async () => {
+    try {
+      if (!refreeID || !refreeEmail || !password || !serverUrl || !subjectId) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+      setLoading(true);
+      const response = await fetch(
+        `${serverUrl}/evaluations/?subject=${subjectId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            dni: refreeID,
+            email: refreeEmail,
+            password: password,
+          }),
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setEvaluationOptions(
+            data.map((option) => ({
+              id: option.id,
+              label: option.station_name,
+            }))
+          );
+        } else {
+          alert("Invalid response format. Please check your API.");
+        }
+      } else {
+        alert(
+          "Failed to load evaluation. Please check your credentials and try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error during API request:", error);
+      alert("An unexpected error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateConfirmPassword = (confirmPassword) => {
-    setConfirmPasswordState((prevState) => ({ ...prevState, confirmPassword }));
+  const handleSelect = (selectedOption, label) => {
+    console.log(`Selected ${label}:`, selectedOption);
+  };
+
+  const handleDownloadEvaluation = async () => {
+    try {
+      if (!selectedEvaluation) {
+        alert("Please select an evaluation before downloading.");
+        return;
+      }
+      setLoadingd(true);
+      const response = await fetch(
+        `${serverUrl}/evaluation/${selectedEvaluation.id}/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            dni: refreeID,
+            email: refreeEmail,
+            password: password,
+          }),
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Download Evaluation Response:", data);
+      } else {
+        alert("Failed to download evaluation. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during API request:", error);
+      alert("An unexpected error occurred. Please try again later.");
+    } finally {
+      setLoadingd(false);
+    }
   };
 
   return (
@@ -67,256 +164,250 @@ const Setup = () => {
           Setup
         </Text>
       </View>
-      <ScrollView
-        style={{
-          paddingLeft: 40,
-          paddingRight: 40,
-          flex: 1,
-          backgroundColor: "#9FD1FF",
-        }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          paddingBottom: 65,
-        }}
-      >
+      <View style={styles.optionBar}>
         <TouchableOpacity
-          style={{
-            backgroundColor: "#111F51",
-            height: 35,
-            width: 80,
-            marginTop: 20,
-            borderRadius: 5,
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "flex-end",
-          }}
+          style={
+            evaluationOption === "api"
+              ? styles.activeOption
+              : styles.inactiveOption
+          }
+          onPress={() => setEvaluationOption("api")}
         >
-          <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
-            Setup
+          <Text
+            style={
+              evaluationOption === "api"
+                ? styles.activeOptionText
+                : styles.inactiveOptionText
+            }
+          >
+            APi Authentication
           </Text>
         </TouchableOpacity>
-        <Text style={{ color: "#111F51", fontSize: 19, fontWeight: "500" }}>
-          Password to access settings
-        </Text>
-        <View style={{ marginTop: 10 }}>
+        <TouchableOpacity
+          style={
+            evaluationOption === "approot"
+              ? styles.activeOption
+              : styles.inactiveOption
+          }
+          onPress={() => setEvaluationOption("approot")}
+        >
+          <Text
+            style={
+              evaluationOption === "approot"
+                ? styles.activeOptionText
+                : styles.inactiveOptionText
+            }
+          >
+            App Root
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {evaluationOption === "api" && (
+        <View
+          style={{
+            paddingLeft: 40,
+            paddingRight: 40,
+            flex: 1,
+            backgroundColor: "#9FD1FF",
+          }}
+        >
           <View style={{ marginTop: 10 }}>
-            <Text style={{ fontWeight: "200" }}>Choose Password</Text>
-            <View
-              style={{
-                height: 60,
-                borderWidth: 0.5,
-                flexDirection: "row",
-                borderColor: "#FFFFFF",
-                borderRadius: 14,
-                marginTop: 10,
-                justifyContent: "space-between",
-                paddingLeft: 10,
-                paddingRight: 10,
-                alignItems: "center",
-                width: "70%",
-              }}
-            >
-              <TextInput
-                style={{ width: 170 }}
-                secureTextEntry={passwordState.isSecure}
-                onChangeText={updatePassword}
-              />
-              <Pressable onPress={() => handlePasswordVisibility("password")}>
-                <MaterialCommunityIcons
-                  name={
-                    passwordState.isSecure ? "eye-off-outline" : "eye-outline"
-                  }
-                  size={22}
-                  color="#9597A6"
-                />
-              </Pressable>
-            </View>
-          </View>
-          <View style={{ marginTop: 30 }}>
-            <Text style={{ fontWeight: "200" }}>Repeat Password</Text>
-            <View
-              style={{
-                height: 60,
-                borderWidth: 0.5,
-                flexDirection: "row",
-                borderColor: "#FFFFFF",
-                borderRadius: 14,
-                marginTop: 10,
-                justifyContent: "space-between",
-                paddingLeft: 10,
-                paddingRight: 10,
-                alignItems: "center",
-                width: "70%",
-              }}
-            >
-              <TextInput
-                style={{ width: 170 }}
-                secureTextEntry={confirmPasswordState.isSecure}
-                onChangeText={updateConfirmPassword}
-              />
-              <Pressable
-                onPress={() => handlePasswordVisibility("confirmPassword")}
+            <View>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 16,
+                  fontWeight: "300",
+                  marginTop: 10,
+                }}
               >
-                <MaterialCommunityIcons
-                  name={
-                    confirmPasswordState.isSecure
-                      ? "eye-off-outline"
-                      : "eye-outline"
-                  }
-                  size={22}
-                  color="#9597A6"
-                />
-              </Pressable>
+                Referee ID
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                placeholder=""
+                value={refreeID}
+                onChangeText={(text) => setRefreeID(text)}
+              />
+            </View>
+            <View>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 16,
+                  fontWeight: "300",
+                  marginTop: 20,
+                }}
+              >
+                Referee Email (License)
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                placeholder=""
+                value={refreeEmail}
+                onChangeText={(text) => setRefreeEmail(text)}
+              />
             </View>
           </View>
-        </View>
-        <Text
-          style={{
-            color: "#111F51",
-            fontSize: 19,
-            fontWeight: "500",
-            marginTop: 20,
-          }}
-        >
-          Evaluation
-        </Text>
-        <View style={{ marginTop: 10 }}>
-          <View>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 16,
-                fontWeight: "300",
-                marginTop: 10,
-              }}
-            >
-              Referee ID
-            </Text>
-            <TextInput
-              style={styles.inputBox}
-              placeholder=""
-              value={refreeID}
-              onChangeText={(text) => setRefreeID(text)}
-            />
-          </View>
-          <View>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 16,
-                fontWeight: "300",
-                marginTop: 20,
-              }}
-            >
-              Referee Email (License)
-            </Text>
-            <TextInput
-              style={styles.inputBox}
-              placeholder=""
-              value={refreeEmail}
-              onChangeText={(text) => setRefreeEmail(text)}
-            />
-          </View>
-        </View>
-        <Text
-          style={{
-            color: "#111F51",
-            fontSize: 19,
-            fontWeight: "500",
-            marginTop: 20,
-          }}
-        >
-          Web Server Access
-        </Text>
-        <View style={{ marginTop: 10 }}>
-          <View>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 16,
-                fontWeight: "300",
-                marginTop: 10,
-              }}
-            >
-              URL Address
-            </Text>
-            <TextInput
-              style={{
-                height: 50,
-                borderColor: "#FFFFFF",
-                borderWidth: 1,
-                marginTop: 10,
-                paddingLeft: 10,
-                borderRadius: 10,
-                width: "100%",
-              }}
-              placeholder=""
-              // value={refreeID}
-              // onChangeText={(text) => setRefreeID(text)}
-            />
-          </View>
-          <View>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 18,
-                fontWeight: "300",
-                marginTop: 20,
-              }}
-            >
-              Subject ID
-            </Text>
-            <TextInput
-              style={styles.inputBox}
-              placeholder=""
-              // value={refreeEmail}
-              // onChangeText={(text) => setRefreeEmail(text)}
-            />
-          </View>
-          <View>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 18,
-                fontWeight: "300",
-                marginTop: 20,
-              }}
-            >
-              Password
-            </Text>
-            <TextInput
-              style={styles.inputBox}
-              placeholder=""
-              // value={refreeEmail}
-              // onChangeText={(text) => setRefreeEmail(text)}
-            />
-          </View>
-          <View
+          <Text
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 10,
-              width: "100%",
+              color: "#111F51",
+              fontSize: 19,
+              fontWeight: "500",
+              marginTop: 20,
             }}
           >
-            <DropdownSelector label="Evaluations" placeholderLabel="Select" />
-            <TouchableOpacity
+            Web Server Access
+          </Text>
+          <View style={{ marginTop: 10 }}>
+            <View>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 16,
+                  fontWeight: "300",
+                  marginTop: 10,
+                }}
+              >
+                URL Address
+              </Text>
+              <TextInput
+                style={{
+                  height: 50,
+                  borderColor: "#FFFFFF",
+                  borderWidth: 1,
+                  marginTop: 10,
+                  paddingLeft: 10,
+                  borderRadius: 10,
+                  width: "100%",
+                }}
+                placeholder=""
+                value={serverUrl}
+                onChangeText={(text) => setServerUrl(text)}
+              />
+            </View>
+            <View>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 18,
+                  fontWeight: "300",
+                  marginTop: 20,
+                }}
+              >
+                Subject ID
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                placeholder=""
+                value={subjectId}
+                onChangeText={(text) => setSubjectId(text)}
+              />
+            </View>
+            <View>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 18,
+                  fontWeight: "300",
+                  marginTop: 20,
+                }}
+              >
+                Password
+              </Text>
+              <TextInput
+                style={styles.inputBox}
+                placeholder=""
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+              />
+            </View>
+            <View
               style={{
-                backgroundColor: "#111F51",
-                height: 50,
-                width: "25%",
-                borderRadius: 5,
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "flex-end",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 10,
+                width: "100%",
               }}
             >
-              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
-                Load Evaluation
-              </Text>
-            </TouchableOpacity>
+              <DropdownSelector
+                label="Evaluations"
+                placeholderLabel="Select"
+                options={evaluationOptions}
+                onSelect={(selectedOption) => {
+                  handleSelect(selectedOption, "Evaluation");
+                  setSelectedEvaluation(selectedOption);
+                }}
+              />
+              <TouchableOpacity
+                onPress={handleLoadEvaluation}
+                style={{
+                  backgroundColor: "#111F51",
+                  height: 50,
+                  width: "25%",
+                  borderRadius: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  flexDirection: "row",
+                }}
+              >
+                <Text
+                  style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}
+                >
+                  Load Evaluation
+                </Text>
+                {loading && (
+                  <ActivityIndicator
+                    ref={loadingRef}
+                    style={{ marginLeft: 10 }}
+                    size="small"
+                    color="#fff"
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
+          <TouchableOpacity
+            onPress={handleDownloadEvaluation}
+            style={{
+              height: 60,
+              backgroundColor: "#111F51",
+              marginTop: 20,
+              borderRadius: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SimpleLineIcons
+              name={"cloud-download"}
+              size={35}
+              color="#FFFFFF"
+            />
+            <Text style={{ fontSize: 18, color: "#ffffff", marginLeft: 15 }}>
+              Download Evaluation and Competitors
+            </Text>
+            {loadingd && (
+              <ActivityIndicator
+                ref={loadingdRef}
+                style={{ marginLeft: 10 }}
+                size="small"
+                color="#fff"
+              />
+            )}
+          </TouchableOpacity>
+        </View>
+      )}
+      {evaluationOption === "approot" && (
+        <View
+          style={{
+            paddingLeft: 40,
+            paddingRight: 40,
+            flex: 1,
+            backgroundColor: "#9FD1FF",
+          }}
+        >
           <Text
             style={{
               color: "#111F51",
@@ -502,12 +593,12 @@ const Setup = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      )}
     </SafeAreaView>
   );
-}
+};
 
-export default Setup
+export default Setup;
 
 const styles = StyleSheet.create({
   container: {
@@ -522,5 +613,44 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     borderRadius: 10,
     width: "70%",
+  },
+  activeOption: {
+    alignItems: "center",
+    backgroundColor: "#111F51",
+    height: 60,
+    justifyContent: "center",
+    borderRadius: 10,
+    width: cardWidth,
+  },
+  inactiveOption: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "#FFFFFF",
+    borderWidth: 1,
+    height: 60,
+    borderRadius: 10,
+    width: cardWidth,
+  },
+  activeOptionText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+    justifyContent: "center",
+  },
+  inactiveOptionText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "black",
+    justifyContent: "center",
+  },
+  optionBar: {
+    flexDirection: "row",
+    height: 100,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 20,
+    paddingRight: 20,
+    width: width,
+    backgroundColor: "#9FD1FF",
   },
 });
