@@ -75,7 +75,7 @@ const Evaluation = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginLeft: 60 }}
-            onPress={() => navigation.navigate("evalutaionProcess")}
+            onPress={() => navigation.navigate("competitorslist")}
           >
             <View
               style={{
@@ -106,7 +106,7 @@ const Evaluation = () => {
                 fontWeight: "500",
               }}
             >
-              Evaluated
+              Competitors List
             </Text>
           </TouchableOpacity>
         </View>

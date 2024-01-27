@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   TouchableOpacity,
@@ -10,13 +10,16 @@ import {
   Dimensions,
   ActivityIndicator
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import DropdownSelector from "../components/DropdownSelector";
+import PasswordModal from "../components/PasswordModal";
 const { width } = Dimensions.get("window");
 const cardWidth = (width - 60) / 2;
 
 const Setup = () => {
   const [evaluationOption, setEvaluationOption] = useState("api");
+  const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef(null);
   const [loadingd, setLoadingd] = useState(false);
@@ -30,6 +33,7 @@ const Setup = () => {
   const [evaluationOptions, setEvaluationOptions] = useState([]);
 
   useEffect(() => {
+    checkDevicePassword();
     const loadStoredValues = async () => {
       try {
         const storedRefreeID = await AsyncStorage.getItem("refreeID");
@@ -50,6 +54,26 @@ const Setup = () => {
 
     loadStoredValues();
   }, []);
+
+  const checkDevicePassword = async () => {
+    const storedPassword = await AsyncStorage.getItem("@appPassword");
+    if (!storedPassword) {
+      setPasswordModalVisible(true);
+    }
+  };
+
+  const handlePasswordSubmit = (enteredPassword) => {
+    const storedPassword = AsyncStorage.getItem("@appPassword");
+    if (enteredPassword === storedPassword) {
+      setPasswordModalVisible(false);
+    } else {
+      alert("Incorrect password. Try again.");
+    }
+  };
+
+  const handlePasswordCancel = () => {
+    setPasswordModalVisible(false);
+  };
 
   const storeInputValues = async () => {
     try {
@@ -93,6 +117,7 @@ const Setup = () => {
               label: option.station_name,
             }))
           );
+          storeInputValues();
         } else {
           alert("Invalid response format. Please check your API.");
         }
@@ -110,10 +135,19 @@ const Setup = () => {
   };
 
   const handleSelect = (selectedOption, label) => {
-    console.log(`Selected ${label}:`, selectedOption);
+    if (!password) {
+      setPasswordModalVisible(true);
+    } else {
+      console.log(`Selected ${label}:`, selectedOption);
+      setSelectedEvaluation(selectedOption);
+    }
   };
 
   const handleDownloadEvaluation = async () => {
+    if (!password) {
+      setPasswordModalVisible(true);
+      return;
+    }
     try {
       if (!selectedEvaluation) {
         alert("Please select an evaluation before downloading.");
@@ -136,7 +170,9 @@ const Setup = () => {
       );
       if (response.ok) {
         const data = await response.json();
+        await AsyncStorage.setItem("downloadedEvaluationData", JSON.stringify(data));
         console.log("Download Evaluation Response:", data);
+        alert("Download successful");
       } else {
         alert("Failed to download evaluation. Please try again.");
       }
@@ -202,6 +238,11 @@ const Setup = () => {
           </Text>
         </TouchableOpacity>
       </View>
+      <PasswordModal
+        isVisible={isPasswordModalVisible}
+        onPasswordSubmit={handlePasswordSubmit}
+        onCancel={handlePasswordCancel}
+      />
       {evaluationOption === "api" && (
         <View
           style={{
