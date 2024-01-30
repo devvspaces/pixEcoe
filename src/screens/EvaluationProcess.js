@@ -1,19 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TouchableOpacity,
-  Image,
-  TextInput,
   StyleSheet,
   Text,
   StatusBar,
   SafeAreaView,
+  FlatList,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import QuestionList from "../components/QuestionList";
 
 const EvaluationProcess = () => {
+
   const navigation = useNavigation();
+
+  const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
+
+  useEffect(() => {
+    loadDownloadedEvaluationData();
+  }, []);
+
+  const loadDownloadedEvaluationData = async () => {
+    try {
+      const downloadedData = await AsyncStorage.getItem(
+        "downloadedEvaluationData"
+      );
+      if (downloadedData) {
+        const parsedData = JSON.parse(downloadedData);
+        setEvaluations(parsedData);
+        console.log("Downloaded Evaluation Data:", parsedData);
+      }
+    } catch (error) {
+      console.error("Error loading downloaded data:", error);
+    }
+  };
+
+  const detail =
+    evaluations.data && evaluations.data.detail ? evaluations.data.detail : {};
+
+  const sections = [];
+
+  let section = null;
+
+  for (const key in detail) {
+    const obj = detail[key];
+    const comment = obj.comment;
+
+    if (comment) {
+      if (section) {
+        sections.push(section);
+      }
+      section = {
+        section: comment,
+        questions: [],
+      };
+    } else if (obj.questionnumber) {
+      const question = {
+        questionnumber: obj.questionnumber,
+        answers: obj.answers || [],
+      };
+      section.questions.push(question);
+    }
+  }
+  if (section) {
+    sections.push(section);
+  }
+
+  console.log(JSON.stringify(sections, null, 2));
 
   return (
     <SafeAreaView style={styles.container}>
@@ -22,10 +78,16 @@ const EvaluationProcess = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="leftcircleo" size={25} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Evaluate</Text>
+        <Text style={styles.headerText}>Evaluation Process</Text>
       </View>
       <View style={styles.content}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            height: 50,
+          }}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -40,114 +102,22 @@ const EvaluationProcess = () => {
             }}
           >
             <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              Station: Estacion 1
+              Station: {evaluations.data.station_name}
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500" }}>
               Subject: Medicina Interna
             </Text>
           </View>
-          <View
-            style={{
-              height: 40,
-              width: "20%",
-              backgroundColor: "#111F51",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 20,
-            }}
-          >
-            <Text style={{ fontSize: 18, fontWeight: "500", color: "#fff" }}>
-              Save
-            </Text>
-          </View>
         </View>
-        <Text
-          style={{
-            color: "#111F51",
-            fontSize: 20,
-            fontWeight: "500",
-            marginTop: 20,
+        <FlatList
+          data={sections}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => <QuestionList section={item} />}
+          contentContainerStyle={{
+            paddingBottom: Platform.OS === "ios" ? 30 : 65,
           }}
-        >
-          Anamesis
-        </Text>
-        <View style={{ flexDirection: "row", paddingTop: 20, width: "100%" }}>
-          <View style={{ width: "6%", height: 80, borderRadius: 20 }}>
-            <View
-              style={{
-                height: 40,
-                backgroundColor: "#111F51",
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 20,
-                  fontWeight: "500",
-                }}
-              >
-                1a
-              </Text>
-            </View>
-            <View
-              style={{
-                height: 40,
-                backgroundColor: "#3E3E3E",
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 20,
-                  fontWeight: "500",
-                }}
-              >
-                0
-              </Text>
-            </View>
-          </View>
-          <View style={{ marginLeft: 40, width: "89%" }}>
-            <Text
-              style={{
-                color: "#111F51",
-                fontSize: 20,
-                fontWeight: "500",
-                textAlign: "justify",
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </Text>
-            <View style={styles.topicBox}>
-              <Text style={styles.topicText}>No</Text>
-            </View>
-            <View style={styles.topicBox}>
-              <Text style={styles.topicText}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </Text>
-            </View>
-            <View style={styles.topicBox}>
-              <Text style={styles.topicText}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </Text>
-            </View>
-            <View style={styles.topicBox}>
-              <Text style={styles.topicText}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </Text>
-            </View>
-          </View>
-        </View>
+          showsVerticalScrollIndicator={false}
+        />
         
       </View>
     </SafeAreaView>

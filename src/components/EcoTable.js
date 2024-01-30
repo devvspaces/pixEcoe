@@ -3,7 +3,7 @@ import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 const EcoTable = () => {
-  // Sample data for demonstration
+  
   const tableData = [
     {
       subject: "R1A01",
@@ -63,7 +63,6 @@ const EcoTable = () => {
         "a",
       ],
     },
-    // Add more subjects and their corresponding answers
   ];
 
   return (
@@ -78,6 +77,7 @@ const EcoTable = () => {
         <View style={styles.firstColumn}>
           <Text style={styles.cellText}>ID</Text>
         </View>
+        
         <View style={styles.headerCell} />
         {Array.from({ length: 24 }, (_, index) => (
           <View key={index} style={styles.headerCell}>
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 5,
     borderBottomWidth: 1,
     borderBottomColor: "#000",
     borderRightWidth: 1,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   firstColumn: {
     flex: 2,
-    width: "40%",
+    width: "30%",
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 10,

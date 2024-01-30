@@ -24,6 +24,8 @@ const Setup = () => {
   const loadingRef = useRef(null);
   const [loadingd, setLoadingd] = useState(false);
   const loadingdRef = useRef(null);
+  const [loadingc, setLoadingc] = useState(false);
+  const loadingcRef = useRef(null);
   const [selectedEvaluation, setSelectedEvaluation] = useState(null);
   const [refreeID, setRefreeID] = useState("");
   const [refreeEmail, setRefreeEmail] = useState("");
@@ -171,7 +173,16 @@ const Setup = () => {
       if (response.ok) {
         const data = await response.json();
         await AsyncStorage.setItem("downloadedEvaluationData", JSON.stringify(data));
+        const evaluationDetails = {
+          id: selectedEvaluation.id,
+          name: selectedEvaluation.label,
+        };
+        await AsyncStorage.setItem(
+          "EvaluationDetails",
+          JSON.stringify(evaluationDetails)
+        );
         console.log("Download Evaluation Response:", data);
+        console.log("EvaluationDetails:", evaluationDetails);
         alert("Download successful");
       } else {
         alert("Failed to download evaluation. Please try again.");
@@ -181,6 +192,46 @@ const Setup = () => {
       alert("An unexpected error occurred. Please try again later.");
     } finally {
       setLoadingd(false);
+    }
+  };
+
+  const handleDownloadCompetitors = async () => {
+    try {
+      if (!selectedEvaluation) {
+        alert("Please select an evaluation before downloading.");
+        return;
+      }
+      setLoadingc(true);
+      const response = await fetch(
+        `${serverUrl}/students/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            dni: refreeID,
+            email: refreeEmail,
+            password: password,
+          }),
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        await AsyncStorage.setItem(
+          "downloadedCompetitorData",
+          JSON.stringify(data)
+        );
+        console.log("Download Competitor Response:", data);
+        alert("Download successful");
+      } else {
+        alert("Failed to download competitor. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during API request:", error);
+      alert("An unexpected error occurred. Please try again later.");
+    } finally {
+      setLoadingc(false);
     }
   };
 
@@ -409,35 +460,68 @@ const Setup = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <TouchableOpacity
-            onPress={handleDownloadEvaluation}
-            style={{
-              height: 60,
-              backgroundColor: "#111F51",
-              marginTop: 20,
-              borderRadius: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SimpleLineIcons
-              name={"cloud-download"}
-              size={35}
-              color="#FFFFFF"
-            />
-            <Text style={{ fontSize: 18, color: "#ffffff", marginLeft: 15 }}>
-              Download Evaluation and Competitors
-            </Text>
-            {loadingd && (
-              <ActivityIndicator
-                ref={loadingdRef}
-                style={{ marginLeft: 10 }}
-                size="small"
-                color="#fff"
+          <View style={{ flexDirection:'row', justifyContent:'space-between' }}>
+            <TouchableOpacity
+              onPress={handleDownloadEvaluation}
+              style={{
+                height: 60,
+                backgroundColor: "#111F51",
+                marginTop: 20,
+                borderRadius: 10,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "45%",
+              }}
+            >
+              <SimpleLineIcons
+                name={"cloud-download"}
+                size={35}
+                color="#FFFFFF"
               />
-            )}
-          </TouchableOpacity>
+              <Text style={{ fontSize: 13, color: "#ffffff", marginLeft: 15 }}>
+                Download Evaluation
+              </Text>
+              {loadingd && (
+                <ActivityIndicator
+                  ref={loadingdRef}
+                  style={{ marginLeft: 10 }}
+                  size="small"
+                  color="#fff"
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleDownloadCompetitors}
+              style={{
+                height: 60,
+                backgroundColor: "#111F51",
+                marginTop: 20,
+                borderRadius: 10,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "45%",
+              }}
+            >
+              <SimpleLineIcons
+                name={"cloud-download"}
+                size={35}
+                color="#FFFFFF"
+              />
+              <Text style={{ fontSize: 13, color: "#ffffff", marginLeft: 15 }}>
+                Download Competitors
+              </Text>
+              {loadingc && (
+                <ActivityIndicator
+                  ref={loadingcRef}
+                  style={{ marginLeft: 10 }}
+                  size="small"
+                  color="#fff"
+                />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       )}
       {evaluationOption === "approot" && (
