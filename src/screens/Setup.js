@@ -18,6 +18,7 @@ const { width } = Dimensions.get("window");
 const cardWidth = (width - 60) / 2;
 
 const Setup = () => {
+  
   const [evaluationOption, setEvaluationOption] = useState("api");
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);

@@ -26,6 +26,7 @@ const EvaluationProcess = () => {
   const [refreeID, setRefreeID] = useState("");
   const [refreeEmail, setRefreeEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [evaluationDetails, setEvaluationDetails] = useState(null);
 
   useEffect(() => {
     loadDownloadedEvaluationData();
@@ -34,6 +35,16 @@ const EvaluationProcess = () => {
 
   const loadDownloadedEvaluationData = async () => {
     try {
+
+      const evaluationDetailsString = await AsyncStorage.getItem(
+        "EvaluationDetails"
+      );
+      const parsedEvaluationDetails = evaluationDetailsString
+        ? JSON.parse(evaluationDetailsString)
+        : null;
+      setEvaluationDetails(parsedEvaluationDetails);
+      console.log("EvaluationDetails:", parsedEvaluationDetails);
+
       const downloadedData = await AsyncStorage.getItem(
         "downloadedEvaluationData"
       );
@@ -95,8 +106,6 @@ const EvaluationProcess = () => {
 
   console.log(JSON.stringify(sections, null, 2));
 
-  const evalustionid = evaluations.data.station_number
-
   const handleAnswerSelection = (questionNumber, answerId) => {
     setSelectedAnswers({
       ...selectedAnswers,
@@ -105,8 +114,24 @@ const EvaluationProcess = () => {
     console.log("Selected Answers:", selectedAnswers);
   };
 
+  const formatSelectedAnswers = (selectedAnswers) => {
+    const questionNumbers = Object.keys(selectedAnswers).map(Number).sort();
+    const formattedAnswers = questionNumbers.flatMap((questionNumber) => [
+      selectedAnswers[questionNumber],
+    ]);
+
+    return formattedAnswers;
+  };
+
+  const formattedAnswersArray = formatSelectedAnswers(selectedAnswers);
+
+  console.log(formattedAnswersArray);
+
   const saveEvaluation = async () => {
-    
+
+    const formattedAnswers = formatSelectedAnswers(selectedAnswers);
+    console.log(formattedAnswers);
+
     try {
       setLoadingc(true);
       const response = await fetch(`${serverUrl}/results/upload/`, {
@@ -118,9 +143,9 @@ const EvaluationProcess = () => {
           dni: refreeID,
           email: refreeEmail,
           password: password,
-          evaluation_id: evalustionid,
+          evaluation_id: evaluationDetails.id,
           results: {
-            [studentId]: selectedAnswers,
+            [studentId]: formattedAnswers,
           },
         }),
       });
@@ -188,6 +213,7 @@ const EvaluationProcess = () => {
               paddingLeft: 10,
               paddingRight: 10,
               justifyContent: "center",
+              flexDirection:'row'
             }}
           >
             <Text
@@ -206,6 +232,7 @@ const EvaluationProcess = () => {
             )}
           </TouchableOpacity>
         </View>
+        <Text>{formattedAnswers}</Text>
         <FlatList
           data={sections}
           keyExtractor={(item, index) => index.toString()}

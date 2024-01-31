@@ -15,23 +15,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Eco = () => {
   const navigation = useNavigation();
-
-  const [evaluationDetails, setEvaluationDetails] = useState(null);
   const [downloadedCompetitorData, setDownloadedCompetitorData] =
     useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const evaluationDetailsString = await AsyncStorage.getItem(
-          "EvaluationDetails"
-        );
-        const parsedEvaluationDetails = evaluationDetailsString
-          ? JSON.parse(evaluationDetailsString)
-          : null;
-        setEvaluationDetails(parsedEvaluationDetails);
-        console.log("EvaluationDetails:", parsedEvaluationDetails);
-
         const downloadedCompetitorDataString = await AsyncStorage.getItem(
           "downloadedCompetitorData"
         );
