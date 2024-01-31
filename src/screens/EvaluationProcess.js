@@ -213,7 +213,7 @@ const EvaluationProcess = () => {
               paddingLeft: 10,
               paddingRight: 10,
               justifyContent: "center",
-              flexDirection:'row'
+              flexDirection: "row",
             }}
           >
             <Text
@@ -232,7 +232,7 @@ const EvaluationProcess = () => {
             )}
           </TouchableOpacity>
         </View>
-        <Text>{formattedAnswers}</Text>
+        {/* <Text>{formattedAnswersArray}</Text> */}
         <FlatList
           data={sections}
           keyExtractor={(item, index) => index.toString()}
