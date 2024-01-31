@@ -7,7 +7,8 @@ import {
   StatusBar,
   SafeAreaView,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -129,6 +130,11 @@ const EvaluationProcess = () => {
 
   const saveEvaluation = async () => {
 
+    if (!evaluationDetails) {
+      console.error("Error: Evaluation details not available.");
+      return;
+    }
+
     const formattedAnswers = formatSelectedAnswers(selectedAnswers);
     console.log(formattedAnswers);
 
@@ -155,7 +161,9 @@ const EvaluationProcess = () => {
         Alert.alert("Success", "Evaluation saved successfully!");
       } else {
         // Handle errors
-        Alert.alert("Error", "Failed to save evaluation");
+        const errorMessage = await response.text();
+        // console.error(`Error saving evaluation: ${errorMessage}`);
+        Alert.alert("Error", `Failed to save evaluation: ${errorMessage}`);
       }
     } catch (error) {
       console.error("Error saving evaluation:", error);
