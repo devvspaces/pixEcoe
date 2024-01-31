@@ -8,7 +8,7 @@ import {
   TextInput,
   SafeAreaView,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
@@ -33,9 +33,9 @@ const Setup = () => {
   const [subjectId, setSubjectId] = useState("");
   const [password, setPassword] = useState("");
   const [evaluationOptions, setEvaluationOptions] = useState([]);
+  const [evaluationDetails, setEvaluationDetails] = useState(null);
 
   useEffect(() => {
-    checkDevicePassword();
     const loadStoredValues = async () => {
       try {
         const storedRefreeID = await AsyncStorage.getItem("refreeID");
@@ -43,12 +43,17 @@ const Setup = () => {
         const storedServerUrl = await AsyncStorage.getItem("serverUrl");
         const storedSubjectId = await AsyncStorage.getItem("subjectId");
         const storedPassword = await AsyncStorage.getItem("password");
-
+        const storedEvaluationDetails = await AsyncStorage.getItem(
+          "EvaluationDetails"
+        );
         setRefreeID(storedRefreeID || "");
         setRefreeEmail(storedRefreeEmail || "");
         setServerUrl(storedServerUrl || "");
         setSubjectId(storedSubjectId || "");
         setPassword(storedPassword || "");
+        setEvaluationDetails(
+          storedEvaluationDetails ? JSON.parse(storedEvaluationDetails) : null
+        );
       } catch (error) {
         console.error("Error loading stored values:", error);
       }
@@ -57,25 +62,28 @@ const Setup = () => {
     loadStoredValues();
   }, []);
 
-  const checkDevicePassword = async () => {
-    const storedPassword = await AsyncStorage.getItem("@appPassword");
-    if (!storedPassword) {
-      setPasswordModalVisible(true);
-    }
-  };
-
-  const handlePasswordSubmit = (enteredPassword) => {
-    const storedPassword = AsyncStorage.getItem("@appPassword");
-    if (enteredPassword === storedPassword) {
-      setPasswordModalVisible(false);
-    } else {
-      alert("Incorrect password. Try again.");
+  const handlePasswordSubmit = async (enteredPassword) => {
+    try {
+      const storedPassword = await AsyncStorage.getItem("@appPassword");
+      if (enteredPassword === storedPassword) {
+        setPasswordModalVisible(false);
+      } else {
+        alert("Incorrect password. Try again.");
+      }
+    } catch (error) {
+      console.error("Error retrieving stored password:", error);
     }
   };
 
   const handlePasswordCancel = () => {
     setPasswordModalVisible(false);
   };
+
+  useEffect(() => {
+    if (evaluationDetails) {
+      setPasswordModalVisible(true);
+    }
+  }, [evaluationDetails]);
 
   const storeInputValues = async () => {
     try {
@@ -137,19 +145,13 @@ const Setup = () => {
   };
 
   const handleSelect = (selectedOption, label) => {
-    if (!password) {
-      setPasswordModalVisible(true);
-    } else {
+    {
       console.log(`Selected ${label}:`, selectedOption);
       setSelectedEvaluation(selectedOption);
     }
   };
 
   const handleDownloadEvaluation = async () => {
-    if (!password) {
-      setPasswordModalVisible(true);
-      return;
-    }
     try {
       if (!selectedEvaluation) {
         alert("Please select an evaluation before downloading.");
@@ -172,7 +174,10 @@ const Setup = () => {
       );
       if (response.ok) {
         const data = await response.json();
-        await AsyncStorage.setItem("downloadedEvaluationData", JSON.stringify(data));
+        await AsyncStorage.setItem(
+          "downloadedEvaluationData",
+          JSON.stringify(data)
+        );
         const evaluationDetails = {
           id: selectedEvaluation.id,
           name: selectedEvaluation.label,
@@ -202,20 +207,17 @@ const Setup = () => {
         return;
       }
       setLoadingc(true);
-      const response = await fetch(
-        `${serverUrl}/students/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            dni: refreeID,
-            email: refreeEmail,
-            password: password,
-          }),
-        }
-      );
+      const response = await fetch(`${serverUrl}/students/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dni: refreeID,
+          email: refreeEmail,
+          password: password,
+        }),
+      });
       if (response.ok) {
         const data = await response.json();
         await AsyncStorage.setItem(
@@ -460,7 +462,9 @@ const Setup = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ flexDirection:'row', justifyContent:'space-between' }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
             <TouchableOpacity
               onPress={handleDownloadEvaluation}
               style={{

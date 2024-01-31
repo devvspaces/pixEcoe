@@ -1,13 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   View,
   StyleSheet,
   Text,
+  TouchableOpacity,
 } from "react-native";
 
-const QuestionList = ({ section }) => {
+const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
+  
   return (
-
     <View>
       <Text
         style={{
@@ -27,86 +28,106 @@ const QuestionList = ({ section }) => {
               fontSize: 18,
               fontWeight: "500",
               marginTop: 50,
+              marginBottom: 10,
             }}
           >
             Question Number: {question.questionnumber}
           </Text>
           {/* map the answer array */}
-          {Object.values(question.answers).map((answer, answerIndex) => (
-            <View
+
+          {Object.entries(question.answers).map(([answerNumber, answer]) => (
+            <TouchableOpacity
               style={{
-                flexDirection: "row",
-                paddingTop: 20,
                 width: "100%",
               }}
-              key={answerIndex}
+              key={answerNumber}
+              onPress={() =>
+                handleAnswerSelection(
+                  question.questionnumber,
+                  parseInt(answerNumber)
+                )
+              }
             >
-              <View style={{ width: "6%", height: 80, borderRadius: 20 }}>
-                <View
-                  style={{
-                    height: 40,
-                    backgroundColor: "#111F51",
-                    borderTopLeftRadius: 10,
-                    borderTopRightRadius: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {/* questionnumber + literal */}
-                  <Text
+              <View
+                style={{
+                  borderColor:
+                    selectedAnswers[question.questionnumber] ===
+                    parseInt(answerNumber)
+                      ? "#eee"
+                      : "transparent",
+                  borderWidth: 2,
+                  borderRadius: 10,
+                  padding: 10,
+                  flexDirection: "row",
+                }}
+              >
+                <View style={{ width: "6%", height: 80, borderRadius: 20 }}>
+                  <View
                     style={{
-                      color: "#fff",
-                      fontSize: 20,
-                      fontWeight: "500",
+                      height: 40,
+                      backgroundColor: "#111F51",
+                      borderTopLeftRadius: 10,
+                      borderTopRightRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    {answer.literal}
-                  </Text>
-                  {/* questionnumber + literal */}
-                </View>
-                <View
-                  style={{
-                    height: 40,
-                    backgroundColor: "#3E3E3E",
-                    borderBottomLeftRadius: 10,
-                    borderBottomRightRadius: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {/* points */}
-                  <Text
+                    {/* questionnumber + literal */}
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 20,
+                        fontWeight: "500",
+                      }}
+                    >
+                      {answer.literal}
+                    </Text>
+                    {/* questionnumber + literal */}
+                  </View>
+                  <View
                     style={{
-                      color: "#fff",
-                      fontSize: 20,
-                      fontWeight: "500",
+                      height: 40,
+                      backgroundColor: "#3E3E3E",
+                      borderBottomLeftRadius: 10,
+                      borderBottomRightRadius: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    {answer.points}
+                    {/* points */}
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 20,
+                        fontWeight: "500",
+                      }}
+                    >
+                      {answer.points}
+                    </Text>
+                    {/* points */}
+                  </View>
+                </View>
+                <View style={{ marginLeft: 40, width: "89%" }}>
+                  {/* text2 */}
+                  <Text
+                    style={{
+                      color: "#111F51",
+                      fontSize: 20,
+                      fontWeight: "500",
+                      textAlign: "justify",
+                    }}
+                  >
+                    {answer.text2}
                   </Text>
-                  {/* points */}
+                  {/* text2 */}
+                  <View style={styles.topicBox}>
+                    {/* text1 */}
+                    <Text style={styles.topicText}>{answer.text1}</Text>
+                    {/* text1 */}
+                  </View>
                 </View>
               </View>
-              <View style={{ marginLeft: 40, width: "89%" }}>
-                {/* text2 */}
-                <Text
-                  style={{
-                    color: "#111F51",
-                    fontSize: 20,
-                    fontWeight: "500",
-                    textAlign: "justify",
-                  }}
-                >
-                  {answer.text2}
-                </Text>
-                {/* text2 */}
-                <View style={styles.topicBox}>
-                  {/* text1 */}
-                  <Text style={styles.topicText}>{answer.text1}</Text>
-                  {/* text1 */}
-                </View>
-              </View>
-            </View>
+            </TouchableOpacity>
           ))}
           {/* map the answer array */}
         </View>

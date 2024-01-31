@@ -32,9 +32,7 @@ const PasswordModal = ({ isVisible, onPasswordSubmit, onCancel }) => {
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onCancel}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+            
           </View>
         </View>
       </View>
@@ -79,7 +77,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 10,
     alignItems: "center",
-    width: 160,
+    width: '100%',
   },
   buttonText: {
     color: "white",

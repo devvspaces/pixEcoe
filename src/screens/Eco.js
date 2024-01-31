@@ -8,12 +8,10 @@ import {
   StatusBar,
   SafeAreaView,
   Platform,
-  FlatList
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import EcoTable from "../components/EcoTable";
 
 const Eco = () => {
   const navigation = useNavigation();
@@ -118,33 +116,35 @@ const Eco = () => {
     ? downloadedCompetitorData.students
     : [];
 
- const renderTableCell = (questionNumber, student) => {
-   const cellData = student[questionNumber] || "";
-   return (
-     <View key={`${questionNumber}-${student.group}`} style={styles.tableCell}>
-       <Text style={styles.cellText}>{cellData}</Text>
-     </View>
-   );
- };
+  const renderTableCell = (questionNumber, student) => {
+    const cellData = student[questionNumber] || "";
+    return (
+      <View key={`${questionNumber}-${student.group}`} style={styles.tableCell}>
+        <Text style={styles.cellText}>{cellData}</Text>
+      </View>
+    );
+  };
 
- // Function to render each row in the table
- const renderTableRow = (student) => (
-   <TouchableOpacity
-     key={student.group}
-     style={styles.tableRow}
-     onPress={() => navigation.navigate("evalutaionProcess")}
-   >
-     <View style={styles.firstColumn}>
-       <Text style={styles.cellText}>{student.group}</Text>
-     </View>
+  // Function to render each row in the table
+  const renderTableRow = (student) => (
+    <TouchableOpacity
+      key={student.group}
+      style={styles.tableRow}
+      onPress={() =>
+        navigation.navigate("evalutaionProcess", { studentId: student.id })
+      }
+    >
+      <View style={styles.firstColumn}>
+        <Text style={styles.cellText}>{student.group}</Text>
+      </View>
 
-     {tableHead.map((section) =>
-       section.map(({ questionNumber }) =>
-         renderTableCell(questionNumber, student)
-       )
-     )}
-   </TouchableOpacity>
- );
+      {tableHead.map((section) =>
+        section.map(({ questionNumber }) =>
+          renderTableCell(questionNumber, student)
+        )
+      )}
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -199,6 +199,7 @@ const Eco = () => {
         </View>
 
         <View style={styles.tableRow}>
+
           <View style={styles.firstColumn}>
             <Text style={styles.cellText}>ID</Text>
           </View>
@@ -212,14 +213,10 @@ const Eco = () => {
               </View>
             ))
           )}
+          
         </View>
 
-        {/* Render table rows */}
         {students.map((student) => renderTableRow(student))}
-
-        {/* Table content */}
-
-        {/* <EcoTable /> */}
       </ScrollView>
     </SafeAreaView>
   );
