@@ -16,6 +16,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import QuestionList from "../components/QuestionList";
 
 const EvaluationProcess = () => {
+  
   const navigation = useNavigation();
   const route = useRoute();
   const { studentId } = route.params;
@@ -45,7 +46,6 @@ const EvaluationProcess = () => {
         : null;
       setEvaluationDetails(parsedEvaluationDetails);
       console.log("EvaluationDetails:", parsedEvaluationDetails);
-
       const downloadedData = await AsyncStorage.getItem(
         "downloadedEvaluationData"
       );
@@ -134,10 +134,8 @@ const EvaluationProcess = () => {
       console.error("Error: Evaluation details not available.");
       return;
     }
-
     const formattedAnswers = formatSelectedAnswers(selectedAnswers);
     console.log(formattedAnswers);
-
     try {
       setLoadingc(true);
       const response = await fetch(`${serverUrl}/results/upload/`, {
@@ -157,12 +155,9 @@ const EvaluationProcess = () => {
       });
 
       if (response.ok) {
-        // Success
         Alert.alert("Success", "Evaluation saved successfully!");
       } else {
-        // Handle errors
         const errorMessage = await response.text();
-        // console.error(`Error saving evaluation: ${errorMessage}`);
         Alert.alert("Error", `Failed to save evaluation: ${errorMessage}`);
       }
     } catch (error) {

@@ -14,11 +14,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import DropdownSelector from "../components/DropdownSelector";
 import PasswordModal from "../components/PasswordModal";
+import DocumentPicker from "react-native-document-picker";
 const { width } = Dimensions.get("window");
 const cardWidth = (width - 60) / 2;
 
 const Setup = () => {
-  
   const [evaluationOption, setEvaluationOption] = useState("api");
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,6 +35,7 @@ const Setup = () => {
   const [password, setPassword] = useState("");
   const [evaluationOptions, setEvaluationOptions] = useState([]);
   const [evaluationDetails, setEvaluationDetails] = useState(null);
+  const [fileResponse, setFileResponse] = useState([]);
 
   useEffect(() => {
     const loadStoredValues = async () => {
@@ -97,6 +98,17 @@ const Setup = () => {
       console.error("Error storing input values:", error);
     }
   };
+
+  const handleDocumentSelection = useCallback(async () => {
+    try {
+      const response = await DocumentPicker.pick({
+        presentationStyle: "fullScreen",
+      });
+      setFileResponse(response);
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
 
   const handleLoadEvaluation = async () => {
     try {
@@ -570,7 +582,8 @@ const Setup = () => {
             >
               Directory
             </Text>
-            <TextInput
+            <TouchableOpacity
+              onPress={handleDocumentSelection}
               style={{
                 height: 50,
                 borderColor: "#FFFFFF",
@@ -580,10 +593,18 @@ const Setup = () => {
                 borderRadius: 10,
                 width: "100%",
               }}
-              placeholder=""
-              // value={refreeID}
-              // onChangeText={(text) => setRefreeID(text)}
-            />
+            >
+              {fileResponse.map((file, index) => (
+                <Text
+                  key={index.toString()}
+                  style={styles.uri}
+                  numberOfLines={1}
+                  ellipsizeMode={"middle"}
+                >
+                  {file?.uri}
+                </Text>
+              ))}
+            </TouchableOpacity>
             <Text
               style={{
                 color: "#000",
@@ -668,43 +689,6 @@ const Setup = () => {
             >
               This is the name of the file that contains the data for the
               evaluation.
-            </Text>
-          </View>
-          <View style={{ marginTop: 10 }}>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 16,
-                fontWeight: "300",
-                marginTop: 10,
-              }}
-            >
-              Answers (CSV)
-            </Text>
-            <TextInput
-              style={{
-                height: 50,
-                borderColor: "#FFFFFF",
-                borderWidth: 1,
-                marginTop: 10,
-                paddingLeft: 10,
-                borderRadius: 10,
-                width: "100%",
-              }}
-              placeholder=""
-              // value={refreeID}
-              // onChangeText={(text) => setRefreeID(text)}
-            />
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 13,
-                fontWeight: "300",
-                marginTop: 4,
-              }}
-            >
-              This is file name where the results of the evaluation will be
-              stored to be processed externally.
             </Text>
           </View>
           <TouchableOpacity
