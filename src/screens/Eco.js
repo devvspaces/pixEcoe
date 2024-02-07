@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import {
   View,
   TouchableOpacity,
@@ -8,15 +8,28 @@ import {
   StatusBar,
   SafeAreaView,
   Platform,
+  Modal,
+  TextInput
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import RNFS from "react-native-fs";
 
 const Eco = () => {
+
   const navigation = useNavigation();
-  const [downloadedCompetitorData, setDownloadedCompetitorData] =
-    useState(null);
+  const loadingcRef = useRef(null);
+  const [serverUrl, setServerUrl] = useState("");
+  const [refreeID, setRefreeID] = useState("");
+  const [refreeEmail, setRefreeEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [evaluationDetails, setEvaluationDetails] = useState(null);
+  const [downloadedCompetitorData, setDownloadedCompetitorData] = useState(null);
+  const [loadingc, setLoadingc] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [folderName, setFolderName] = useState("");
+  const [fileName, setFileName] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +49,6 @@ const Eco = () => {
         console.error("Error fetching data from AsyncStorage:", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -44,10 +56,34 @@ const Eco = () => {
 
   useEffect(() => {
     loadDownloadedEvaluationData();
+    loadStoredValues();
   }, []);
+
+  const loadStoredValues = async () => {
+    try {
+      const storedRefreeID = await AsyncStorage.getItem("refreeID");
+      const storedRefreeEmail = await AsyncStorage.getItem("refreeEmail");
+      const storedServerUrl = await AsyncStorage.getItem("serverUrl");
+      const storedPassword = await AsyncStorage.getItem("password");
+      setServerUrl(storedServerUrl);
+      setRefreeID(storedRefreeID);
+      setRefreeEmail(storedRefreeEmail);
+      setPassword(storedPassword);
+    } catch (error) {
+      console.error("Error loading downloaded data:", error);
+    }
+  };
 
   const loadDownloadedEvaluationData = async () => {
     try {
+      const evaluationDetailsString = await AsyncStorage.getItem(
+        "EvaluationDetails"
+      );
+      const parsedEvaluationDetails = evaluationDetailsString
+        ? JSON.parse(evaluationDetailsString)
+        : null;
+      setEvaluationDetails(parsedEvaluationDetails);
+      console.log("EvaluationDetails:", parsedEvaluationDetails);
       const downloadedData = await AsyncStorage.getItem(
         "downloadedEvaluationData"
       );
@@ -135,6 +171,75 @@ const Eco = () => {
     </TouchableOpacity>
   );
 
+  const uploadEvaluation = async () => {
+    if (!evaluationDetails) {
+      console.error("Error: Evaluation details not available.");
+      return;
+    }
+    const evaluationResults = await AsyncStorage.getItem("evaluationResults");
+    if (!evaluationResults) {
+      console.error("No evaluation results found.");
+      return;
+    }
+    const parsedEvaluationResults = JSON.parse(evaluationResults);
+    console.log(formattedAnswers);
+    try {
+      setLoadingc(true);
+      const response = await fetch(`${serverUrl}/results/upload/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dni: refreeID,
+          email: refreeEmail,
+          password: password,
+          evaluation_id: evaluationDetails.id,
+          results: {
+            parsedEvaluationResults,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        Alert.alert("Success", "Evaluation saved successfully!");
+      } else {
+        const errorMessage = await response.text();
+        Alert.alert("Error", `Failed to save evaluation: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error("Error saving evaluation:", error);
+      Alert.alert("Error", "An unexpected error occurred");
+    } finally {
+      setLoadingc(false);
+    }
+  };
+
+  const saveResultsAsJSON = async () => {
+    try {
+      const evaluationResults = await AsyncStorage.getItem("evaluationResults");
+      if (!evaluationResults) {
+        console.error("No evaluation results found.");
+        return;
+      }
+      const parsedEvaluationResults = JSON.parse(evaluationResults);
+      const filePath = `${RNFS.DocumentDirectoryPath}/${folderName}/${fileName}.json`;
+      await RNFS.writeFile(
+        filePath,
+        JSON.stringify(parsedEvaluationResults),
+        "utf8"
+      );
+
+      Alert.alert("Success", "Evaluation results saved as JSON file!");
+    } catch (error) {
+      console.error("Error saving evaluation results:", error);
+      Alert.alert(
+        "Error",
+        "An unexpected error occurred while saving evaluation results."
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#000" />
@@ -186,9 +291,97 @@ const Eco = () => {
             </Text>
           </View>
         </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 40,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              width: "25%",
+              borderRadius: 20,
+              backgroundColor: "#111F51",
+              height: 40,
+              alignItems: "center",
+              paddingLeft: 10,
+              paddingRight: 10,
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
+              onPress={uploadEvaluation}
+            >
+              UPLOAD TO SERVER
+            </Text>
+            {loadingc && (
+              <ActivityIndicator
+                ref={loadingcRef}
+                style={{ marginLeft: 10 }}
+                size="small"
+                color="#fff"
+              />
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            style={{
+              width: "25%",
+              borderRadius: 20,
+              backgroundColor: "#111F51",
+              height: 40,
+              alignItems: "center",
+              paddingLeft: 10,
+              paddingRight: 10,
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}>
+              SAVE ON DEVICE
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TextInput
+                style={styles.input}
+                placeholder="Folder Name"
+                value={folderName}
+                onChangeText={(text) => setFolderName(text)}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="File Name"
+                value={fileName}
+                onChangeText={(text) => setFileName(text)}
+              />
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  saveResultsAsJSON();
+                  setModalVisible(false);
+                }}
+              >
+                <Text style={styles.modalButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
         <View style={styles.tableRow}>
-
           <View style={styles.firstColumn}>
             <Text style={styles.cellText}>ID</Text>
           </View>
@@ -202,7 +395,6 @@ const Eco = () => {
               </View>
             ))
           )}
-          
         </View>
 
         {students.map((student) => renderTableRow(student))}
@@ -300,5 +492,51 @@ const styles = StyleSheet.create({
   },
   cellText: {
     fontWeight: "bold",
+  },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: "50%",
+  },
+  selectFolderButton: {
+    backgroundColor: "#007bff",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  selectFolderButtonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  folderUriText: {
+    marginBottom: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  modalButton: {
+    backgroundColor: "#111F51",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontSize: 16,
   },
 });

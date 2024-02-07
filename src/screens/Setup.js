@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   View,
   TouchableOpacity,
@@ -15,6 +15,8 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import DropdownSelector from "../components/DropdownSelector";
 import PasswordModal from "../components/PasswordModal";
 import DocumentPicker from "react-native-document-picker";
+import RNFS from "react-native-fs";
+
 const { width } = Dimensions.get("window");
 const cardWidth = (width - 60) / 2;
 
@@ -35,7 +37,8 @@ const Setup = () => {
   const [password, setPassword] = useState("");
   const [evaluationOptions, setEvaluationOptions] = useState([]);
   const [evaluationDetails, setEvaluationDetails] = useState(null);
-  const [fileResponse, setFileResponse] = useState([]);
+  const [competitorFile, setcompetitorFile] = useState([]);
+  const [evaluationFile, setEvaluationFile] = useState([]);
 
   useEffect(() => {
     const loadStoredValues = async () => {
@@ -99,12 +102,23 @@ const Setup = () => {
     }
   };
 
-  const handleDocumentSelection = useCallback(async () => {
+  const handleCompetitorFile = useCallback(async () => {
     try {
       const response = await DocumentPicker.pick({
         presentationStyle: "fullScreen",
       });
-      setFileResponse(response);
+      setcompetitorFile(response);
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
+
+  const handleEvaluationFile = useCallback(async () => {
+    try {
+      const response = await DocumentPicker.pick({
+        presentationStyle: "fullScreen",
+      });
+      setEvaluationFile(response);
     } catch (err) {
       console.warn(err);
     }
@@ -220,17 +234,20 @@ const Setup = () => {
         return;
       }
       setLoadingc(true);
-      const response = await fetch(`${serverUrl}/students/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          dni: refreeID,
-          email: refreeEmail,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        `${serverUrl}/students/?subject_id=${subjectId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            dni: refreeID,
+            email: refreeEmail,
+            password: password,
+          }),
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         await AsyncStorage.setItem(
@@ -247,6 +264,48 @@ const Setup = () => {
       alert("An unexpected error occurred. Please try again later.");
     } finally {
       setLoadingc(false);
+    }
+  };
+
+  // const handleLoadCompetitorData = () => {
+
+  //   if (!csvData) {
+  //     alert("Please select a CSV file.");
+  //     return;
+  //   }
+
+  //   const { data, errors } = parse(csvData, { header: true });
+  //   if (errors.length > 0) {
+  //     Alert.alert("Error", "Failed to parse CSV file");
+  //     return;
+  //   }
+
+  //   AsyncStorage.setItem("jsonData", JSON.stringify(data))
+  //   .then(() => {
+  //     Alert.alert("Success", "CSV data loaded and stored as JSON");
+  //   })
+  //   .catch((error) => {
+  //     Alert.alert("Error", "Failed to store JSON data in AsyncStorage");
+  //   });
+  // };
+
+  const handleLoadEvaluationData = async () => {
+    if (!evaluationFile) {
+      alert("Please select an evaluation file.");
+      return;
+    }
+
+    try {
+      const fileContent = await evaluationFile.readAsString();
+      const evaluationData = JSON.parse(fileContent);
+      await AsyncStorage.setItem(
+        "downloadedEvaluationData",
+        JSON.stringify(evaluationData)
+      );
+      alert("Evaluation data loaded successfully.");
+    } catch (error) {
+      console.error("Error loading evaluation data:", error);
+      alert("An error occurred while loading evaluation data.");
     }
   };
 
@@ -568,9 +627,9 @@ const Setup = () => {
               marginTop: 10,
             }}
           >
-            Base Folder: file:///data/user/0/com.apisoftware.EcoeApp/ This is
-            the starting point to access the data folder
+            Select and choose competitors and evaluation data locally
           </Text>
+
           <View style={{ marginTop: 10 }}>
             <Text
               style={{
@@ -580,10 +639,9 @@ const Setup = () => {
                 marginTop: 10,
               }}
             >
-              Directory
+              Competitors (CSV)
             </Text>
             <TouchableOpacity
-              onPress={handleDocumentSelection}
               style={{
                 height: 50,
                 borderColor: "#FFFFFF",
@@ -592,9 +650,11 @@ const Setup = () => {
                 paddingLeft: 10,
                 borderRadius: 10,
                 width: "100%",
+                justifyContent: "center",
               }}
+              onPress={handleCompetitorFile}
             >
-              {fileResponse.map((file, index) => (
+              {competitorFile.map((file, index) => (
                 <Text
                   key={index.toString()}
                   style={styles.uri}
@@ -613,47 +673,26 @@ const Setup = () => {
                 marginTop: 4,
               }}
             >
-              The director path relative to the base folder where the required
-              files are stored and synchronized using any measures.
-            </Text>
-          </View>
-          <View style={{ marginTop: 10 }}>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 16,
-                fontWeight: "300",
-                marginTop: 10,
-              }}
-            >
-              Competitors (CSV)
-            </Text>
-            <TextInput
-              style={{
-                height: 50,
-                borderColor: "#FFFFFF",
-                borderWidth: 1,
-                marginTop: 10,
-                paddingLeft: 10,
-                borderRadius: 10,
-                width: "100%",
-              }}
-              placeholder=""
-              // value={refreeID}
-              // onChangeText={(text) => setRefreeID(text)}
-            />
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 13,
-                fontWeight: "300",
-                marginTop: 4,
-              }}
-            >
               This is the name of the csv file that contains the competitors
               data
             </Text>
           </View>
+          <TouchableOpacity
+            // onPress={handleLoadCompetitorData}
+            style={{
+              backgroundColor: "#111F51",
+              height: 50,
+              width: 170,
+              borderRadius: 5,
+              marginTop: 30,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
+              Load Data
+            </Text>
+          </TouchableOpacity>
           <View style={{ marginTop: 10 }}>
             <Text
               style={{
@@ -665,7 +704,8 @@ const Setup = () => {
             >
               Evaluation (JSON)
             </Text>
-            <TextInput
+            <TouchableOpacity
+              onPress={handleEvaluationFile}
               style={{
                 height: 50,
                 borderColor: "#FFFFFF",
@@ -674,11 +714,20 @@ const Setup = () => {
                 paddingLeft: 10,
                 borderRadius: 10,
                 width: "100%",
+                justifyContent: "center",
               }}
-              placeholder=""
-              // value={refreeID}
-              // onChangeText={(text) => setRefreeID(text)}
-            />
+            >
+              {evaluationFile.map((file, index) => (
+                <Text
+                  key={index.toString()}
+                  style={styles.uri}
+                  numberOfLines={1}
+                  ellipsizeMode={"middle"}
+                >
+                  {file?.uri}
+                </Text>
+              ))}
+            </TouchableOpacity>
             <Text
               style={{
                 color: "#000",
@@ -692,6 +741,7 @@ const Setup = () => {
             </Text>
           </View>
           <TouchableOpacity
+            onPress={handleLoadEvaluationData}
             style={{
               backgroundColor: "#111F51",
               height: 50,

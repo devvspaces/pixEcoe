@@ -43,8 +43,8 @@ const Evaluation = () => {
           <TouchableOpacity onPress={() => navigation.navigate("filter")}>
             <View
               style={{
-                height: 220,
-                width: 220,
+                height: 200,
+                width: 200,
                 backgroundColor: "#045FB2",
                 borderRadius: 10,
                 justifyContent: "center",
@@ -79,8 +79,8 @@ const Evaluation = () => {
           >
             <View
               style={{
-                height: 220,
-                width: 220,
+                height: 200,
+                width: 200,
                 backgroundColor: "#045FB2",
                 borderRadius: 10,
                 justifyContent: "center",
@@ -114,8 +114,8 @@ const Evaluation = () => {
           <TouchableOpacity onPress={() => navigation.navigate("test")}>
             <View
               style={{
-                height: 220,
-                width: 220,
+                height: 200,
+                width: 200,
                 backgroundColor: "#045FB2",
                 borderRadius: 10,
                 justifyContent: "center",
@@ -150,8 +150,8 @@ const Evaluation = () => {
           >
             <View
               style={{
-                height: 220,
-                width: 220,
+                height: 200,
+                width: 200,
                 backgroundColor: "#045FB2",
                 borderRadius: 10,
                 justifyContent: "center",

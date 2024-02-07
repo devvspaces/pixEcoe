@@ -15,6 +15,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import QuestionList from "../components/QuestionList";
 
+
 const EvaluationProcess = () => {
   
   const navigation = useNavigation();
@@ -24,28 +25,13 @@ const EvaluationProcess = () => {
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
   const [loadingc, setLoadingc] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [serverUrl, setServerUrl] = useState("");
-  const [refreeID, setRefreeID] = useState("");
-  const [refreeEmail, setRefreeEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [evaluationDetails, setEvaluationDetails] = useState(null);
 
   useEffect(() => {
     loadDownloadedEvaluationData();
-    loadStoredValues();
   }, []);
 
   const loadDownloadedEvaluationData = async () => {
     try {
-
-      const evaluationDetailsString = await AsyncStorage.getItem(
-        "EvaluationDetails"
-      );
-      const parsedEvaluationDetails = evaluationDetailsString
-        ? JSON.parse(evaluationDetailsString)
-        : null;
-      setEvaluationDetails(parsedEvaluationDetails);
-      console.log("EvaluationDetails:", parsedEvaluationDetails);
       const downloadedData = await AsyncStorage.getItem(
         "downloadedEvaluationData"
       );
@@ -54,21 +40,6 @@ const EvaluationProcess = () => {
         setEvaluations(parsedData);
         console.log("Downloaded Evaluation Data:", parsedData);
       }
-    } catch (error) {
-      console.error("Error loading downloaded data:", error);
-    }
-  };
-
-  const loadStoredValues = async () => {
-    try {
-      const storedRefreeID = await AsyncStorage.getItem("refreeID");
-      const storedRefreeEmail = await AsyncStorage.getItem("refreeEmail");
-      const storedServerUrl = await AsyncStorage.getItem("serverUrl");
-      const storedPassword = await AsyncStorage.getItem("password");
-      setServerUrl(storedServerUrl);
-      setRefreeID(storedRefreeID);
-      setRefreeEmail(storedRefreeEmail);
-      setPassword(storedPassword);
     } catch (error) {
       console.error("Error loading downloaded data:", error);
     }
@@ -130,36 +101,31 @@ const EvaluationProcess = () => {
 
   const saveEvaluation = async () => {
 
-    if (!evaluationDetails) {
-      console.error("Error: Evaluation details not available.");
-      return;
-    }
-    const formattedAnswers = formatSelectedAnswers(selectedAnswers);
-    console.log(formattedAnswers);
     try {
       setLoadingc(true);
-      const response = await fetch(`${serverUrl}/results/upload/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          dni: refreeID,
-          email: refreeEmail,
-          password: password,
-          evaluation_id: evaluationDetails.id,
-          results: {
-            [studentId]: formattedAnswers,
-          },
-        }),
-      });
-
-      if (response.ok) {
-        Alert.alert("Success", "Evaluation saved successfully!");
-      } else {
-        const errorMessage = await response.text();
-        Alert.alert("Error", `Failed to save evaluation: ${errorMessage}`);
+      if (!studentId) {
+        console.error("Error: Student ID not available.");
+        return;
       }
+
+      const formattedAnswers = formatSelectedAnswers(selectedAnswers);
+      console.log("Formatted Answers:", formattedAnswers);
+
+      let evaluationResults = await AsyncStorage.getItem("evaluationResults");
+      evaluationResults = evaluationResults
+        ? JSON.parse(evaluationResults)
+        : {};
+
+      evaluationResults[studentId] = evaluationResults[studentId]
+        ? evaluationResults[studentId].concat(formattedAnswers)
+        : formattedAnswers;
+
+      await AsyncStorage.setItem(
+        "evaluationResults",
+        JSON.stringify(evaluationResults)
+      );
+
+      Alert.alert("Success", "Evaluation saved successfully!");
     } catch (error) {
       console.error("Error saving evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");
@@ -167,6 +133,7 @@ const EvaluationProcess = () => {
       setLoadingc(false);
     }
   };
+
 
   return (
     <SafeAreaView style={styles.container}>
