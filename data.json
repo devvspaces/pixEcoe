@@ -1,0 +1,718 @@
+
+    "students": [
+        {
+            "id": 1,
+            "first_name": "test1",
+            "family_name": "family1",
+            "group": "A01"
+        },
+        {
+            "id": 2,
+            "first_name": "test2",
+            "family_name": "family2",
+            "group": "A02"
+        },
+        {
+            "id": 3,
+            "first_name": "test3",
+            "family_name": "family3",
+            "group": "A03"
+        },
+        {
+            "id": 4,
+            "first_name": "test4",
+            "family_name": "family4",
+            "group": "A04"
+        },
+        {
+            "id": 5,
+            "first_name": "test5",
+            "family_name": "family5",
+            "group": "A05"
+        },
+        {
+            "id": 6,
+            "first_name": "test6",
+            "family_name": "family6",
+            "group": "A06"
+        },
+        {
+            "id": 7,
+            "first_name": "test7",
+            "family_name": "family7",
+            "group": "A07"
+        },
+        {
+            "id": 8,
+            "first_name": "test8",
+            "family_name": "family8",
+            "group": "A08"
+        },
+        {
+            "id": 9,
+            "first_name": "test9",
+            "family_name": "family9",
+            "group": "A09"
+        }
+    ],
+
+Raw Evaluation Data: {"data": {"created_at": "2024-01-25T16:16:46.464Z", "detail": {"1": [Object], "10": [Object], "11": [Object], "12": [Object], "13": [Object], "14": [Object], "15": [Object], "16": [Object], "17": [Object], "18": [Object], "19": [Object], "2": [Object], "20": [Object], "21": [Object], "22": [Object], "23": [Object], "24": [Object], "25": [Object], "26": [Object], "27": [Object], "28": [Object], "29": [Object], "3": [Object], "30": [Object], "31": [Object], "32": [Object], "33": [Object], "4": [Object], "5": [Object], "6": [Object], "7": [Object], "8": [Object], "9": [Object]}, "max_grade": 78, "station_name": "PE FRACTURA MUÑECA ", "station_number": "01", "subject": 1, "updated_at": "2024-01-25T16:16:46.464Z"}}
+
+Downloaded Competitor Data: {"students": [{"family_name": "family1", "first_name": "test1", "group": "A01", "id": 1}, {"family_name": "family2", "first_name": "test2", "group": "A02", "id": 2}, {"family_name": "family3", "first_name": "test3", "group": "A03", "id": 3}, {"family_name": "family4", "first_name": "test4", "group": "A04", "id": 4}, {"family_name": "family5", "first_name": "test5", "group": "A05", "id": 5}, {"family_name": "family6", "first_name": "test6", "group": "A06", "id": 6}, {"family_name": "family7", "first_name": "test7", "group": "A07", "id": 7}, {"family_name": "family8", "first_name": "test8", "group": "A08", "id": 8}, {"family_name": "family9", "first_name": "test9", "group": "A09", "id": 9}]}
+
+Evaluation result {"1": [1, 4, 2, 2, 2, 1, 2, 2, 2, 1, 1, 2, 2, 1, 4, 2, 1, 2, 1, 2, 4, 2, 2, 4, 2, 2, 1, 1, 4, 2, 2, 2, 1, 2, 2, 2, 1, 1, 2, 2, 1, 4, 2, 1, 2, 1, 2, 4, 2, 2, 4, 2, 2, 1], "2": [1, 1, 2, 1, 4, 2, 1, 2, 1, 4, 1, 2, 2, 1, 1, 4, 2, 1, 2, 1, 2, 2, 1, 1, 2, 1, 1]}
+
+formatted Evaluation Data that i am using to map the question header row
+[
+  {
+    "section": "1_ANAMNESIS",
+    "questions": [
+      {
+        "questionnumber": 1,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 2,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 3,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 4,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 5,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 6,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 7,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 8,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "section": "2_EXPLORACIÓN CLÍNICA",
+    "questions": [
+      {
+        "questionnumber": 9,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 10,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 11,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 12,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 13,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "section": "5_JUICIO CLÍNICO",
+    "questions": [
+      {
+        "questionnumber": 14,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 15,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 16,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 17,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "section": "6_PREVENCIÓN Y PROMOCIÓN",
+    "questions": [
+      {
+        "questionnumber": 18,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 19,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 20,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "section": "8_ETICO-LEGALES",
+    "questions": [
+      {
+        "questionnumber": 21,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 22,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "section": "4_COMUNICACIÓN",
+    "questions": [
+      {
+        "questionnumber": 23,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 24,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 25,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 26,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      },
+      {
+        "questionnumber": 27,
+        "answers": {
+          "1": {
+            "literal": "S",
+            "points": 3,
+            "text1": "Baja laboral",
+            "text2": "Baja laboral"
+          },
+          "2": {
+            "literal": "b",
+            "points": 1,
+            "text1": "VAT con inmunoglobulina",
+            "text2": "VAT con inmunoglobulina"
+          },
+          "4": {
+            "literal": "d",
+            "points": 1,
+            "text1": "Poco",
+            "text2": "Despedida"
+          }
+        }
+      }
+    ]
+  }
+]

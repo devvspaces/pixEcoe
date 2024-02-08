@@ -15,7 +15,6 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import QuestionList from "../components/QuestionList";
 
-
 const EvaluationProcess = () => {
   
   const navigation = useNavigation();
@@ -38,7 +37,7 @@ const EvaluationProcess = () => {
       if (downloadedData) {
         const parsedData = JSON.parse(downloadedData);
         setEvaluations(parsedData);
-        console.log("Downloaded Evaluation Data:", parsedData);
+        // console.log("Downloaded Evaluation Data:", parsedData);
       }
     } catch (error) {
       console.error("Error loading downloaded data:", error);
@@ -76,7 +75,7 @@ const EvaluationProcess = () => {
     sections.push(section);
   }
 
-  console.log(JSON.stringify(sections, null, 2));
+  // console.log(JSON.stringify(sections, null, 2));
 
   const handleAnswerSelection = (questionNumber, answerId) => {
     setSelectedAnswers({
@@ -97,7 +96,7 @@ const EvaluationProcess = () => {
 
   const formattedAnswersArray = formatSelectedAnswers(selectedAnswers);
 
-  console.log(formattedAnswersArray);
+  console.log("Selected Answers:", formattedAnswersArray);
 
   const saveEvaluation = async () => {
 
@@ -109,8 +108,7 @@ const EvaluationProcess = () => {
       }
 
       const formattedAnswers = formatSelectedAnswers(selectedAnswers);
-      console.log("Formatted Answers:", formattedAnswers);
-
+      // console.log("Formatted Answers:", formattedAnswers);
       let evaluationResults = await AsyncStorage.getItem("evaluationResults");
       evaluationResults = evaluationResults
         ? JSON.parse(evaluationResults)
@@ -125,6 +123,7 @@ const EvaluationProcess = () => {
         JSON.stringify(evaluationResults)
       );
 
+      console.log("Updated Evaluation Results:", evaluationResults);
       Alert.alert("Success", "Evaluation saved successfully!");
     } catch (error) {
       console.error("Error saving evaluation:", error);

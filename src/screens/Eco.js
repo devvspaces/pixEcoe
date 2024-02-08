@@ -9,7 +9,9 @@ import {
   SafeAreaView,
   Platform,
   Modal,
-  TextInput
+  TextInput,
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
@@ -30,7 +32,8 @@ const Eco = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [fileName, setFileName] = useState("");
-
+  const [parsedEvaluationResults, setParsedEvaluationResults] = useState([]);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,10 +44,10 @@ const Eco = () => {
           ? JSON.parse(downloadedCompetitorDataString)
           : null;
         setDownloadedCompetitorData(parsedDownloadedCompetitorData);
-        console.log(
-          "Downloaded Competitor Data:",
-          parsedDownloadedCompetitorData
-        );
+        // console.log(
+        //   "Downloaded Competitor Data:",
+        //   parsedDownloadedCompetitorData
+        // );
       } catch (error) {
         console.error("Error fetching data from AsyncStorage:", error);
       }
@@ -65,6 +68,11 @@ const Eco = () => {
       const storedRefreeEmail = await AsyncStorage.getItem("refreeEmail");
       const storedServerUrl = await AsyncStorage.getItem("serverUrl");
       const storedPassword = await AsyncStorage.getItem("password");
+      const evaluationResults = await AsyncStorage.getItem("evaluationResults");
+      const EvalvaluationResults = JSON.parse(evaluationResults);
+      setParsedEvaluationResults(EvalvaluationResults);
+      
+      console.log("evaluation result", parsedEvaluationResults);
       setServerUrl(storedServerUrl);
       setRefreeID(storedRefreeID);
       setRefreeEmail(storedRefreeEmail);
@@ -83,14 +91,14 @@ const Eco = () => {
         ? JSON.parse(evaluationDetailsString)
         : null;
       setEvaluationDetails(parsedEvaluationDetails);
-      console.log("EvaluationDetails:", parsedEvaluationDetails);
+      // console.log("EvaluationDetails:", parsedEvaluationDetails);
       const downloadedData = await AsyncStorage.getItem(
         "downloadedEvaluationData"
       );
       if (downloadedData) {
         const parsedData = JSON.parse(downloadedData);
         setEvaluations(parsedData);
-        console.log("Downloaded Evaluation Data:", parsedData);
+        // console.log("Downloaded Evaluation Data:", parsedData);
       }
     } catch (error) {
       console.error("Error loading downloaded data:", error);
@@ -128,7 +136,7 @@ const Eco = () => {
     sections.push(section);
   }
 
-  console.log(JSON.stringify(sections, null, 2));
+  // console.log(JSON.stringify(sections, null, 2));
 
   const tableHead = sections.map((section) =>
     section.questions.map((question) => ({
@@ -141,8 +149,13 @@ const Eco = () => {
     ? downloadedCompetitorData.students
     : [];
 
-  const renderTableCell = (questionNumber, student) => {
-    const cellData = student[questionNumber] || "";
+  const renderTableCell = (
+    questionNumber,
+    student,
+    parsedEvaluationResults
+  ) => {
+    const cellData = parsedEvaluationResults[student.id] || "";
+
     return (
       <View key={`${questionNumber}-${student.group}`} style={styles.tableCell}>
         <Text style={styles.cellText}>{cellData}</Text>
@@ -151,7 +164,7 @@ const Eco = () => {
   };
 
   // Function to render each row in the table
-  const renderTableRow = (student) => (
+  const renderTableRow = (student, parsedEvaluationResults) => (
     <TouchableOpacity
       key={student.group}
       style={styles.tableRow}
@@ -165,7 +178,7 @@ const Eco = () => {
 
       {tableHead.map((section) =>
         section.map(({ questionNumber }) =>
-          renderTableCell(questionNumber, student)
+          renderTableCell(questionNumber, student, parsedEvaluationResults)
         )
       )}
     </TouchableOpacity>
@@ -176,14 +189,17 @@ const Eco = () => {
       console.error("Error: Evaluation details not available.");
       return;
     }
-    const evaluationResults = await AsyncStorage.getItem("evaluationResults");
-    if (!evaluationResults) {
-      console.error("No evaluation results found.");
-      return;
-    }
-    const parsedEvaluationResults = JSON.parse(evaluationResults);
-    console.log(formattedAnswers);
+   
     try {
+      const evaluationResults = await AsyncStorage.getItem(
+        "evaluationResults"
+      );
+      if (!evaluationResults) {
+        console.error("No evaluation results found.");
+        return;
+      }
+      const parsedEvaluationResults = JSON.parse(evaluationResults);
+      console.log("No evaluation results found.",parsedEvaluationResults);
       setLoadingc(true);
       const response = await fetch(`${serverUrl}/results/upload/`, {
         method: "POST",
@@ -216,6 +232,7 @@ const Eco = () => {
   };
 
   const saveResultsAsJSON = async () => {
+
     try {
       const evaluationResults = await AsyncStorage.getItem("evaluationResults");
       if (!evaluationResults) {
@@ -229,7 +246,6 @@ const Eco = () => {
         JSON.stringify(parsedEvaluationResults),
         "utf8"
       );
-
       Alert.alert("Success", "Evaluation results saved as JSON file!");
     } catch (error) {
       console.error("Error saving evaluation results:", error);
@@ -299,6 +315,7 @@ const Eco = () => {
           }}
         >
           <TouchableOpacity
+            onPress={uploadEvaluation}
             style={{
               width: "25%",
               borderRadius: 20,
@@ -311,10 +328,7 @@ const Eco = () => {
               flexDirection: "row",
             }}
           >
-            <Text
-              style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
-              onPress={uploadEvaluation}
-            >
+            <Text style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}>
               UPLOAD TO SERVER
             </Text>
             {loadingc && (
@@ -397,7 +411,9 @@ const Eco = () => {
           )}
         </View>
 
-        {students.map((student) => renderTableRow(student))}
+        {students.map((student) =>
+          renderTableRow(student, parsedEvaluationResults)
+        )}
       </ScrollView>
     </SafeAreaView>
   );
