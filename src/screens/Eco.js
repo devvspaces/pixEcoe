@@ -1,4 +1,5 @@
 import React, { useState, useEffect,useRef } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   TouchableOpacity,
@@ -22,6 +23,7 @@ const Eco = () => {
 
   const navigation = useNavigation();
   const loadingcRef = useRef(null);
+  const [loading, setLoading] = useState(true);
   const [serverUrl, setServerUrl] = useState("");
   const [refreeID, setRefreeID] = useState("");
   const [refreeEmail, setRefreeEmail] = useState("");
@@ -34,51 +36,41 @@ const Eco = () => {
   const [fileName, setFileName] = useState("");
   const [parsedEvaluationResults, setParsedEvaluationResults] = useState([]);
   
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const downloadedCompetitorDataString = await AsyncStorage.getItem(
-          "downloadedCompetitorData"
-        );
-        const parsedDownloadedCompetitorData = downloadedCompetitorDataString
-          ? JSON.parse(downloadedCompetitorDataString)
-          : null;
-        setDownloadedCompetitorData(parsedDownloadedCompetitorData);
-        // console.log(
-        //   "Downloaded Competitor Data:",
-        //   parsedDownloadedCompetitorData
-        // );
-      } catch (error) {
-        console.error("Error fetching data from AsyncStorage:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
-
-  useEffect(() => {
-    loadDownloadedEvaluationData();
-    loadStoredValues();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadDownloadedEvaluationData();
+      loadStoredValues();
+    }, [])
+  );
 
   const loadStoredValues = async () => {
+    setLoading(true);
     try {
+
+      
+
       const storedRefreeID = await AsyncStorage.getItem("refreeID");
       const storedRefreeEmail = await AsyncStorage.getItem("refreeEmail");
       const storedServerUrl = await AsyncStorage.getItem("serverUrl");
       const storedPassword = await AsyncStorage.getItem("password");
       const evaluationResults = await AsyncStorage.getItem("evaluationResults");
       const EvalvaluationResults = JSON.parse(evaluationResults);
+      const downloadedCompetitorDataString = await AsyncStorage.getItem("downloadedCompetitorData");
+
       setParsedEvaluationResults(EvalvaluationResults);
-      
       console.log("evaluation result", parsedEvaluationResults);
+      const parsedDownloadedCompetitorData = downloadedCompetitorDataString
+        ? JSON.parse(downloadedCompetitorDataString)
+        : null;
+      setDownloadedCompetitorData(parsedDownloadedCompetitorData);
       setServerUrl(storedServerUrl);
       setRefreeID(storedRefreeID);
       setRefreeEmail(storedRefreeEmail);
       setPassword(storedPassword);
+      setLoading(false);
     } catch (error) {
       console.error("Error loading downloaded data:", error);
+      setLoading(false);
     }
   };
 
@@ -104,6 +96,8 @@ const Eco = () => {
       console.error("Error loading downloaded data:", error);
     }
   };
+
+  const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
 
   const detail =
     evaluations.data && evaluations.data.detail ? evaluations.data.detail : {};
@@ -154,14 +148,17 @@ const Eco = () => {
     student,
     parsedEvaluationResults
   ) => {
-    const cellData = parsedEvaluationResults[student.id] || "";
+    const cellData = parsedEvaluationResults[student.id];
+    const answerIndex = questionNumber - 1;
+    const answer = cellData ? cellData[answerIndex] : "";
 
     return (
       <View key={`${questionNumber}-${student.group}`} style={styles.tableCell}>
-        <Text style={styles.cellText}>{cellData}</Text>
+        <Text style={styles.cellText}>{answer}</Text>
       </View>
     );
   };
+
 
   // Function to render each row in the table
   const renderTableRow = (student, parsedEvaluationResults) => (
@@ -199,7 +196,7 @@ const Eco = () => {
         return;
       }
       const parsedEvaluationResults = JSON.parse(evaluationResults);
-      console.log("No evaluation results found.",parsedEvaluationResults);
+      console.log("Evaluation results.",parsedEvaluationResults);
       setLoadingc(true);
       const response = await fetch(`${serverUrl}/results/upload/`, {
         method: "POST",
@@ -211,9 +208,7 @@ const Eco = () => {
           email: refreeEmail,
           password: password,
           evaluation_id: evaluationDetails.id,
-          results: {
-            parsedEvaluationResults,
-          },
+          results: parsedEvaluationResults,      
         }),
       });
 
@@ -259,162 +254,176 @@ const Eco = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#000" />
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="leftcircleo" size={25} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Eco</Text>
       </View>
-      <ScrollView
-        style={{
-          paddingLeft: 40,
-          paddingRight: 40,
-          flex: 1,
-          backgroundColor: "#9FD1FF",
-          paddingTop: 20,
-        }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          paddingBottom: Platform.OS === "ios" ? 75 : 65,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: 40,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "70%",
-              borderRadius: 20,
-              backgroundColor: "#ffffff",
-              height: 40,
-              alignItems: "center",
-              paddingLeft: 10,
-              paddingRight: 10,
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              Station: {evaluations.data.station_name}
-            </Text>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              Subject: Medicina Interna
-            </Text>
-          </View>
+      {loading ? ( // Render loader if loading state is true
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#FFFFFF" />
+          <Text style={styles.loaderText}>Loading...</Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: 40,
-          }}
-        >
-          <TouchableOpacity
-            onPress={uploadEvaluation}
+      ) : (
+        <>
+          <ScrollView
             style={{
-              width: "25%",
-              borderRadius: 20,
-              backgroundColor: "#111F51",
-              height: 40,
-              alignItems: "center",
-              paddingLeft: 10,
-              paddingRight: 10,
-              justifyContent: "center",
-              flexDirection: "row",
+              paddingLeft: 40,
+              paddingRight: 40,
+              flex: 1,
+              backgroundColor: "#9FD1FF",
+              paddingTop: 20,
+            }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{
+              paddingBottom: Platform.OS === "ios" ? 75 : 65,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}>
-              UPLOAD TO SERVER
-            </Text>
-            {loadingc && (
-              <ActivityIndicator
-                ref={loadingcRef}
-                style={{ marginLeft: 10 }}
-                size="small"
-                color="#fff"
-              />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={{
-              width: "25%",
-              borderRadius: 20,
-              backgroundColor: "#111F51",
-              height: 40,
-              alignItems: "center",
-              paddingLeft: 10,
-              paddingRight: 10,
-              justifyContent: "center",
-              flexDirection: "row",
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}>
-              SAVE ON DEVICE
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(false);
-          }}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <TextInput
-                style={styles.input}
-                placeholder="Folder Name"
-                value={folderName}
-                onChangeText={(text) => setFolderName(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="File Name"
-                value={fileName}
-                onChangeText={(text) => setFileName(text)}
-              />
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => {
-                  saveResultsAsJSON();
-                  setModalVisible(false);
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 40,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "70%",
+                  borderRadius: 20,
+                  backgroundColor: "#ffffff",
+                  height: 40,
+                  alignItems: "center",
+                  paddingLeft: 10,
+                  paddingRight: 10,
                 }}
               >
-                <Text style={styles.modalButtonText}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-
-        <View style={styles.tableRow}>
-          <View style={styles.firstColumn}>
-            <Text style={styles.cellText}>ID</Text>
-          </View>
-
-          {tableHead.map((section) =>
-            section.map(({ questionNumber }) => (
-              <View style={styles.tableCell}>
-                <Text key={questionNumber} style={styles.cellText}>
-                  {questionNumber}
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                  Station: {evaluations.data.station_name}
+                </Text>
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                  Subject: Medicina Interna
                 </Text>
               </View>
-            ))
-          )}
-        </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 40,
+              }}
+            >
+              <TouchableOpacity
+                onPress={uploadEvaluation}
+                style={{
+                  width: "25%",
+                  borderRadius: 20,
+                  backgroundColor: "#111F51",
+                  height: 40,
+                  alignItems: "center",
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  justifyContent: "center",
+                  flexDirection: "row",
+                }}
+              >
+                <Text
+                  style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
+                >
+                  UPLOAD TO SERVER
+                </Text>
+                {loadingc && (
+                  <ActivityIndicator
+                    ref={loadingcRef}
+                    style={{ marginLeft: 10 }}
+                    size="small"
+                    color="#fff"
+                  />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                style={{
+                  width: "25%",
+                  borderRadius: 20,
+                  backgroundColor: "#111F51",
+                  height: 40,
+                  alignItems: "center",
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  justifyContent: "center",
+                  flexDirection: "row",
+                }}
+              >
+                <Text
+                  style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
+                >
+                  SAVE ON DEVICE
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-        {students.map((student) =>
-          renderTableRow(student, parsedEvaluationResults)
-        )}
-      </ScrollView>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(false);
+              }}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Folder Name"
+                    value={folderName}
+                    onChangeText={(text) => setFolderName(text)}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="File Name"
+                    value={fileName}
+                    onChangeText={(text) => setFileName(text)}
+                  />
+                  <TouchableOpacity
+                    style={styles.modalButton}
+                    onPress={() => {
+                      saveResultsAsJSON();
+                      setModalVisible(false);
+                    }}
+                  >
+                    <Text style={styles.modalButtonText}>Save</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+
+            <View style={styles.tableRow}>
+              <View style={styles.firstColumn}>
+                <Text style={styles.cellText}>ID</Text>
+              </View>
+
+              {tableHead.map((section) =>
+                section.map(({ questionNumber }) => (
+                  <View style={styles.tableCell}>
+                    <Text key={questionNumber} style={styles.cellText}>
+                      {questionNumber}
+                    </Text>
+                  </View>
+                ))
+              )}
+            </View>
+
+            {students.map((student) =>
+              renderTableRow(student, parsedEvaluationResults)
+            )}
+          </ScrollView>
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -554,5 +563,15 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: "#fff",
     fontSize: 16,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loaderText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#fff",
   },
 });
