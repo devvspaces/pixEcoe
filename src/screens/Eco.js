@@ -46,9 +46,6 @@ const Eco = () => {
   const loadStoredValues = async () => {
     setLoading(true);
     try {
-
-      
-
       const storedRefreeID = await AsyncStorage.getItem("refreeID");
       const storedRefreeEmail = await AsyncStorage.getItem("refreeEmail");
       const storedServerUrl = await AsyncStorage.getItem("serverUrl");
@@ -148,7 +145,9 @@ const Eco = () => {
     student,
     parsedEvaluationResults
   ) => {
-    const cellData = parsedEvaluationResults[student.id];
+    const cellData = parsedEvaluationResults
+      ? parsedEvaluationResults[student.id]
+      : null;
     const answerIndex = questionNumber - 1;
     const answer = cellData ? cellData[answerIndex] : "";
 

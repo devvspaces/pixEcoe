@@ -267,27 +267,27 @@ const Setup = () => {
     }
   };
 
-  // const handleLoadCompetitorData = () => {
+  const handleLoadCompetitorData = () => {
 
-  //   if (!csvData) {
-  //     alert("Please select a CSV file.");
-  //     return;
-  //   }
+    if (!csvData) {
+      alert("Please select a CSV file.");
+      return;
+    }
 
-  //   const { data, errors } = parse(csvData, { header: true });
-  //   if (errors.length > 0) {
-  //     Alert.alert("Error", "Failed to parse CSV file");
-  //     return;
-  //   }
+    const { data, errors } = parse(csvData, { header: true });
+    if (errors.length > 0) {
+      Alert.alert("Error", "Failed to parse CSV file");
+      return;
+    }
 
-  //   AsyncStorage.setItem("jsonData", JSON.stringify(data))
-  //   .then(() => {
-  //     Alert.alert("Success", "CSV data loaded and stored as JSON");
-  //   })
-  //   .catch((error) => {
-  //     Alert.alert("Error", "Failed to store JSON data in AsyncStorage");
-  //   });
-  // };
+    AsyncStorage.setItem("jsonData", JSON.stringify(data))
+    .then(() => {
+      Alert.alert("Success", "CSV data loaded and stored as JSON");
+    })
+    .catch((error) => {
+      Alert.alert("Error", "Failed to store JSON data in AsyncStorage");
+    });
+  };
 
   const handleLoadEvaluationData = async () => {
     if (!evaluationFile) {
@@ -678,7 +678,7 @@ const Setup = () => {
             </Text>
           </View>
           <TouchableOpacity
-            // onPress={handleLoadCompetitorData}
+            onPress={handleLoadCompetitorData}
             style={{
               backgroundColor: "#111F51",
               height: 50,
