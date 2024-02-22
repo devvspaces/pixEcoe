@@ -154,6 +154,7 @@ const Setup = () => {
               label: option.station_name,
             }))
           );
+          alert("Evaluation loaded successfully");
           storeInputValues();
         } else {
           alert("Invalid response format. Please check your API.");
@@ -254,7 +255,11 @@ const Setup = () => {
           "downloadedCompetitorData",
           JSON.stringify(data)
         );
-        console.log("Download Competitor Response:", data);
+        await AsyncStorage.setItem(
+          "downloadedCompetitorRawData",
+          JSON.stringify(data)
+        );
+        console.log("Downloaded Competitor Response:", data);
         alert("Download successful");
       } else {
         alert("Failed to download competitor. Please try again.");

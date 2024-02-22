@@ -7,23 +7,27 @@ import {
   StatusBar,
   SafeAreaView,
   FlatList,
+  ActivityIndicator
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import QuestionList from "../components/QuestionList";
+import TestList from "../components/TestList";
 
 const Test = () => {
 
   const navigation = useNavigation();
 
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadDownloadedEvaluationData();
   }, []);
 
   const loadDownloadedEvaluationData = async () => {
+    setLoading(true);
     try {
       const downloadedData = await AsyncStorage.getItem(
         "downloadedEvaluationData"
@@ -33,8 +37,10 @@ const Test = () => {
         setEvaluations(parsedData);
         console.log("Downloaded Evaluation Data:", parsedData);
       }
+      setLoading(false);
     } catch (error) {
       console.error("Error loading downloaded data:", error);
+      setLoading(false);
     }
   };
 
@@ -79,39 +85,54 @@ const Test = () => {
         </TouchableOpacity>
         <Text style={styles.headerText}>Evaluation Information</Text>
       </View>
-      <View style={styles.content}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", height:50}}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "70%",
-              borderRadius: 20,
-              backgroundColor: "#ffffff",
-              height: 40,
-              alignItems: "center",
-              paddingLeft: 10,
-              paddingRight: 10,
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              Station: {evaluations.data.station_name}
-            </Text>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              Subject: Medicina Interna
-            </Text>
-          </View>
+      {loading ? ( // Render loader if loading state is true
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#FFFFFF" />
+          <Text style={styles.loaderText}>Loading...</Text>
         </View>
-        <FlatList
-          data={sections}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <QuestionList section={item} />}
-          contentContainerStyle={{
-            paddingBottom: Platform.OS === "ios" ? 30 : 65,
-          }}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
+      ) : (
+        <>
+          <View style={styles.content}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                height: 50,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "70%",
+                  borderRadius: 20,
+                  backgroundColor: "#ffffff",
+                  height: 40,
+                  alignItems: "center",
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                }}
+              >
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                  Station: {evaluations.data.station_name}
+                </Text>
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                  Subject: Medicina Interna
+                </Text>
+              </View>
+            </View>
+            <FlatList
+              data={sections}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => <TestList section={item} />}
+              contentContainerStyle={{
+                paddingBottom: Platform.OS === "ios" ? 30 : 65,
+              }}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -155,5 +176,15 @@ const styles = StyleSheet.create({
   },
   topicText: {
     fontSize: 18,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loaderText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#fff",
   },
 });

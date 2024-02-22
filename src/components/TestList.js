@@ -1,14 +1,7 @@
-import React, {useState} from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
-  
-  
+const TestList = ({ section }) => {
   return (
     <View>
       <Text
@@ -37,38 +30,19 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
           {/* map the answer array */}
 
           {Object.entries(question.answers).map(([answerNumber, answer]) => (
-            <TouchableOpacity
+            <View
               style={{
                 width: "100%",
               }}
               key={answerNumber}
-              onPress={() =>
-                handleAnswerSelection(
-                  question.questionnumber,
-                  parseInt(answerNumber)
-                )
-              }
             >
               <View
                 style={{
-                  borderColor:
-                    selectedAnswers[question.questionnumber] ===
-                    parseInt(answerNumber)
-                      ? "#eee"
-                      : "transparent",
-                  borderWidth: 2,
-                  borderRadius: 10,
                   padding: 10,
                   flexDirection: "row",
-                  backgroundColor:
-                    selectedAnswers[question.questionnumber] ===
-                    parseInt(answerNumber)
-                      ? "#rgba(17,31,81, 0.45)"
-                      : "transparent",
-                  opacity: 10,
                 }}
               >
-                {/* <View style={{ width: "6%", height: 80, borderRadius: 20 }}>
+                <View style={{ width: "6%", height: 80, borderRadius: 20 }}>
                   <View
                     style={{
                       height: 40,
@@ -79,7 +53,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                       alignItems: "center",
                     }}
                   >
-                    
+                    {/* questionnumber + literal */}
                     <Text
                       style={{
                         color: "#fff",
@@ -89,7 +63,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                     >
                       {answer.literal}
                     </Text>
-                   
+                    {/* questionnumber + literal */}
                   </View>
                   <View
                     style={{
@@ -101,7 +75,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                       alignItems: "center",
                     }}
                   >
-                    
+                    {/* points */}
                     <Text
                       style={{
                         color: "#fff",
@@ -111,10 +85,10 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                     >
                       {answer.points}
                     </Text>
-                   
+                    {/* points */}
                   </View>
-                </View> */}
-                <View style={{ marginLeft: 20, width: "95%" }}>
+                </View>
+                <View style={{ marginLeft: 40, width: "89%" }}>
                   {/* text2 */}
                   <Text
                     style={{
@@ -124,17 +98,17 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                       textAlign: "justify",
                     }}
                   >
-                    {answer.text1}
+                    {answer.text2}
                   </Text>
                   {/* text2 */}
                   <View style={styles.topicBox}>
                     {/* text1 */}
-                    <Text style={styles.topicText}>{answer.text2}</Text>
+                    <Text style={styles.topicText}>{answer.text1}</Text>
                     {/* text1 */}
                   </View>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           ))}
           {/* map the answer array */}
         </View>
@@ -143,7 +117,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
   );
 };
 
-export default QuestionList;
+export default TestList;
 
 const styles = StyleSheet.create({
   topicBox: {

@@ -29,6 +29,7 @@ const Loading = () => (
 const TabNavigator = () => {
   return (
     <Tab.Navigator
+      initialRouteName={'Evaluation'}
       screenOptions={({ route }) => ({
         tabBarStyle: styles.tab,
         tabBarShowLabel: false,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
@@ -276,7 +276,6 @@ const Eco = () => {
               paddingTop: 20,
             }}
             showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
               paddingBottom: Platform.OS === "ios" ? 75 : 65,
             }}
@@ -400,26 +399,27 @@ const Eco = () => {
                 </View>
               </View>
             </Modal>
+            <ScrollView >
+              <View style={styles.tableRow}>
+                <View style={styles.firstColumn}>
+                  <Text style={styles.cellText}>ID</Text>
+                </View>
 
-            <View style={styles.tableRow}>
-              <View style={styles.firstColumn}>
-                <Text style={styles.cellText}>ID</Text>
+                {tableHead.map((section) =>
+                  section.map(({ questionNumber }) => (
+                    <View style={styles.tableCell}>
+                      <Text key={questionNumber} style={styles.cellText}>
+                        {questionNumber}
+                      </Text>
+                    </View>
+                  ))
+                )}
               </View>
 
-              {tableHead.map((section) =>
-                section.map(({ questionNumber }) => (
-                  <View style={styles.tableCell}>
-                    <Text key={questionNumber} style={styles.cellText}>
-                      {questionNumber}
-                    </Text>
-                  </View>
-                ))
+              {students.map((student) =>
+                renderTableRow(student, parsedEvaluationResults)
               )}
-            </View>
-
-            {students.map((student) =>
-              renderTableRow(student, parsedEvaluationResults)
-            )}
+            </ScrollView>
           </ScrollView>
         </>
       )}
@@ -512,7 +512,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderWidth: 1,
     borderColor: "#000",
-    width: "60%",
   },
   cellText: {
     fontWeight: "bold",
