@@ -1,7 +1,14 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useState, useEffect }from "react";
-import { StyleSheet, Text, View, Image, Platform, ActivityIndicator} from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
@@ -28,18 +35,16 @@ const Loading = () => (
 );
 
 const TabNavigator = () => {
-  const { t } = useTranslation();
   return (
     <Tab.Navigator
       initialRouteName={"Evaluation"}
       screenOptions={({ route }) => ({
         tabBarStyle: styles.tab,
         tabBarShowLabel: false,
-        headerShown: false,
-        tabBarActiveTintColor: "#3E3E3E",
-        tabBarInactiveTintColor: "#CCCCCC",
         tabBarIcon: ({ focused }) => {
           let iconSource;
+          let label;
+
           if (route.name === "Setup") {
             iconSource = focused
               ? require("../../assets/icons/setupa.png")
@@ -69,6 +74,14 @@ const TabNavigator = () => {
                 resizeMode="contain"
                 style={styles.tabIcon}
               />
+              <Text
+                style={[
+                  styles.tabLabel,
+                  { color: focused ? "#3E3E3E" : "#CCCCCC" },
+                ]}
+              >
+                {label}
+              </Text>
             </View>
           );
         },
@@ -77,22 +90,22 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Setup"
         component={Setup}
-        options={{ tabBarLabel: t("navigate:home") }}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Evaluation"
         component={Evaluation}
-        options={{ tabBarLabel: t("navigate:home") }}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Configuration"
         component={Configuration}
-        options={{ tabBarLabel: t("navigate:home") }}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Help"
         component={Help}
-        options={{ tabBarLabel: t("navigate:home") }}
+        options={{ headerShown: false }}
       />
     </Tab.Navigator>
   );
@@ -101,7 +114,6 @@ const TabNavigator = () => {
 const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
-
   const [loading, setLoading] = useState(true);
   const [appPassword, setAppPassword] = useState(false);
 

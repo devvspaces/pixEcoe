@@ -18,11 +18,13 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNFS from "react-native-fs";
+import { useTranslation } from "react-i18next";
 
 const Eco = () => {
 
   const navigation = useNavigation();
   const loadingcRef = useRef(null);
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [serverUrl, setServerUrl] = useState("");
   const [refreeID, setRefreeID] = useState("");
@@ -268,7 +270,7 @@ const Eco = () => {
       {loading ? ( // Render loader if loading state is true
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color="#FFFFFF" />
-          <Text style={styles.loaderText}>Loading...</Text>
+          <Text style={styles.loaderText}>{t("common:loading")}</Text>
         </View>
       ) : (
         <>
@@ -306,10 +308,10 @@ const Eco = () => {
                 }}
               >
                 <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                  Station: {evaluations.data.station_name}
+                  {t("common:station")}: {evaluations.data.station_name}
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                  Subject: Medicina Interna
+                  {t("common:subject")}: Medicina Interna
                 </Text>
               </View>
             </View>
@@ -351,7 +353,7 @@ const Eco = () => {
                 <Text
                   style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
                 >
-                  UPLOAD
+                  {t("common:upload")}
                 </Text>
                 {loadingc && (
                   <ActivityIndicator

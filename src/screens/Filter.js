@@ -14,9 +14,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const Filter = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [groupWheel, setGroupWheel] = useState("");
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
   const [parsedDownloadedCompetitorData, setParsedDownloadedCompetitorData] =
@@ -122,7 +124,7 @@ const Filter = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="leftcircleo" size={25} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Filter</Text>
+        <Text style={styles.headerText}>{t("common:filt")}</Text>
       </View>
       <View style={styles.content}>
         <View style={{ marginTop: 10 }}>
@@ -135,7 +137,7 @@ const Filter = () => {
                 marginTop: 10,
               }}
             >
-              Current Evaluation
+              {t("common:cevaluate")}
             </Text>
             <View
               style={{
@@ -161,7 +163,7 @@ const Filter = () => {
                 marginTop: 20,
               }}
             >
-              Group (Wheel)
+              {t("common:gwheel")}
             </Text>
             <TextInput
               style={styles.inputBox}
@@ -186,7 +188,7 @@ const Filter = () => {
           }}
         >
           <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
-            Save
+            {t("common:save")}
           </Text>
         </TouchableOpacity>
       </View>

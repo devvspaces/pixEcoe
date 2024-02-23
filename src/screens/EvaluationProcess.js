@@ -14,11 +14,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import QuestionList from "../components/QuestionList";
+import { useTranslation } from "react-i18next";
 
 const EvaluationProcess = () => {
   
   const navigation = useNavigation();
   const route = useRoute();
+  const { t } = useTranslation();
   const { students } = route.params;
   const studentId = students.map((student) => student.id);
   const loadingcRef = useRef(null);
@@ -171,7 +173,9 @@ const EvaluationProcess = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="leftcircleo" size={25} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Evaluation Process </Text>
+        <Text style={styles.headerText}>
+         {t("common:evaproce")}
+        </Text>
       </View>
       <View style={styles.content}>
         <View
@@ -195,10 +199,10 @@ const EvaluationProcess = () => {
             }}
           >
             <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              Station: {evaluations.data.station_name}
+              {t("common:station")}: {evaluations.data.station_name}
             </Text>
             <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              Subject: Medicina Interna
+              {t("common:Subject")}: Medicina Interna
             </Text>
           </View>
 
@@ -211,7 +215,7 @@ const EvaluationProcess = () => {
               {loadingd ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Previous</Text>
+                <Text style={styles.buttonText}>{t("common:prev")}</Text>
               )}
             </TouchableOpacity>
 
@@ -225,7 +229,7 @@ const EvaluationProcess = () => {
               {loadingc ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Next</Text>
+                <Text style={styles.buttonText}>{t("common:next")}</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -299,6 +303,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "45%",
+    height: 40,
     borderRadius: 20,
     backgroundColor: "#111F51",
     alignItems: "center",

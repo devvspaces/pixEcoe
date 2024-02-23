@@ -10,10 +10,11 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import { useTranslation } from "react-i18next";
 const Evaluation = () => {
 
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,7 +29,7 @@ const Evaluation = () => {
         }}
       >
         <Text style={{ color: "#fff", fontSize: 20, fontWeight: "500" }}>
-          Evaluation
+          {t("common:evaluation")}
         </Text>
       </View>
       <View
@@ -70,7 +71,7 @@ const Evaluation = () => {
                 fontWeight: "500",
               }}
             >
-              Filter
+              {t("common:filt")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -106,7 +107,7 @@ const Evaluation = () => {
                 fontWeight: "500",
               }}
             >
-              Competitors List
+              {t("common:competlist")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -141,7 +142,7 @@ const Evaluation = () => {
                 fontWeight: "500",
               }}
             >
-              Test
+             {t("common:test")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

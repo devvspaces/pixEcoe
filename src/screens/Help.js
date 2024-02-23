@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const topics = [
   "How to start working",
@@ -41,7 +42,7 @@ const infos = [
 const Help = () => {
 
   const navigation = useNavigation();
-
+  const { t } = useTranslation();
   const handleTopicClick = (topic) => {
     navigation.navigate("helpdetails", { topic });
   };
@@ -50,7 +51,7 @@ const Help = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#000" />
       <View style={styles.header}>
-        <Text style={styles.headerText}>Help</Text>
+        <Text style={styles.headerText}>{t("common:help")}</Text>
       </View>
       <ScrollView
         style={{
@@ -58,7 +59,7 @@ const Help = () => {
           paddingRight: 40,
           flex: 1,
           backgroundColor: "#9FD1FF",
-          paddingTop:20,
+          paddingTop: 20,
         }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -89,7 +90,6 @@ const Help = () => {
             <Text style={styles.infoText}>{info}</Text>
           </View>
         ))}
-        
       </ScrollView>
     </SafeAreaView>
   );

@@ -13,9 +13,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import Feather from "react-native-vector-icons/Feather";
+import { useTranslation } from "react-i18next";
 
 const CompetitorsList = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadDownloadedCompetitorData();
@@ -39,9 +41,9 @@ const CompetitorsList = () => {
 
   const renderTableHeader = () => (
     <View style={styles.row}>
-      <Text style={styles.cell}>Status</Text>
-      <Text style={styles.cell}>Name</Text>
-      <Text style={styles.cell}>Group</Text>
+      <Text style={styles.cell}>{t("common:status")}</Text>
+      <Text style={styles.cell}>{t("common:name")}</Text>
+      <Text style={styles.cell}>{t("common:group")}</Text>
     </View>
   );
 
@@ -68,7 +70,9 @@ const CompetitorsList = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="leftcircleo" size={25} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Competitors List</Text>
+        <Text style={styles.headerText}>
+          {t("common:competlist")}
+        </Text>
       </View>
       <View
         style={{

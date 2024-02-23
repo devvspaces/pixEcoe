@@ -12,7 +12,12 @@ import {
 import ConfigDropdown from "../components/ConfigDropdown";
 import ColorConfigDropdown from "../components/ColorConfigDropdown";
 import Selector from "../../LanguageSelector";
+import { useTranslation } from "react-i18next";
+
 const Configuration = () => {
+
+    const { t } = useTranslation();
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style={{ backgroundColor: "#000" }} />
@@ -26,7 +31,7 @@ const Configuration = () => {
         }}
       >
         <Text style={{ color: "#fff", fontSize: 20, fontWeight: "500" }}>
-          Configuration
+          {t("common:config")}
         </Text>
       </View>
       <View
@@ -40,7 +45,7 @@ const Configuration = () => {
       >
         <ConfigDropdown />
         <ColorConfigDropdown
-          label="Default Theme"
+          label={t("common:theme")}
           placeholderLabel="Dark Blue"
         />
 
@@ -56,7 +61,7 @@ const Configuration = () => {
           }}
         >
           <Text style={{ color: "#fff", fontSize: 18, fontWeight: "500" }}>
-            SAVE
+            {t("common:save")}
           </Text>
         </TouchableOpacity>
       </View>

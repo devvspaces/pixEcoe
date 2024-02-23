@@ -15,7 +15,6 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import DropdownSelector from "../components/DropdownSelector";
 import PasswordModal from "../components/PasswordModal";
 import DocumentPicker from "react-native-document-picker";
-import RNFS from "react-native-fs";
 import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
@@ -330,7 +329,7 @@ const Setup = () => {
         }}
       >
         <Text style={{ color: "#fff", fontSize: 20, fontWeight: "500" }}>
-          Setup
+        {t("common:setupt")}
         </Text>
       </View>
       <View style={styles.optionBar}>

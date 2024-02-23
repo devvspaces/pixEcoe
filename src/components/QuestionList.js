@@ -5,9 +5,11 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
   
+  const { t } = useTranslation();
   
   return (
     <View>
@@ -32,7 +34,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
               marginBottom: 10,
             }}
           >
-            Question Number: {question.questionnumber}
+            {t("common:questnum")}: {question.questionnumber}
           </Text>
           {/* map the answer array */}
 

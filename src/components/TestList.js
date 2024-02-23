@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const TestList = ({ section }) => {
+  const { t } = useTranslation();
+
   return (
     <View>
       <Text
@@ -25,7 +28,7 @@ const TestList = ({ section }) => {
               marginBottom: 10,
             }}
           >
-            Question Number: {question.questionnumber}
+            {t("common:questnum")}: {question.questionnumber}
           </Text>
           {/* map the answer array */}
 

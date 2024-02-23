@@ -14,11 +14,12 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import QuestionList from "../components/QuestionList";
 import TestList from "../components/TestList";
+import { useTranslation } from "react-i18next";
 
 const Test = () => {
 
   const navigation = useNavigation();
-
+  const { t } = useTranslation();
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
   const [loading, setLoading] = useState(true);
 
@@ -83,12 +84,12 @@ const Test = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="leftcircleo" size={25} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Evaluation Information</Text>
+        <Text style={styles.headerText}>{t("common:evainfo")}</Text>
       </View>
-      {loading ? ( // Render loader if loading state is true
+      {loading ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color="#FFFFFF" />
-          <Text style={styles.loaderText}>Loading...</Text>
+          <Text style={styles.loaderText}>{t("common:loading")}</Text>
         </View>
       ) : (
         <>
@@ -114,10 +115,10 @@ const Test = () => {
                 }}
               >
                 <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                  Station: {evaluations.data.station_name}
+                  {t("common:station")}: {evaluations.data.station_name}
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                  Subject: Medicina Interna
+                  {t("common:subject")}: Medicina Interna
                 </Text>
               </View>
             </View>
