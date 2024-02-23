@@ -6,6 +6,7 @@ import {
   focusManager,
 } from "@tanstack/react-query";
 import FlashMessage from "react-native-flash-message";
+import "./src/constants/IMLocalize";
 
 const queryClient = new QueryClient();
 

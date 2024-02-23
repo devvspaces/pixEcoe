@@ -19,15 +19,19 @@ const EvaluationProcess = () => {
   
   const navigation = useNavigation();
   const route = useRoute();
-  const { studentId } = route.params;
+  const { students } = route.params;
+  const studentId = students.map((student) => student.id);
   const loadingcRef = useRef(null);
+  const loadingdRef = useRef(null);
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
   const [loadingc, setLoadingc] = useState(false);
+  const [loadingd, setLoadingd] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [currentStudentIndex, setCurrentStudentIndex] = useState(0);
 
   useEffect(() => {
     loadDownloadedEvaluationData();
-  }, []);
+  }, [currentStudentIndex]);
 
   const loadDownloadedEvaluationData = async () => {
     try {
@@ -82,7 +86,7 @@ const EvaluationProcess = () => {
       ...selectedAnswers,
       [questionNumber]: answerId,
     });
-    console.log("Selected Answers:", selectedAnswers);
+    // console.log("Selected Answers:", selectedAnswers);
   };
 
   const formatSelectedAnswers = (selectedAnswers) => {
@@ -96,27 +100,15 @@ const EvaluationProcess = () => {
 
   const formattedAnswersArray = formatSelectedAnswers(selectedAnswers);
 
-  console.log("Selected Answers:", formattedAnswersArray);
+  console.log("Formatted selected Answers:", formattedAnswersArray);
 
   const saveEvaluation = async () => {
-
     try {
-      setLoadingc(true);
-      if (!studentId) {
-        console.error("Error: Student ID not available.");
-        return;
-      }
-
+      const currentStudent = studentId[currentStudentIndex];
       const formattedAnswers = formatSelectedAnswers(selectedAnswers);
-      // console.log("Formatted Answers:", formattedAnswers);
       let evaluationResults = await AsyncStorage.getItem("evaluationResults");
-      evaluationResults = evaluationResults
-        ? JSON.parse(evaluationResults)
-        : {};
-
-      evaluationResults[studentId] = evaluationResults[studentId]
-        ? evaluationResults[studentId].concat(formattedAnswers)
-        : formattedAnswers;
+      evaluationResults = evaluationResults ? JSON.parse(evaluationResults) : {};
+      evaluationResults[currentStudent] = evaluationResults[currentStudent] ? evaluationResults[currentStudent].concat(formattedAnswers) : formattedAnswers;
 
       await AsyncStorage.setItem(
         "evaluationResults",
@@ -128,10 +120,48 @@ const EvaluationProcess = () => {
     } catch (error) {
       console.error("Error saving evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");
+    }
+  };
+
+  const handleNext = () => {
+    setLoadingc(true);
+    try {
+      saveEvaluation();
+      setSelectedAnswers({});
+      setCurrentStudentIndex((prevIndex) =>
+        Math.min(prevIndex + 1, studentId.length - 1)
+      );
+    } catch (error) {
+      console.error("Error saving evaluation:", error);
+      Alert.alert("Error", "An unexpected error occurred");
     } finally {
       setLoadingc(false);
     }
   };
+
+  const handlePrevious = async () => {
+    setLoadingd(true);
+    try {
+      setCurrentStudentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+      const prevStudent = studentId[currentStudentIndex - 1];
+      let evaluationResults = await AsyncStorage.getItem("evaluationResults");
+      evaluationResults = evaluationResults
+        ? JSON.parse(evaluationResults)
+        : {};
+      const prevStudentAnswers = evaluationResults[prevStudent] || [];
+      setSelectedAnswers(
+        prevStudentAnswers.reduce((acc, answer, index) => {
+          acc[index + 1] = answer;
+          return acc;
+        }, {}));
+    } catch (error) {
+      console.error("Error loading previous evaluation:", error);
+      Alert.alert("Error", "An unexpected error occurred");
+    } finally {
+      setLoadingd(false);
+    }
+  };
+
 
 
   return (
@@ -172,34 +202,33 @@ const EvaluationProcess = () => {
             </Text>
           </View>
 
-          <TouchableOpacity
-            style={{
-              width: "15%",
-              borderRadius: 20,
-              backgroundColor: "#111F51",
-              height: 40,
-              alignItems: "center",
-              paddingLeft: 10,
-              paddingRight: 10,
-              justifyContent: "center",
-              flexDirection: "row",
-            }}
-          >
-            <Text
-              style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
-              onPress={saveEvaluation}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handlePrevious}
+              disabled={currentStudentIndex === 0 || loadingd}
             >
-              Save
-            </Text>
-            {loadingc && (
-              <ActivityIndicator
-                ref={loadingcRef}
-                style={{ marginLeft: 10 }}
-                size="small"
-                color="#fff"
-              />
-            )}
-          </TouchableOpacity>
+              {loadingd ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>Previous</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleNext}
+              disabled={
+                currentStudentIndex === studentId.length - 1 || loadingc
+              }
+            >
+              {loadingc ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>Next</Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
         {/* <Text>{formattedAnswersArray}</Text> */}
         <FlatList
@@ -261,5 +290,23 @@ const styles = StyleSheet.create({
   },
   topicText: {
     fontSize: 18,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    width: "28%",
+  },
+  button: {
+    width: "45%",
+    borderRadius: 20,
+    backgroundColor: "#111F51",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#fff",
   },
 });

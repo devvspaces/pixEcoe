@@ -10,7 +10,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import ConfigDropdown from "../components/ConfigDropdown";
-
+import ColorConfigDropdown from "../components/ColorConfigDropdown";
+import Selector from "../../LanguageSelector";
 const Configuration = () => {
   return (
     <SafeAreaView style={styles.container}>
@@ -37,14 +38,17 @@ const Configuration = () => {
           paddingRight: 40,
         }}
       >
-        <ConfigDropdown label="Language" placeholderLabel="English" />
-        <ConfigDropdown label="Default Theme" placeholderLabel="Dark Blue" />
+        <ConfigDropdown />
+        <ColorConfigDropdown
+          label="Default Theme"
+          placeholderLabel="Dark Blue"
+        />
 
         <TouchableOpacity
           style={{
             backgroundColor: "#111F51",
             height: 50,
-            width: '70%',
+            width: "70%",
             borderRadius: 5,
             marginTop: 30,
             justifyContent: "center",

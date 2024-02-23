@@ -7,29 +7,13 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Pressable
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useTranslation } from "react-i18next";
 
-const LANGUAGES = [
-  { code: "en", label: "English" },
-  { code: "spa", label: "Spanish" },
-];
-
-const ConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
-
+const ColorConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
+  
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-
-  const { t, i18n } = useTranslation();
-  const selectedLanguageCode = i18n.language;
-
-  const setLanguage = (code) => {
-    i18n.changeLanguage(code);
-    setSelectedOption(LANGUAGES.find((language) => language.code === code));
-    setModalVisible(false);
-  };
 
   const handleSelect = (option) => {
     setSelectedOption(option);
@@ -37,27 +21,11 @@ const ConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
     onSelect(option);
   };
 
-  const renderLanguageButton = (language) => {
-    const selectedLanguage = language.code === selectedLanguageCode;
-    return (
-      <Pressable
-        key={language.code}
-        style={styles.buttonContainer}
-        disabled={selectedLanguage}
-        onPress={() => setLanguage(language.code)}
-      >
-        <Text style={[selectedLanguage ? styles.selectedText : styles.text]}>
-          {language.label}
-        </Text>
-      </Pressable>
-    );
-  };
-
   const placeholder = selectedOption ? selectedOption.label : placeholderLabel;
 
   return (
     <View style={{ marginTop: 10, width: "100%" }}>
-      <Text style={styles.label}>{t("common:language")}</Text>
+      <Text style={styles.label}>{label}</Text>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <View style={styles.inputBox}>
           <Text style={styles.placeholder}>{placeholder}</Text>
@@ -85,10 +53,6 @@ const ConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
                 </TouchableOpacity>
               )}
             />
-            <View style={styles.languageSelector}>
-              <Text style={styles.languageSelectorTitle}>{t("common:languageSelector")}</Text>
-              {LANGUAGES.map(renderLanguageButton)}
-            </View>
           </View>
         </View>
       </Modal>
@@ -97,7 +61,7 @@ const ConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
 };
 
 
-export default ConfigDropdown;
+export default ColorConfigDropdown;
 
 const styles = StyleSheet.create({
   label: {
@@ -109,7 +73,7 @@ const styles = StyleSheet.create({
   inputBox: {
     flexDirection: "row",
     height: 50,
-    width: "70%",
+    width:'70%',
     borderColor: "#EEE",
     borderWidth: 1,
     marginTop: 10,
@@ -140,29 +104,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#EEE",
-  },
-  languageSelector: {
-    marginTop: 20,
-  },
-  languageSelectorTitle: {
-    color: "#444",
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    marginTop: 10,
-  },
-  text: {
-    fontSize: 18,
-    color: "#000",
-    paddingVertical: 4,
-  },
-  selectedText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "tomato",
-    paddingVertical: 4,
   },
 });
 

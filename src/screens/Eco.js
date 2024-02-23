@@ -165,7 +165,10 @@ const Eco = () => {
       key={student.group}
       style={styles.tableRow}
       onPress={() =>
-        navigation.navigate("evalutaionProcess", { studentId: student.id })
+        // navigation.navigate("evalutaionProcess", { studentId: student.id })
+        navigation.navigate("evalutaionProcess", {
+          students: downloadedCompetitorData.students,
+        })
       }
     >
       <View style={styles.firstColumn}>
@@ -213,9 +216,11 @@ const Eco = () => {
 
       if (response.ok) {
         Alert.alert("Success", "Evaluation saved successfully!");
+        saveResultsAsJSON();
       } else {
         const errorMessage = await response.text();
         Alert.alert("Error", `Failed to save evaluation: ${errorMessage}`);
+        saveResultsAsJSON();
       }
     } catch (error) {
       console.error("Error saving evaluation:", error);
@@ -316,9 +321,23 @@ const Eco = () => {
               }}
             >
               <TouchableOpacity
-                onPress={uploadEvaluation}
+                onPress={() => setModalVisible(true)}
                 style={{
                   width: "25%",
+                  borderRadius: 20,
+
+                  height: 40,
+                  alignItems: "center",
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  justifyContent: "center",
+                  flexDirection: "row",
+                }}
+              ></TouchableOpacity>
+              <TouchableOpacity
+                onPress={uploadEvaluation}
+                style={{
+                  width: "18%",
                   borderRadius: 20,
                   backgroundColor: "#111F51",
                   height: 40,
@@ -332,7 +351,7 @@ const Eco = () => {
                 <Text
                   style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
                 >
-                  UPLOAD TO SERVER
+                  UPLOAD
                 </Text>
                 {loadingc && (
                   <ActivityIndicator
@@ -342,26 +361,6 @@ const Eco = () => {
                     color="#fff"
                   />
                 )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={{
-                  width: "25%",
-                  borderRadius: 20,
-                  backgroundColor: "#111F51",
-                  height: 40,
-                  alignItems: "center",
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  justifyContent: "center",
-                  flexDirection: "row",
-                }}
-              >
-                <Text
-                  style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
-                >
-                  SAVE ON DEVICE
-                </Text>
               </TouchableOpacity>
             </View>
 
@@ -399,7 +398,7 @@ const Eco = () => {
                 </View>
               </View>
             </Modal>
-            <ScrollView >
+            <ScrollView>
               <View style={styles.tableRow}>
                 <View style={styles.firstColumn}>
                   <Text style={styles.cellText}>ID</Text>

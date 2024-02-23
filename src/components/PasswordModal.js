@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const PasswordModal = ({ isVisible, onPasswordSubmit, onCancel }) => {
   const [password, setPassword] = useState("");
-
+  const { t } = useTranslation();
   const handleSubmit = () => {
     onPasswordSubmit(password);
     setPassword("");
@@ -20,7 +21,7 @@ const PasswordModal = ({ isVisible, onPasswordSubmit, onCancel }) => {
     <Modal transparent visible={isVisible}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Enter Device Password</Text>
+          <Text style={styles.modalTitle}>{t("common:passtext")}</Text>
           <TextInput
             style={styles.inputBox}
             placeholder="Password"
@@ -30,9 +31,8 @@ const PasswordModal = ({ isVisible, onPasswordSubmit, onCancel }) => {
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Submit</Text>
+              <Text style={styles.buttonText}>{t("common:submittext")}</Text>
             </TouchableOpacity>
-            
           </View>
         </View>
       </View>

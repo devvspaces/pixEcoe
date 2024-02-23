@@ -16,6 +16,7 @@ import DropdownSelector from "../components/DropdownSelector";
 import PasswordModal from "../components/PasswordModal";
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
+import { useTranslation } from "react-i18next";
 
 const { width } = Dimensions.get("window");
 const cardWidth = (width - 60) / 2;
@@ -39,6 +40,7 @@ const Setup = () => {
   const [evaluationDetails, setEvaluationDetails] = useState(null);
   const [competitorFile, setcompetitorFile] = useState([]);
   const [evaluationFile, setEvaluationFile] = useState([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const loadStoredValues = async () => {
@@ -217,6 +219,7 @@ const Setup = () => {
         console.log("Download Evaluation Response:", data);
         console.log("EvaluationDetails:", evaluationDetails);
         alert("Download successful");
+        await AsyncStorage.removeItem("evaluationResults");
       } else {
         alert("Failed to download evaluation. Please try again.");
       }
@@ -346,7 +349,7 @@ const Setup = () => {
                 : styles.inactiveOptionText
             }
           >
-            APi Authentication
+            {t("common:setupapi")}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -364,7 +367,7 @@ const Setup = () => {
                 : styles.inactiveOptionText
             }
           >
-            App Root
+            {t("common:setuproot")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -392,7 +395,7 @@ const Setup = () => {
                   marginTop: 10,
                 }}
               >
-                Referee ID
+                {t("common:refreeid")}
               </Text>
               <TextInput
                 style={styles.inputBox}
@@ -410,7 +413,7 @@ const Setup = () => {
                   marginTop: 20,
                 }}
               >
-                Referee Email (License)
+                {t("common:refreemail")} (License)
               </Text>
               <TextInput
                 style={styles.inputBox}
@@ -428,7 +431,7 @@ const Setup = () => {
               marginTop: 20,
             }}
           >
-            Web Server Access
+            {t("common:webserver")}
           </Text>
           <View style={{ marginTop: 10 }}>
             <View>
@@ -440,7 +443,7 @@ const Setup = () => {
                   marginTop: 10,
                 }}
               >
-                URL Address
+                {t("common:urladdress")}
               </Text>
               <TextInput
                 style={{
@@ -466,7 +469,7 @@ const Setup = () => {
                   marginTop: 20,
                 }}
               >
-                Subject ID
+                {t("common:subjectid")}
               </Text>
               <TextInput
                 style={styles.inputBox}
@@ -484,7 +487,7 @@ const Setup = () => {
                   marginTop: 20,
                 }}
               >
-                Password
+                {t("common:pass")}
               </Text>
               <TextInput
                 style={styles.inputBox}
@@ -503,7 +506,7 @@ const Setup = () => {
             >
               <DropdownSelector
                 label="Evaluations"
-                placeholderLabel="Select"
+                placeholderLabel={t("common:select")}
                 options={evaluationOptions}
                 onSelect={(selectedOption) => {
                   handleSelect(selectedOption, "Evaluation");
@@ -526,7 +529,7 @@ const Setup = () => {
                 <Text
                   style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}
                 >
-                  Load Evaluation
+                  {t("common:loadev")}
                 </Text>
                 {loading && (
                   <ActivityIndicator
@@ -561,7 +564,7 @@ const Setup = () => {
                 color="#FFFFFF"
               />
               <Text style={{ fontSize: 13, color: "#ffffff", marginLeft: 15 }}>
-                Download Evaluation
+                {t("common:downloadev")}
               </Text>
               {loadingd && (
                 <ActivityIndicator
@@ -591,7 +594,7 @@ const Setup = () => {
                 color="#FFFFFF"
               />
               <Text style={{ fontSize: 13, color: "#ffffff", marginLeft: 15 }}>
-                Download Competitors
+                {t("common:downloadcomp")}
               </Text>
               {loadingc && (
                 <ActivityIndicator
@@ -622,7 +625,7 @@ const Setup = () => {
               marginTop: 20,
             }}
           >
-            App Root
+            {t("common:setuproot")}
           </Text>
           <Text
             style={{
@@ -632,7 +635,7 @@ const Setup = () => {
               marginTop: 10,
             }}
           >
-            Select and choose competitors and evaluation data locally
+            {t("common:rootsubtitle")}
           </Text>
 
           <View style={{ marginTop: 10 }}>
@@ -644,7 +647,7 @@ const Setup = () => {
                 marginTop: 10,
               }}
             >
-              Competitors (CSV)
+              {t("common:rootcomp")}
             </Text>
             <TouchableOpacity
               style={{
@@ -678,8 +681,7 @@ const Setup = () => {
                 marginTop: 4,
               }}
             >
-              This is the name of the csv file that contains the competitors
-              data
+              {t("common:rootcompinf")}
             </Text>
           </View>
           <TouchableOpacity
@@ -695,7 +697,7 @@ const Setup = () => {
             }}
           >
             <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
-              Load Data
+              {t("common:dataload")}
             </Text>
           </TouchableOpacity>
           <View style={{ marginTop: 10 }}>
@@ -707,7 +709,7 @@ const Setup = () => {
                 marginTop: 10,
               }}
             >
-              Evaluation (JSON)
+              {t("common:rooteva")}
             </Text>
             <TouchableOpacity
               onPress={handleEvaluationFile}
@@ -741,8 +743,7 @@ const Setup = () => {
                 marginTop: 4,
               }}
             >
-              This is the name of the file that contains the data for the
-              evaluation.
+              {t("common:rootevainf")}
             </Text>
           </View>
           <TouchableOpacity
@@ -758,7 +759,7 @@ const Setup = () => {
             }}
           >
             <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
-              Load Data
+              {t("common:dataload")}
             </Text>
           </TouchableOpacity>
         </View>
