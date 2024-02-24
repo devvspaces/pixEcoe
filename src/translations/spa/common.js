@@ -5,7 +5,7 @@ export default {
   theme: "Tema predeterminado",
   save: "Ahorrar",
   setupapi: "Autenticación API",
-  setuproot: "raíz de la aplicación",
+  setuproot: "Raíz de la aplicación",
   refreeid: "Árbitro ID",
   refreemail: "Correo electrónico del árbitro",
   webserver: "Acceso al servidor web",

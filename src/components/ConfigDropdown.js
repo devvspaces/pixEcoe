@@ -17,7 +17,7 @@ const LANGUAGES = [
   { code: "spa", label: "Spanish" },
 ];
 
-const ConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
+const ConfigDropdown = ({ options, onSelect }) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -53,14 +53,19 @@ const ConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
     );
   };
 
-  const placeholder = selectedOption ? selectedOption.label : placeholderLabel;
+  let selectedLanguageLabel = "";
+  if (selectedLanguageCode === "en") {
+    selectedLanguageLabel = "English";
+  } else if (selectedLanguageCode === "spa") {
+    selectedLanguageLabel = "Spanish";
+  }
 
   return (
     <View style={{ marginTop: 10, width: "100%" }}>
       <Text style={styles.label}>{t("common:language")}</Text>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <View style={styles.inputBox}>
-          <Text style={styles.placeholder}>{placeholder}</Text>
+          <Text style={styles.placeholder}>{selectedLanguageLabel}</Text>
           <Icon name="chevron-down" size={20} color="#555" />
         </View>
       </TouchableOpacity>
@@ -86,7 +91,9 @@ const ConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
               )}
             />
             <View style={styles.languageSelector}>
-              <Text style={styles.languageSelectorTitle}>{t("common:languageSelector")}</Text>
+              <Text style={styles.languageSelectorTitle}>
+                {t("common:languageSelector")}
+              </Text>
               {LANGUAGES.map(renderLanguageButton)}
             </View>
           </View>

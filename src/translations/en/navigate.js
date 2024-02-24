@@ -1,4 +1,6 @@
 export default {
-  home: "Home",
-  settings: "Settings",
+  setup: "Setup",
+  evaluation: "Evaluation",
+  configuration: "Configuration",
+  help: "Help",
 };

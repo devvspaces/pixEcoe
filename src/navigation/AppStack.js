@@ -8,6 +8,8 @@ import {
   Image,
   Platform,
   ActivityIndicator,
+  SafeAreaView,
+  StatusBar
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -29,12 +31,18 @@ import DevicePassword from "../screens/DevicePassword";
 const Tab = createBottomTabNavigator();
 
 const Loading = () => (
-  <View>
-    <ActivityIndicator size="large" />
-  </View>
+  <SafeAreaView style={styles.container}>
+    <StatusBar backgroundColor="#000" />
+    <View style={styles.loaderContainer}>
+      <ActivityIndicator size="large" color="#FFFFFF"/>
+    </View>
+  </SafeAreaView>
 );
 
 const TabNavigator = () => {
+
+  const { t } = useTranslation();
+
   return (
     <Tab.Navigator
       initialRouteName={"Evaluation"}
@@ -49,22 +57,22 @@ const TabNavigator = () => {
             iconSource = focused
               ? require("../../assets/icons/setupa.png")
               : require("../../assets/icons/setup.png");
-            label = "Setup";
+            label = t("navigate:setup");
           } else if (route.name === "Evaluation") {
             iconSource = focused
               ? require("../../assets/icons/evaluationa.png")
               : require("../../assets/icons/evaluation.png");
-            label = "Evaluation";
+            label = t("navigate:evaluation");
           } else if (route.name === "Configuration") {
             iconSource = focused
               ? require("../../assets/icons/settingsa.png")
               : require("../../assets/icons/settings.png");
-            label = "Configuration";
+            label = t("navigate:configuration");
           } else if (route.name === "Help") {
             iconSource = focused
               ? require("../../assets/icons/helpa.png")
               : require("../../assets/icons/help.png");
-            label = "Help";
+            label = t("navigate:help");
           }
 
           return (
@@ -188,5 +196,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
     width: 100,
     textAlign: "center",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#111F51",
   },
 });
