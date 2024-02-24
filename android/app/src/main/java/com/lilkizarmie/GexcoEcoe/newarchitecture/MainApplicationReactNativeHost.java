@@ -1,4 +1,4 @@
-package com.lilkizarmie.GexcoEcoe.newarchitecture;
+package com.pixEcoe.app.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -20,9 +20,9 @@ import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.lilkizarmie.GexcoEcoe.BuildConfig;
-import com.lilkizarmie.GexcoEcoe.newarchitecture.components.MainComponentsRegistry;
-import com.lilkizarmie.GexcoEcoe.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.pixEcoe.app.BuildConfig;
+import com.pixEcoe.app.newarchitecture.components.MainComponentsRegistry;
+import com.pixEcoe.app.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

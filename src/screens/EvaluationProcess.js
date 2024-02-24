@@ -23,6 +23,7 @@ const EvaluationProcess = () => {
   const { t } = useTranslation();
   const { students } = route.params;
   const studentId = students.map((student) => student.id);
+  const studentIds = students.map((student) => student.group);
   const loadingcRef = useRef(null);
   const loadingdRef = useRef(null);
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
@@ -170,12 +171,40 @@ const EvaluationProcess = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#000" />
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign name="leftcircleo" size={25} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>
-         {t("common:evaproce")}
-        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <AntDesign name="leftcircleo" size={25} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>{t("common:evaproce")}</Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handlePrevious}
+            disabled={currentStudentIndex === 0 || loadingd}
+          >
+            {loadingd ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>{t("common:prev")}</Text>
+            )}
+            <AntDesign name="banckward" size={25} color="#fff" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleNext}
+            disabled={currentStudentIndex === studentId.length - 1 || loadingc}
+          >
+            {loadingc ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>{t("common:next")}</Text>
+            )}
+            <AntDesign name="forward" size={25} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.content}>
         <View
@@ -206,32 +235,19 @@ const EvaluationProcess = () => {
             </Text>
           </View>
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handlePrevious}
-              disabled={currentStudentIndex === 0 || loadingd}
-            >
-              {loadingd ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>{t("common:prev")}</Text>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleNext}
-              disabled={
-                currentStudentIndex === studentId.length - 1 || loadingc
-              }
-            >
-              {loadingc ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>{t("common:next")}</Text>
-              )}
-            </TouchableOpacity>
+          <View
+            style={{
+              width: "25%",
+              backgroundColor: "#3d85c6",
+              alignItems: "center",
+              height: 40,
+              borderRadius: 20,
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "500", color: "#fff" }}>
+              {studentIds[currentStudentIndex]}
+            </Text>
           </View>
         </View>
         {/* <Text>{formattedAnswersArray}</Text> */}
@@ -269,6 +285,7 @@ const styles = StyleSheet.create({
     paddingRight: 40,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   headerText: {
     color: "#fff",
@@ -298,20 +315,23 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
-    width: "28%",
+    width: "40%",
+    backgroundColor: "#9FD1FF",
+    alignItems:'center'
   },
   button: {
     width: "45%",
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#111F51",
     alignItems: "center",
     justifyContent: "center",
+    alignSelf:'center',
+    flexDirection:'row'
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: "600",
     color: "#fff",
+    marginRight:10
   },
 });
