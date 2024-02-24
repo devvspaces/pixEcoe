@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   Dimensions,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
@@ -16,7 +17,8 @@ import DropdownSelector from "../components/DropdownSelector";
 import PasswordModal from "../components/PasswordModal";
 import DocumentPicker from "react-native-document-picker";
 import { useTranslation } from "react-i18next";
-
+import RNFS from "react-native-fs";
+import Papa from "papaparse";
 const { width } = Dimensions.get("window");
 const cardWidth = (width - 60) / 2;
 
@@ -105,12 +107,17 @@ const Setup = () => {
 
   const handleCompetitorFile = useCallback(async () => {
     try {
-      const response = await DocumentPicker.pick({
-        presentationStyle: "fullScreen",
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.csv],
       });
-      setcompetitorFile(response);
+      setcompetitorFile(res);
     } catch (err) {
-      console.warn(err);
+      if (DocumentPicker.isCancel(err)) {
+        console.log("Document picker was cancelled");
+      } else {
+        console.error("Error while picking the file:", err);
+        Alert.alert("Error", "An error occurred while picking the CSV file.");
+      }
     }
   }, []);
 
@@ -274,27 +281,23 @@ const Setup = () => {
     }
   };
 
-  const handleLoadCompetitorData = () => {
-
-    if (!csvData) {
-      alert("Please select a CSV file.");
-      return;
+  const handleLoadCompetitorData = useCallback(async () => {
+    try {
+      if (!competitorFile) {
+        Alert.alert("Error", "Please select a CSV file.");
+        return;
+      }
+      const fileContent = await RNFS.readFile(competitorFile.uri, "utf8");
+      const parsedData = Papa.parse(fileContent, { header: true }).data;
+      await AsyncStorage.setItem("competitorData", JSON.stringify(parsedData));
+      Alert.alert("Success", "CSV data loaded and stored successfully");
+    } catch (error) {
+      console.error("Error loading competitor data:", error);
+      Alert.alert("Error", "An error occurred while loading competitor data.");
     }
+  }, [competitorFile]);
 
-    const { data, errors } = parse(csvData, { header: true });
-    if (errors.length > 0) {
-      Alert.alert("Error", "Failed to parse CSV file");
-      return;
-    }
 
-    AsyncStorage.setItem("jsonData", JSON.stringify(data))
-    .then(() => {
-      Alert.alert("Success", "CSV data loaded and stored as JSON");
-    })
-    .catch((error) => {
-      Alert.alert("Error", "Failed to store JSON data in AsyncStorage");
-    });
-  };
 
   const handleLoadEvaluationData = async () => {
     if (!evaluationFile) {
@@ -329,7 +332,7 @@ const Setup = () => {
         }}
       >
         <Text style={{ color: "#fff", fontSize: 20, fontWeight: "500" }}>
-        {t("common:setupt")}
+          {t("common:setupt")}
         </Text>
       </View>
       <View style={styles.optionBar}>
@@ -648,6 +651,7 @@ const Setup = () => {
             >
               {t("common:rootcomp")}
             </Text>
+
             <TouchableOpacity
               style={{
                 height: 50,
