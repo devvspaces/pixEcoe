@@ -49,7 +49,7 @@ const Configuration = () => {
           placeholderLabel="Dark Blue"
         />
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             backgroundColor: "#111F51",
             height: 50,
@@ -63,7 +63,7 @@ const Configuration = () => {
           <Text style={{ color: "#fff", fontSize: 18, fontWeight: "500" }}>
             {t("common:save")}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </SafeAreaView>
   );

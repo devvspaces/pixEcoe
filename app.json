@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "pixEcoe_app",
-    "slug": "Gexco-Ecoe",
+    "name": "pixEcoe",
+    "slug": "pixEcoe",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,22 +15,20 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.bloombytes.gexcoeco"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.lilkizarmie.GexcoEcoe"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "c950b6e3-bc2e-43e8-a1e7-ea9959ca6f0d"
+        "projectId": "e0a87185-9f9c-4990-a642-d639ced0380c"
       }
     }
   }
