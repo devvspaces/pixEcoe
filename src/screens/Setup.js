@@ -523,7 +523,7 @@ const Setup = () => {
                   }}
                   onPress={() => toggleStatus("showmark")}
                 >
-                  <Text>Show Marks</Text>
+                  <Text>{t("common:showm")}</Text>
                   <Fontisto
                     name={
                       showMarkStatus ? "checkbox-active" : "checkbox-passive"
@@ -549,7 +549,7 @@ const Setup = () => {
                   }}
                   onPress={() => toggleStatus("showcompetitors")}
                 >
-                  <Text>Show Competitor name</Text>
+                  <Text>{t("common:showc")}</Text>
                   <Fontisto
                     name={
                       showCompetitorsStatus
@@ -645,7 +645,7 @@ const Setup = () => {
                 }}
               >
                 <DropdownSelector
-                  label="Evaluations"
+                  label={t("common:evalua")}
                   placeholderLabel={t("common:select")}
                   options={evaluationOptions}
                   onSelect={(selectedOption) => {

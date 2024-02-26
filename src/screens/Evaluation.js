@@ -142,7 +142,7 @@ const Evaluation = () => {
                 fontWeight: "500",
               }}
             >
-             {t("common:test")}
+              {t("common:test")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -178,7 +178,7 @@ const Evaluation = () => {
                 fontWeight: "500",
               }}
             >
-              Eco
+              {t("common:eco")}
             </Text>
           </TouchableOpacity>
         </View>
