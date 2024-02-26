@@ -90,8 +90,9 @@ const Filter = () => {
     let filteredData = parsedDownloadedCompetitorData.students;
 
     if (groupWheel.trim() !== "") {
-      filteredData = parsedDownloadedCompetitorData.students.filter(
-        (item) => item.group === groupWheel
+      const keyword = groupWheel.trim().toLowerCase();
+      filteredData = parsedDownloadedCompetitorData.students.filter((item) =>
+        item.group.toLowerCase().includes(keyword)
       );
     }
 
@@ -114,8 +115,6 @@ const Filter = () => {
       console.error("Error saving filtered competitor data:", error);
     }
   };
-
-
 
   return (
     <SafeAreaView style={styles.container}>

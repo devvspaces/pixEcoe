@@ -211,10 +211,35 @@ const Setup = () => {
 
   const handleDownloadEvaluation = async () => {
     try {
-      if (!selectedEvaluation) {
-        alert("Please select an evaluation before downloading.");
-        return;
+      const evaluatedData = await AsyncStorage.getItem("evaluationResults");
+      if (evaluatedData) {
+        Alert.alert(
+          "Evaluated data is found on the device",
+          "Do you want to proceed with downloading the evaluation which will result in deletion of the existing data?",
+          [
+            {
+              text: "Yes",
+              onPress: async () => {
+                await downloadEvaluation();
+              },
+            },
+            {
+              text: "No",
+              style: "cancel",
+            },
+          ]
+        );
+      } else {
+        await downloadEvaluation();
       }
+    } catch (error) {
+      console.error("Error during download evaluation:", error);
+      alert("An unexpected error occurred. Please try again later.");
+    }
+  };
+
+  const downloadEvaluation = async () => {
+    try {
       setLoadingd(true);
       const response = await fetch(
         `${serverUrl}/evaluation/${selectedEvaluation.id}/`,

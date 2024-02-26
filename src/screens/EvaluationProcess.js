@@ -55,7 +55,6 @@ const EvaluationProcess = () => {
     }
   };
 
-  // Inside the EvaluationProcess component
   const getTotalPoints = () => {
     let totalPoints = 0;
     for (const questionSection of sections) {
@@ -71,8 +70,6 @@ const EvaluationProcess = () => {
     }
     return totalPoints;
   };
-
-
 
   const loadStatus = async () => {
     const showMarkData = await AsyncStorage.getItem("showmark");
@@ -120,11 +117,15 @@ const EvaluationProcess = () => {
   // console.log(JSON.stringify(sections, null, 2));
 
   const handleAnswerSelection = (questionNumber, answerId) => {
-    setSelectedAnswers({
-      ...selectedAnswers,
-      [questionNumber]: answerId,
+    setSelectedAnswers((prevSelectedAnswers) => {
+      const updatedSelectedAnswers = { ...prevSelectedAnswers };
+      if (updatedSelectedAnswers[questionNumber] === answerId) {
+        delete updatedSelectedAnswers[questionNumber];
+      } else {
+        updatedSelectedAnswers[questionNumber] = answerId;
+      }
+      return updatedSelectedAnswers;
     });
-    // console.log("Selected Answers:", selectedAnswers);
   };
 
   const formatSelectedAnswers = (selectedAnswers) => {
@@ -158,7 +159,6 @@ const EvaluationProcess = () => {
       );
 
       console.log("Updated Evaluation Results:", evaluationResults);
-      Alert.alert("Success", "Evaluation saved successfully!");
     } catch (error) {
       console.error("Error saving evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");

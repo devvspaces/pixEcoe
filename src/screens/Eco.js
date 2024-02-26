@@ -217,16 +217,29 @@ const Eco = () => {
       });
 
       if (response.ok) {
-        Alert.alert("Success", "Evaluation saved successfully!");
-        saveResultsAsJSON();
+        Alert.alert("Success", "Evaluation saved successfully!", [
+          {
+            text: "Save as JSON",
+            onPress: () => setModalVisible(true),
+          },
+        ]);
       } else {
         const errorMessage = await response.text();
-        Alert.alert("Error", `Failed to save evaluation: ${errorMessage}`);
-        saveResultsAsJSON();
+        Alert.alert("Error", `Failed to save evaluation: ${errorMessage}`, [
+          {
+            text: "Save as JSON",
+            onPress: () => setModalVisible(true),
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error saving evaluation:", error);
-      Alert.alert("Error", "An unexpected error occurred");
+       Alert.alert("Error", "An unexpected error occurred", [
+         {
+           text: "Save as JSON",
+           onPress: () => setModalVisible(true),
+         },
+       ]);
     } finally {
       setLoadingc(false);
     }
@@ -311,7 +324,7 @@ const Eco = () => {
                   {t("common:station")}: {evaluations.data.station_name}
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                  {t("common:subject")}: Medicina Interna
+                  {/* {t("common:subject")}: Medicina Interna */}
                 </Text>
               </View>
             </View>

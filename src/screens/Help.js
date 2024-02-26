@@ -14,35 +14,20 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 
-const topics = [
-  "How to start working",
-  "Filtering competitors by station",
-  "Competitor Options",
-  "Changing app theme",
-  "Internal Database",
-  "Marking questions",
-  "Uploading results",
-];
-
-const infos = [
-  "Go to App Home",
-  "Back to previous page",
-  "Forward to next page",
-  "Delete one competitor",
-  "Save",
-  "Back to previous Eco page",
-  "Forward to next Eco page",
-  "Info and About",
-  "Download data from database",
-  "Help",
-  "Upload results to database",
-  "Change results file name",
-];
-
 const Help = () => {
 
   const navigation = useNavigation();
   const { t } = useTranslation();
+
+  const topics = [
+    t("help:topic1"),
+    t("help:topic2"),
+    t("help:topic3"),
+    t("help:topic4"),
+    t("help:topic5"),
+    t("help:topic6"),
+  ];
+
   const handleTopicClick = (topic) => {
     navigation.navigate("helpdetails", { topic });
   };
@@ -67,7 +52,7 @@ const Help = () => {
           paddingBottom: Platform.OS === "ios" ? 75 : 65,
         }}
       >
-        <Text style={styles.contentTitle}>Select a Topic</Text>
+        <Text style={styles.contentTitle}>{t("help:helptitle")}</Text>
         <View style={styles.topicContainer}>
           {topics.map((topic, index) => (
             <TouchableOpacity
@@ -80,16 +65,49 @@ const Help = () => {
           ))}
         </View>
         {/* Additional Information Section */}
-        <Text style={styles.additionalInfoTitle}>
-          Read this page carefully and become familiar with available buttons in
-          the application
-        </Text>
-        {infos.map((info, index) => (
-          <View key={index} style={styles.infoItem}>
-            <Icon name="circle" size={20} color="#555" />
-            <Text style={styles.infoText}>{info}</Text>
-          </View>
-        ))}
+        <Text style={styles.additionalInfoTitle}>{t("help:helpsubtext")}</Text>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:setupTabIcon")}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:evaluationTabIcon")}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:configurationTabIcon")}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:helpTabIcon")}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:downloadIcon")}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>
+            {t("help:filterIconEvaluationTab")}
+          </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:competitorsIcon")}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:testIcon")}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:ecoIcon")}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Icon name="circle" size={20} color="#555" />
+          <Text style={styles.infoText}>{t("help:backIcon")}</Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

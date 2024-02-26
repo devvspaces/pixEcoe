@@ -1,0 +1,57 @@
+export default {
+  helptitle: "Help pages",
+  helpsubtext:
+    "Read this page carefully and become familiar with available buttons in the application",
+  setupTabIcon: "(setup tab icon) - Go to setup screen",
+  evaluationTabIcon: "(evaluation tab icon) - Go to Evaluation screen",
+  configurationTabIcon: "(configuration tab icon) - Go to configuration screen",
+  helpTabIcon: "(help tab icon) -Go to help screen",
+  downloadIcon: "(download icon) - Download evaluations / Download competitors",
+  filterIconEvaluationTab:
+    "(filter icon in the evaluation tab) - Go to filter screen to filter competitors",
+  competitorsIcon:
+    "(competitors icon) - Go to competitors screen to see competitors",
+  testIcon: "(test icon) - Go to test screen to preview the current evaluation",
+  ecoIcon: "(eco icon) - Go to Eco screen to evaluate competitors",
+  backIcon: "(back icon) - Go to back to the previous screen",
+  topic1: "How to filter competitors",
+  topic2: "How to start working",
+  topic3: "Changing the app language",
+  topic4: "Internal database (Async storage)",
+  topic5: "Evaluating students",
+  topic6: "Uploading results",
+  filterhelp1: "Go to the evaluation tab",
+  filterhelp2: "Click on the filter icon",
+  filterhelp3: "Enter the filter value in the Group(Wheel) input",
+  working1: "Open the pixco app for the first time",
+  working2: "Set a new password",
+  working3: "Go to the setup screen",
+  working4: "Enter the referee id",
+  working5: "Enter the referee email",
+  working6: "Enter the URL Access",
+  working7: "Enter the subject id",
+  working8: "Enter the password",
+  working9: "Click on load evaluation button",
+  working10:
+    "Select a new evaluation using the select dropdown on the left of the load evaluation button",
+  working11: "Click on download evaluation",
+  working12: "Click on download competitors",
+  lang1: "Go to the configuration page",
+  lang2: "Use the language input to select a new language",
+  storage1:
+    "When results are uploaded, they are saved in the internal database which is powered by async storage",
+  storage2:
+    "Evaluation results are automatically saved in the internal database.",
+  evaluate1: "After setting up the app",
+  evaluate2: "Head to the evaluation tab",
+  evaluate3: "Click on the Eco icon",
+  evaluate4: "Click any competitor",
+  evaluate5: "Grade the competitor",
+  result1: "Go to the evaluation tab",
+  result2: "Click on the Eco icon",
+  result3: "Click on the upload button at the top of the screen",
+  result4:
+    "This uploads the results to the web server and saves the results in the internal database",
+  result5:
+    "You will get an upload success message if the upload is successful.",
+};
