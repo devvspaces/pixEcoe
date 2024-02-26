@@ -16,11 +16,18 @@ import Feather from "react-native-vector-icons/Feather";
 import { useTranslation } from "react-i18next";
 
 const CompetitorsList = () => {
+
   const navigation = useNavigation();
+  const [showMarkStatus, setShowMarkStatus] = useState(false);
+  const [showCompetitorsStatus, setShowCompetitorsStatus] = useState(false);
+  const [competitorsData, setCompetitorsData] = useState([]);
+  const [studentScores, setStudentScores] = useState([]);
   const { t } = useTranslation();
 
   useEffect(() => {
     loadDownloadedCompetitorData();
+    loadStatus();
+    fetchTotalScore();
   }, []);
 
   const loadDownloadedCompetitorData = async () => {
@@ -30,6 +37,7 @@ const CompetitorsList = () => {
       );
       if (downloadedData) {
         const parsedData = JSON.parse(downloadedData);
+        console.log("Students:", parsedData);
         setCompetitorsData(parsedData.students);
       }
     } catch (error) {
@@ -37,12 +45,52 @@ const CompetitorsList = () => {
     }
   };
 
-  const [competitorsData, setCompetitorsData] = useState([]);
+  const fetchTotalScore = async () => {
+    try {
+      const scores = await AsyncStorage.getItem("totalScores");
+      if (scores) {
+        console.log("Total Scores:", scores);
+        const parsedScores = JSON.parse(scores);
+        const scoresArray = Object.entries(parsedScores).map(
+          ([studentId, score]) => ({
+            studentId,
+            score,
+          })
+        );
+        setStudentScores(scoresArray);
+      }
+    } catch (error) {
+      console.error("Error retrieving student scores:", error);
+    }
+  };
+  
+
+  const loadStatus = async () => {
+    const showMarkData = await AsyncStorage.getItem("showmark");
+    const showCompetitorsData = await AsyncStorage.getItem("showcompetitors");
+
+    if (showMarkData) {
+      setShowMarkStatus(JSON.parse(showMarkData).status);
+    }
+    if (showCompetitorsData) {
+      setShowCompetitorsStatus(JSON.parse(showCompetitorsData).status);
+    }
+  };
+
+  const getStudentScore = (studentId) => {
+    const score = studentScores.find(
+      (score) => score.studentId.toString() === studentId.toString()
+    );
+    return score ? score.score : "-";
+  };
 
   const renderTableHeader = () => (
     <View style={styles.row}>
       <Text style={styles.cell}>{t("common:status")}</Text>
-      <Text style={styles.cell}>{t("common:name")}</Text>
+      {showCompetitorsStatus && (
+        <Text style={styles.cell}>{t("common:name")}</Text>
+      )}
+      {showMarkStatus && <Text style={styles.cell}>{t("common:score")}</Text>}
       <Text style={styles.cell}>{t("common:group")}</Text>
     </View>
   );
@@ -50,18 +98,26 @@ const CompetitorsList = () => {
   const renderTableRow = ({ item }) => (
     <View style={styles.row}>
       <View style={styles.cell}>
-        <Feather
-          name={"toggle-right"}
-          size={25}
-          color={"green"}
-        />
+        <Feather name={"toggle-right"} size={25} color={"green"} />
       </View>
-      <Text style={styles.celli}>
-        {item.first_name} {item.family_name}
-      </Text>
+      {showCompetitorsStatus && (
+        <Text style={styles.celli}>
+          {item.first_name} {item.family_name}
+        </Text>
+      )}
+
+      {showMarkStatus && (
+        <Text style={styles.celli}>{getStudentScore(item.id)}</Text>
+      )}
+
       <Text style={styles.celli}>{item.group}</Text>
     </View>
   );
+
+
+
+
+
 
   return (
     <SafeAreaView style={styles.container}>

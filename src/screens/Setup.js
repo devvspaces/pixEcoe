@@ -10,9 +10,11 @@ import {
   Dimensions,
   ActivityIndicator,
   Alert,
+  ScrollView
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import Fontisto from "react-native-vector-icons/Fontisto";
 import DropdownSelector from "../components/DropdownSelector";
 import PasswordModal from "../components/PasswordModal";
 import DocumentPicker from "react-native-document-picker";
@@ -41,9 +43,15 @@ const Setup = () => {
   const [evaluationDetails, setEvaluationDetails] = useState(null);
   const [competitorFile, setcompetitorFile] = useState([]);
   const [evaluationFile, setEvaluationFile] = useState([]);
+  const [showMarkStatus, setShowMarkStatus] = useState(false);
+  const [showCompetitorsStatus, setShowCompetitorsStatus] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
+
+    AsyncStorage.setItem("showmark", JSON.stringify({ status: false }));
+    AsyncStorage.setItem("showcompetitors", JSON.stringify({ status: false }));
+
     const loadStoredValues = async () => {
       try {
         const storedRefreeID = await AsyncStorage.getItem("refreeID");
@@ -68,6 +76,20 @@ const Setup = () => {
     };
 
     loadStoredValues();
+
+    const loadStatus = async () => {
+      const showMarkData = await AsyncStorage.getItem("showmark");
+      const showCompetitorsData = await AsyncStorage.getItem("showcompetitors");
+
+      if (showMarkData) {
+        setShowMarkStatus(JSON.parse(showMarkData).status);
+      }
+      if (showCompetitorsData) {
+        setShowCompetitorsStatus(JSON.parse(showCompetitorsData).status);
+      }
+    };
+
+    loadStatus();
   }, []);
 
   const handlePasswordSubmit = async (enteredPassword) => {
@@ -226,6 +248,7 @@ const Setup = () => {
         console.log("EvaluationDetails:", evaluationDetails);
         alert("Download successful");
         await AsyncStorage.removeItem("evaluationResults");
+        await AsyncStorage.removeItem("totalScores");
       } else {
         alert("Failed to download evaluation. Please try again.");
       }
@@ -297,8 +320,6 @@ const Setup = () => {
     }
   }, [competitorFile]);
 
-
-
   const handleLoadEvaluationData = async () => {
     if (!evaluationFile) {
       alert("Please select an evaluation file.");
@@ -319,6 +340,26 @@ const Setup = () => {
     }
   };
 
+  const toggleStatus = async (item) => {
+    try {
+      const statusData = await AsyncStorage.getItem(item);
+      if (statusData) {
+        const status = JSON.parse(statusData).status;
+        console.log(`Current status of ${item}:`, status);
+        await AsyncStorage.setItem(item, JSON.stringify({ status: !status }));
+        console.log(`New status of ${item}:`, !status);
+        if (item === "showmark") {
+          setShowMarkStatus(!status);
+        } else if (item === "showcompetitors") {
+          setShowCompetitorsStatus(!status);
+        }
+      }
+    } catch (error) {
+      console.error("Error toggling status:", error);
+    }
+  };
+
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style={{ backgroundColor: "#111F51" }} />
@@ -335,207 +376,348 @@ const Setup = () => {
           {t("common:setupt")}
         </Text>
       </View>
-      <View style={styles.optionBar}>
-        <TouchableOpacity
-          style={
-            evaluationOption === "api"
-              ? styles.activeOption
-              : styles.inactiveOption
-          }
-          onPress={() => setEvaluationOption("api")}
-        >
-          <Text
+      <ScrollView
+        style={{
+          flex: 1,
+          backgroundColor: "#9FD1FF",
+          paddingTop: 20,
+        }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          paddingBottom: Platform.OS === "ios" ? 75 : 65,
+        }}
+      >
+        <View style={styles.optionBar}>
+          <TouchableOpacity
             style={
               evaluationOption === "api"
-                ? styles.activeOptionText
-                : styles.inactiveOptionText
+                ? styles.activeOption
+                : styles.inactiveOption
             }
+            onPress={() => setEvaluationOption("api")}
           >
-            {t("common:setupapi")}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={
-            evaluationOption === "approot"
-              ? styles.activeOption
-              : styles.inactiveOption
-          }
-          onPress={() => setEvaluationOption("approot")}
-        >
-          <Text
+            <Text
+              style={
+                evaluationOption === "api"
+                  ? styles.activeOptionText
+                  : styles.inactiveOptionText
+              }
+            >
+              {t("common:setupapi")}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={
               evaluationOption === "approot"
-                ? styles.activeOptionText
-                : styles.inactiveOptionText
+                ? styles.activeOption
+                : styles.inactiveOption
             }
+            onPress={() => setEvaluationOption("approot")}
           >
-            {t("common:setuproot")}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <PasswordModal
-        isVisible={isPasswordModalVisible}
-        onPasswordSubmit={handlePasswordSubmit}
-        onCancel={handlePasswordCancel}
-      />
-      {evaluationOption === "api" && (
-        <View
-          style={{
-            paddingLeft: 40,
-            paddingRight: 40,
-            flex: 1,
-            backgroundColor: "#9FD1FF",
-          }}
-        >
-          <View style={{ marginTop: 10 }}>
-            <View>
-              <Text
-                style={{
-                  color: "#000",
-                  fontSize: 16,
-                  fontWeight: "300",
-                  marginTop: 10,
-                }}
-              >
-                {t("common:refreeid")}
-              </Text>
-              <TextInput
-                style={styles.inputBox}
-                placeholder=""
-                value={refreeID}
-                onChangeText={(text) => setRefreeID(text)}
-              />
-            </View>
-            <View>
-              <Text
-                style={{
-                  color: "#000",
-                  fontSize: 16,
-                  fontWeight: "300",
-                  marginTop: 20,
-                }}
-              >
-                {t("common:refreemail")} (License)
-              </Text>
-              <TextInput
-                style={styles.inputBox}
-                placeholder=""
-                value={refreeEmail}
-                onChangeText={(text) => setRefreeEmail(text)}
-              />
-            </View>
-          </View>
-          <Text
+            <Text
+              style={
+                evaluationOption === "approot"
+                  ? styles.activeOptionText
+                  : styles.inactiveOptionText
+              }
+            >
+              {t("common:setuproot")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <PasswordModal
+          isVisible={isPasswordModalVisible}
+          onPasswordSubmit={handlePasswordSubmit}
+          onCancel={handlePasswordCancel}
+        />
+        {evaluationOption === "api" && (
+          <View
             style={{
-              color: "#111F51",
-              fontSize: 19,
-              fontWeight: "500",
-              marginTop: 20,
+              paddingLeft: 40,
+              paddingRight: 40,
+              flex: 1,
+              backgroundColor: "#9FD1FF",
             }}
           >
-            {t("common:webserver")}
-          </Text>
-          <View style={{ marginTop: 10 }}>
-            <View>
-              <Text
+            <View style={{ marginTop: 10 }}>
+              <View>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontSize: 16,
+                    fontWeight: "300",
+                    marginTop: 10,
+                  }}
+                >
+                  {t("common:refreeid")}
+                </Text>
+                <TextInput
+                  style={styles.inputBox}
+                  placeholder=""
+                  value={refreeID}
+                  onChangeText={(text) => setRefreeID(text)}
+                />
+              </View>
+              <View>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontSize: 16,
+                    fontWeight: "300",
+                    marginTop: 20,
+                  }}
+                >
+                  {t("common:refreemail")} (License)
+                </Text>
+                <TextInput
+                  style={styles.inputBox}
+                  placeholder=""
+                  value={refreeEmail}
+                  onChangeText={(text) => setRefreeEmail(text)}
+                />
+              </View>
+              <View
                 style={{
-                  color: "#000",
-                  fontSize: 16,
-                  fontWeight: "300",
+                  flexDirection: "row",
                   marginTop: 10,
                 }}
               >
-                {t("common:urladdress")}
-              </Text>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: "#FFFFFF",
-                  borderWidth: 1,
-                  marginTop: 10,
-                  paddingLeft: 10,
-                  borderRadius: 10,
-                  width: "100%",
-                }}
-                placeholder=""
-                value={serverUrl}
-                onChangeText={(text) => setServerUrl(text)}
-              />
+                <TouchableOpacity
+                  style={{
+                    height: 35,
+                    width: "25%",
+                    borderWidth: 1,
+                    borderColor: "#111F51",
+                    borderRadius: 10,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    justifyContent: "space-between",
+                  }}
+                  onPress={() => toggleStatus("showmark")}
+                >
+                  <Text>Show Marks</Text>
+                  <Fontisto
+                    name={
+                      showMarkStatus ? "checkbox-active" : "checkbox-passive"
+                    }
+                    size={20}
+                    color="#000"
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    height: 35,
+                    width: "35%",
+                    marginLeft: 20,
+                    borderWidth: 1,
+                    borderColor: "#111F51",
+                    borderRadius: 10,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    justifyContent: "space-between",
+                  }}
+                  onPress={() => toggleStatus("showcompetitors")}
+                >
+                  <Text>Show Competitor name</Text>
+                  <Fontisto
+                    name={
+                      showCompetitorsStatus
+                        ? "checkbox-active"
+                        : "checkbox-passive"
+                    }
+                    size={20}
+                    color="#000"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-            <View>
-              <Text
-                style={{
-                  color: "#000",
-                  fontSize: 18,
-                  fontWeight: "300",
-                  marginTop: 20,
-                }}
-              >
-                {t("common:subjectid")}
-              </Text>
-              <TextInput
-                style={styles.inputBox}
-                placeholder=""
-                value={subjectId}
-                onChangeText={(text) => setSubjectId(text)}
-              />
-            </View>
-            <View>
-              <Text
-                style={{
-                  color: "#000",
-                  fontSize: 18,
-                  fontWeight: "300",
-                  marginTop: 20,
-                }}
-              >
-                {t("common:pass")}
-              </Text>
-              <TextInput
-                style={styles.inputBox}
-                placeholder=""
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-              />
-            </View>
-            <View
+
+            <Text
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 10,
-                width: "100%",
+                color: "#111F51",
+                fontSize: 19,
+                fontWeight: "500",
+                marginTop: 20,
               }}
             >
-              <DropdownSelector
-                label="Evaluations"
-                placeholderLabel={t("common:select")}
-                options={evaluationOptions}
-                onSelect={(selectedOption) => {
-                  handleSelect(selectedOption, "Evaluation");
-                  setSelectedEvaluation(selectedOption);
-                }}
-              />
-              <TouchableOpacity
-                onPress={handleLoadEvaluation}
+              {t("common:webserver")}
+            </Text>
+            <View style={{ marginTop: 10 }}>
+              <View>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontSize: 16,
+                    fontWeight: "300",
+                    marginTop: 10,
+                  }}
+                >
+                  {t("common:urladdress")}
+                </Text>
+                <TextInput
+                  style={{
+                    height: 50,
+                    borderColor: "#FFFFFF",
+                    borderWidth: 1,
+                    marginTop: 10,
+                    paddingLeft: 10,
+                    borderRadius: 10,
+                    width: "100%",
+                  }}
+                  placeholder=""
+                  value={serverUrl}
+                  onChangeText={(text) => setServerUrl(text)}
+                />
+              </View>
+              <View>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontSize: 18,
+                    fontWeight: "300",
+                    marginTop: 20,
+                  }}
+                >
+                  {t("common:subjectid")}
+                </Text>
+                <TextInput
+                  style={styles.inputBox}
+                  placeholder=""
+                  value={subjectId}
+                  onChangeText={(text) => setSubjectId(text)}
+                />
+              </View>
+              <View>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontSize: 18,
+                    fontWeight: "300",
+                    marginTop: 20,
+                  }}
+                >
+                  {t("common:pass")}
+                </Text>
+                <TextInput
+                  style={styles.inputBox}
+                  placeholder=""
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                />
+              </View>
+              <View
                 style={{
-                  backgroundColor: "#111F51",
-                  height: 50,
-                  width: "25%",
-                  borderRadius: 5,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "flex-end",
                   flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 10,
+                  width: "100%",
                 }}
               >
-                <Text
-                  style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}
+                <DropdownSelector
+                  label="Evaluations"
+                  placeholderLabel={t("common:select")}
+                  options={evaluationOptions}
+                  onSelect={(selectedOption) => {
+                    handleSelect(selectedOption, "Evaluation");
+                    setSelectedEvaluation(selectedOption);
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={handleLoadEvaluation}
+                  style={{
+                    backgroundColor: "#111F51",
+                    height: 50,
+                    width: "25%",
+                    borderRadius: 5,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    alignSelf: "flex-end",
+                    flexDirection: "row",
+                  }}
                 >
-                  {t("common:loadev")}
+                  <Text
+                    style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}
+                  >
+                    {t("common:loadev")}
+                  </Text>
+                  {loading && (
+                    <ActivityIndicator
+                      ref={loadingRef}
+                      style={{ marginLeft: 10 }}
+                      size="small"
+                      color="#fff"
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <TouchableOpacity
+                onPress={handleDownloadEvaluation}
+                style={{
+                  height: 60,
+                  backgroundColor: "#111F51",
+                  marginTop: 20,
+                  borderRadius: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "45%",
+                }}
+              >
+                <SimpleLineIcons
+                  name={"cloud-download"}
+                  size={35}
+                  color="#FFFFFF"
+                />
+                <Text
+                  style={{ fontSize: 13, color: "#ffffff", marginLeft: 15 }}
+                >
+                  {t("common:downloadev")}
                 </Text>
-                {loading && (
+                {loadingd && (
                   <ActivityIndicator
-                    ref={loadingRef}
+                    ref={loadingdRef}
+                    style={{ marginLeft: 10 }}
+                    size="small"
+                    color="#fff"
+                  />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleDownloadCompetitors}
+                style={{
+                  height: 60,
+                  backgroundColor: "#111F51",
+                  marginTop: 20,
+                  borderRadius: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "45%",
+                }}
+              >
+                <SimpleLineIcons
+                  name={"cloud-download"}
+                  size={35}
+                  color="#FFFFFF"
+                />
+                <Text
+                  style={{ fontSize: 13, color: "#ffffff", marginLeft: 15 }}
+                >
+                  {t("common:downloadcomp")}
+                </Text>
+                {loadingc && (
+                  <ActivityIndicator
+                    ref={loadingcRef}
                     style={{ marginLeft: 10 }}
                     size="small"
                     color="#fff"
@@ -544,103 +726,26 @@ const Setup = () => {
               </TouchableOpacity>
             </View>
           </View>
+        )}
+        {evaluationOption === "approot" && (
           <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <TouchableOpacity
-              onPress={handleDownloadEvaluation}
-              style={{
-                height: 60,
-                backgroundColor: "#111F51",
-                marginTop: 20,
-                borderRadius: 10,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "45%",
-              }}
-            >
-              <SimpleLineIcons
-                name={"cloud-download"}
-                size={35}
-                color="#FFFFFF"
-              />
-              <Text style={{ fontSize: 13, color: "#ffffff", marginLeft: 15 }}>
-                {t("common:downloadev")}
-              </Text>
-              {loadingd && (
-                <ActivityIndicator
-                  ref={loadingdRef}
-                  style={{ marginLeft: 10 }}
-                  size="small"
-                  color="#fff"
-                />
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleDownloadCompetitors}
-              style={{
-                height: 60,
-                backgroundColor: "#111F51",
-                marginTop: 20,
-                borderRadius: 10,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "45%",
-              }}
-            >
-              <SimpleLineIcons
-                name={"cloud-download"}
-                size={35}
-                color="#FFFFFF"
-              />
-              <Text style={{ fontSize: 13, color: "#ffffff", marginLeft: 15 }}>
-                {t("common:downloadcomp")}
-              </Text>
-              {loadingc && (
-                <ActivityIndicator
-                  ref={loadingcRef}
-                  style={{ marginLeft: 10 }}
-                  size="small"
-                  color="#fff"
-                />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-      {evaluationOption === "approot" && (
-        <View
-          style={{
-            paddingLeft: 40,
-            paddingRight: 40,
-            flex: 1,
-            backgroundColor: "#9FD1FF",
-          }}
-        >
-          <Text
             style={{
-              color: "#111F51",
-              fontSize: 19,
-              fontWeight: "500",
-              marginTop: 20,
+              paddingLeft: 40,
+              paddingRight: 40,
+              flex: 1,
+              backgroundColor: "#9FD1FF",
             }}
           >
-            {t("common:setuproot")}
-          </Text>
-          <Text
-            style={{
-              color: "#000",
-              fontSize: 16,
-              fontWeight: "300",
-              marginTop: 10,
-            }}
-          >
-            {t("common:rootsubtitle")}
-          </Text>
-
-          <View style={{ marginTop: 10 }}>
+            <Text
+              style={{
+                color: "#111F51",
+                fontSize: 19,
+                fontWeight: "500",
+                marginTop: 20,
+              }}
+            >
+              {t("common:setuproot")}
+            </Text>
             <Text
               style={{
                 color: "#000",
@@ -649,124 +754,137 @@ const Setup = () => {
                 marginTop: 10,
               }}
             >
-              {t("common:rootcomp")}
+              {t("common:rootsubtitle")}
             </Text>
 
+            <View style={{ marginTop: 10 }}>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 16,
+                  fontWeight: "300",
+                  marginTop: 10,
+                }}
+              >
+                {t("common:rootcomp")}
+              </Text>
+
+              <TouchableOpacity
+                style={{
+                  height: 50,
+                  borderColor: "#FFFFFF",
+                  borderWidth: 1,
+                  marginTop: 10,
+                  paddingLeft: 10,
+                  borderRadius: 10,
+                  width: "100%",
+                  justifyContent: "center",
+                }}
+                onPress={handleCompetitorFile}
+              >
+                {competitorFile.map((file, index) => (
+                  <Text
+                    key={index.toString()}
+                    style={styles.uri}
+                    numberOfLines={1}
+                    ellipsizeMode={"middle"}
+                  >
+                    {file?.uri}
+                  </Text>
+                ))}
+              </TouchableOpacity>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 13,
+                  fontWeight: "300",
+                  marginTop: 4,
+                }}
+              >
+                {t("common:rootcompinf")}
+              </Text>
+            </View>
             <TouchableOpacity
+              onPress={handleLoadCompetitorData}
               style={{
+                backgroundColor: "#111F51",
                 height: 50,
-                borderColor: "#FFFFFF",
-                borderWidth: 1,
-                marginTop: 10,
-                paddingLeft: 10,
-                borderRadius: 10,
-                width: "100%",
+                width: 170,
+                borderRadius: 5,
+                marginTop: 30,
                 justifyContent: "center",
+                alignItems: "center",
               }}
-              onPress={handleCompetitorFile}
             >
-              {competitorFile.map((file, index) => (
-                <Text
-                  key={index.toString()}
-                  style={styles.uri}
-                  numberOfLines={1}
-                  ellipsizeMode={"middle"}
-                >
-                  {file?.uri}
-                </Text>
-              ))}
+              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
+                {t("common:dataload")}
+              </Text>
             </TouchableOpacity>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 13,
-                fontWeight: "300",
-                marginTop: 4,
-              }}
-            >
-              {t("common:rootcompinf")}
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={handleLoadCompetitorData}
-            style={{
-              backgroundColor: "#111F51",
-              height: 50,
-              width: 170,
-              borderRadius: 5,
-              marginTop: 30,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
-              {t("common:dataload")}
-            </Text>
-          </TouchableOpacity>
-          <View style={{ marginTop: 10 }}>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 16,
-                fontWeight: "300",
-                marginTop: 10,
-              }}
-            >
-              {t("common:rooteva")}
-            </Text>
+            <View style={{ marginTop: 10 }}>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 16,
+                  fontWeight: "300",
+                  marginTop: 10,
+                }}
+              >
+                {t("common:rooteva")}
+              </Text>
+              <TouchableOpacity
+                onPress={handleEvaluationFile}
+                style={{
+                  height: 50,
+                  borderColor: "#FFFFFF",
+                  borderWidth: 1,
+                  marginTop: 10,
+                  paddingLeft: 10,
+                  borderRadius: 10,
+                  width: "100%",
+                  justifyContent: "center",
+                }}
+              >
+                {evaluationFile.map((file, index) => (
+                  <Text
+                    key={index.toString()}
+                    style={styles.uri}
+                    numberOfLines={1}
+                    ellipsizeMode={"middle"}
+                  >
+                    {file?.uri}
+                  </Text>
+                ))}
+              </TouchableOpacity>
+              <Text
+                style={{
+                  color: "#000",
+                  fontSize: 13,
+                  fontWeight: "300",
+                  marginTop: 4,
+                }}
+              >
+                {t("common:rootevainf")}
+              </Text>
+            </View>
             <TouchableOpacity
-              onPress={handleEvaluationFile}
+              onPress={handleLoadEvaluationData}
               style={{
+                backgroundColor: "#111F51",
                 height: 50,
-                borderColor: "#FFFFFF",
-                borderWidth: 1,
-                marginTop: 10,
-                paddingLeft: 10,
-                borderRadius: 10,
-                width: "100%",
+                width: 170,
+                borderRadius: 5,
+                marginTop: 30,
                 justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              {evaluationFile.map((file, index) => (
-                <Text
-                  key={index.toString()}
-                  style={styles.uri}
-                  numberOfLines={1}
-                  ellipsizeMode={"middle"}
-                >
-                  {file?.uri}
-                </Text>
-              ))}
+              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
+                {t("common:dataload")}
+              </Text>
             </TouchableOpacity>
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 13,
-                fontWeight: "300",
-                marginTop: 4,
-              }}
-            >
-              {t("common:rootevainf")}
-            </Text>
           </View>
-          <TouchableOpacity
-            onPress={handleLoadEvaluationData}
-            style={{
-              backgroundColor: "#111F51",
-              height: 50,
-              width: 170,
-              borderRadius: 5,
-              marginTop: 30,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
-              {t("common:dataload")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

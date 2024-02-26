@@ -17,13 +17,14 @@ import QuestionList from "../components/QuestionList";
 import { useTranslation } from "react-i18next";
 
 const EvaluationProcess = () => {
-  
   const navigation = useNavigation();
   const route = useRoute();
   const { t } = useTranslation();
   const { students } = route.params;
   const studentId = students.map((student) => student.id);
   const studentIds = students.map((student) => student.group);
+  const studentfamilyname = students.map((student) => student.family_name);
+  const studentfirstname = students.map((student) => student.first_name);
   const loadingcRef = useRef(null);
   const loadingdRef = useRef(null);
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
@@ -31,9 +32,12 @@ const EvaluationProcess = () => {
   const [loadingd, setLoadingd] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [currentStudentIndex, setCurrentStudentIndex] = useState(0);
+  const [showMarkStatus, setShowMarkStatus] = useState(false);
+  const [showCompetitorsStatus, setShowCompetitorsStatus] = useState(false);
 
   useEffect(() => {
     loadDownloadedEvaluationData();
+    loadStatus();
   }, [currentStudentIndex]);
 
   const loadDownloadedEvaluationData = async () => {
@@ -48,6 +52,37 @@ const EvaluationProcess = () => {
       }
     } catch (error) {
       console.error("Error loading downloaded data:", error);
+    }
+  };
+
+  // Inside the EvaluationProcess component
+  const getTotalPoints = () => {
+    let totalPoints = 0;
+    for (const questionSection of sections) {
+      for (const question of questionSection.questions) {
+        const selectedAnswerId = selectedAnswers[question.questionnumber];
+        if (selectedAnswerId) {
+          const selectedAnswer = question.answers[selectedAnswerId];
+          if (selectedAnswer) {
+            totalPoints += selectedAnswer.points;
+          }
+        }
+      }
+    }
+    return totalPoints;
+  };
+
+
+
+  const loadStatus = async () => {
+    const showMarkData = await AsyncStorage.getItem("showmark");
+    const showCompetitorsData = await AsyncStorage.getItem("showcompetitors");
+
+    if (showMarkData) {
+      setShowMarkStatus(JSON.parse(showMarkData).status);
+    }
+    if (showCompetitorsData) {
+      setShowCompetitorsStatus(JSON.parse(showCompetitorsData).status);
     }
   };
 
@@ -110,8 +145,12 @@ const EvaluationProcess = () => {
       const currentStudent = studentId[currentStudentIndex];
       const formattedAnswers = formatSelectedAnswers(selectedAnswers);
       let evaluationResults = await AsyncStorage.getItem("evaluationResults");
-      evaluationResults = evaluationResults ? JSON.parse(evaluationResults) : {};
-      evaluationResults[currentStudent] = evaluationResults[currentStudent] ? evaluationResults[currentStudent].concat(formattedAnswers) : formattedAnswers;
+      evaluationResults = evaluationResults
+        ? JSON.parse(evaluationResults)
+        : {};
+      evaluationResults[currentStudent] = evaluationResults[currentStudent]
+        ? evaluationResults[currentStudent].concat(formattedAnswers)
+        : formattedAnswers;
 
       await AsyncStorage.setItem(
         "evaluationResults",
@@ -126,10 +165,25 @@ const EvaluationProcess = () => {
     }
   };
 
+  const saveTotalScore = async () => {
+    try {
+      const currentStudent = studentId[currentStudentIndex];
+      const totalScore = getTotalPoints();
+      let totalScores = await AsyncStorage.getItem("totalScores");
+      totalScores = totalScores ? JSON.parse(totalScores) : {};
+      totalScores[currentStudent] = totalScore;
+      await AsyncStorage.setItem("totalScores", JSON.stringify(totalScores));
+      console.log("Total Scores:", totalScores);
+    } catch (error) {
+      console.error("Error saving total score:", error);
+    }
+  };
+
   const handleNext = () => {
     setLoadingc(true);
     try {
       saveEvaluation();
+      saveTotalScore();
       setSelectedAnswers({});
       setCurrentStudentIndex((prevIndex) =>
         Math.min(prevIndex + 1, studentId.length - 1)
@@ -156,7 +210,8 @@ const EvaluationProcess = () => {
         prevStudentAnswers.reduce((acc, answer, index) => {
           acc[index + 1] = answer;
           return acc;
-        }, {}));
+        }, {})
+      );
     } catch (error) {
       console.error("Error loading previous evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");
@@ -164,8 +219,6 @@ const EvaluationProcess = () => {
       setLoadingd(false);
     }
   };
-
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -228,26 +281,28 @@ const EvaluationProcess = () => {
             }}
           >
             <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              {t("common:station")}: {evaluations.data.station_name}
+              {evaluations.data.station_name}
             </Text>
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              {t("common:Subject")}: Medicina Interna
-            </Text>
-          </View>
-
-          <View
-            style={{
-              width: "25%",
-              backgroundColor: "#3d85c6",
-              alignItems: "center",
-              height: 40,
-              borderRadius: 20,
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "500", color: "#fff" }}>
-              {studentIds[currentStudentIndex]}
-            </Text>
+            <View style={{ alignItems: "center", flexDirection: "row" }}>
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {studentIds[currentStudentIndex]} -
+              </Text>
+              {showCompetitorsStatus && (
+                <Text
+                  style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
+                >
+                  {studentfamilyname[currentStudentIndex]}{" "}
+                  {studentfirstname[currentStudentIndex]}
+                </Text>
+              )}
+              {showMarkStatus && (
+                <Text
+                  style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
+                >
+                  ({getTotalPoints()})
+                </Text>
+              )}
+            </View>
           </View>
         </View>
         {/* <Text>{formattedAnswersArray}</Text> */}
