@@ -274,6 +274,7 @@ const Setup = () => {
         alert("Download successful");
         await AsyncStorage.removeItem("evaluationResults");
         await AsyncStorage.removeItem("totalScores");
+        await AsyncStorage.removeItem("uploadedResultIds");
       } else {
         alert("Failed to download evaluation. Please try again.");
       }

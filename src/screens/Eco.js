@@ -217,6 +217,13 @@ const Eco = () => {
       });
 
       if (response.ok) {
+
+        const evaluationResultIds = Object.keys(parsedEvaluationResults);
+        console.log("Evaluation result IDs:", evaluationResultIds);
+        await AsyncStorage.setItem(
+          "uploadedResultIds",
+          JSON.stringify(evaluationResultIds)
+        );
         Alert.alert("Success", "Evaluation saved successfully!", [
           {
             text: "Save as JSON",
@@ -278,7 +285,7 @@ const Eco = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <AntDesign name="leftcircleo" size={25} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Eco</Text>
+        <Text style={styles.headerText}>{t("common:eco")}</Text>
       </View>
       {loading ? ( // Render loader if loading state is true
         <View style={styles.loaderContainer}>

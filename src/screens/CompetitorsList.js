@@ -22,12 +22,14 @@ const CompetitorsList = () => {
   const [showCompetitorsStatus, setShowCompetitorsStatus] = useState(false);
   const [competitorsData, setCompetitorsData] = useState([]);
   const [studentScores, setStudentScores] = useState([]);
+  const [savedIds, setSavedIds] = useState([]);
   const { t } = useTranslation();
 
   useEffect(() => {
     loadDownloadedCompetitorData();
     loadStatus();
     fetchTotalScore();
+    fetchSavedIds();
   }, []);
 
   const loadDownloadedCompetitorData = async () => {
@@ -63,7 +65,19 @@ const CompetitorsList = () => {
       console.error("Error retrieving student scores:", error);
     }
   };
-  
+    
+  const fetchSavedIds = async () => {
+    try {
+      const savedIdsJson = await AsyncStorage.getItem("uploadedResultIds");
+      if (savedIdsJson) {
+        console.log("uploaded ids:", savedIdsJson);
+        const parsedSavedIds = JSON.parse(savedIdsJson);
+        setSavedIds(parsedSavedIds);
+      }
+    } catch (error) {
+      console.error("Error fetching saved IDs:", error);
+    }
+  };
 
   const loadStatus = async () => {
     const showMarkData = await AsyncStorage.getItem("showmark");
@@ -98,8 +112,13 @@ const CompetitorsList = () => {
   const renderTableRow = ({ item }) => (
     <View style={styles.row}>
       <View style={styles.cell}>
-        <Feather name={"toggle-right"} size={25} color={"green"} />
+        {savedIds.includes(item.id.toString()) ? (
+          <Feather name={"toggle-right"} size={25} color={"green"} />
+        ) : (
+          <Feather name={"toggle-left"} size={25} color={"grey"} />
+        )}
       </View>
+
       {showCompetitorsStatus && (
         <Text style={styles.celli}>
           {item.first_name} {item.family_name}
