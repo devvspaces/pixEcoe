@@ -130,16 +130,11 @@ const Setup = () => {
   const handleCompetitorFile = useCallback(async () => {
     try {
       const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.csv],
+        presentationStyle: "fullScreen",
       });
       setcompetitorFile(res);
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log("Document picker was cancelled");
-      } else {
-        console.error("Error while picking the file:", err);
-        Alert.alert("Error", "An error occurred while picking the CSV file.");
-      }
+     } catch (err) {
+      console.warn(err);
     }
   }, []);
 
@@ -330,7 +325,7 @@ const Setup = () => {
     }
   };
 
-  const handleLoadCompetitorData = useCallback(async () => {
+  const handleLoadCompetitorData = async () => {
     try {
       if (!competitorFile) {
         Alert.alert("Error", "Please select a CSV file.");
@@ -344,25 +339,59 @@ const Setup = () => {
       console.error("Error loading competitor data:", error);
       Alert.alert("Error", "An error occurred while loading competitor data.");
     }
-  }, [competitorFile]);
+  };
 
   const handleLoadEvaluationData = async () => {
-    if (!evaluationFile) {
+    if (!evaluationFile.length) {
       alert("Please select an evaluation file.");
       return;
     }
-
     try {
-      const fileContent = await evaluationFile.readAsString();
-      const evaluationData = JSON.parse(fileContent);
-      await AsyncStorage.setItem(
-        "downloadedEvaluationData",
-        JSON.stringify(evaluationData)
-      );
-      alert("Evaluation data loaded successfully.");
-    } catch (error) {
+      const evaluatedData = await AsyncStorage.getItem("evaluationResults");
+      if (evaluatedData) {
+        Alert.alert(
+          "Evaluated data is found on the device",
+          "Do you want to proceed with downloading the evaluation which will result in deletion of the existing data?",
+          [
+            {
+              text: "Yes",
+              onPress: async () => {
+                await downloadEvaluation();
+              },
+            },
+            {
+              text: "No",
+              style: "cancel",
+            },
+          ]
+        );
+      } else {
+        setLoading(true);
+        const uri = evaluationFile[0].uri;
+        const res = await RNFS.readFile(uri, "utf8");
+        console.log(res);
+        const data = JSON.parse(res);
+        await AsyncStorage.setItem(
+          "downloadedEvaluationData",
+          JSON.stringify(data)
+        );
+        const { station_name, station_number } = data.data;
+        const evaluationDetails = { station_name, station_number };
+        await AsyncStorage.setItem(
+          "EvaluationDetails",
+          JSON.stringify(evaluationDetails)
+        );
+        console.log("EvaluationDetails:", evaluationDetails);
+        alert("Data loaded successfully");
+        await AsyncStorage.removeItem("evaluationResults");
+        await AsyncStorage.removeItem("totalScores");
+        await AsyncStorage.removeItem("uploadedResultIds");
+      }
+    }catch (error) {
       console.error("Error loading evaluation data:", error);
       alert("An error occurred while loading evaluation data.");
+    } finally {
+      setLoading(false);
     }
   };
 
