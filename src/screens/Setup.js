@@ -335,26 +335,41 @@ const Setup = () => {
       const fileContent = await RNFS.readFile(uri, "utf8");
       console.log("CSV File Content:", fileContent);
       const parsedData = Papa.parse(fileContent, { header: true }).data;
+
+      // await AsyncStorage.setItem(
+      //   "downloadedCompetitorData",
+      //   JSON.stringify(parsedData)
+      // );
+      // await AsyncStorage.setItem(
+      //   "downloadedCompetitorRawData",
+      //   JSON.stringify(parsedData)
+      // );
+
+      const jsonData = {
+        students: parsedData.map((student, index) => ({
+          id: index + 1,
+          family_name: student.FAMILY_NAME,
+          first_name: student.FIRST_NAME,
+          group: student.GROUP,
+        })),
+      };
       await AsyncStorage.setItem(
         "downloadedCompetitorData",
-        JSON.stringify(parsedData)
+        JSON.stringify(jsonData)
       );
       await AsyncStorage.setItem(
         "downloadedCompetitorRawData",
-        JSON.stringify(parsedData)
+        JSON.stringify(jsonData)
       );
-      Alert.alert("Success", "CSV data loaded and stored successfully");
+       console.log("JSON Data:", jsonData);
+      Alert.alert("Success", "CSV student data loaded successfully");
     } catch (error) {
-      console.error("Error loading competitor data:", error);
-      Alert.alert("Error", "An error occurred while loading competitor data.");
+      console.error("Error loading student data:", error);
+      Alert.alert("Error", "An error occurred while loading student data.");
     }
   };
 
-  const handleLoadEvaluationData = async () => {
-    if (!evaluationFile.length) {
-      alert("Please select an evaluation file.");
-      return;
-    }
+  const handleLocalDownloadEvaluation = async () => {
     try {
       const evaluatedData = await AsyncStorage.getItem("evaluationResults");
       if (evaluatedData) {
@@ -365,7 +380,7 @@ const Setup = () => {
             {
               text: "Yes",
               onPress: async () => {
-                await downloadEvaluation();
+                await handleLoadEvaluationData();
               },
             },
             {
@@ -375,32 +390,42 @@ const Setup = () => {
           ]
         );
       } else {
-        setLoading(true);
-        const uri = evaluationFile[0].uri;
-        const res = await RNFS.readFile(uri, "utf8");
-        console.log(res);
-        const data = JSON.parse(res);
-        await AsyncStorage.setItem(
-          "downloadedEvaluationData",
-          JSON.stringify(data)
-        );
-        const { station_name, station_number } = data.data;
-        const evaluationDetails = { station_name, station_number };
-        await AsyncStorage.setItem(
-          "EvaluationDetails",
-          JSON.stringify(evaluationDetails)
-        );
-        console.log("EvaluationDetails:", evaluationDetails);
-        alert("Data loaded successfully");
-        await AsyncStorage.removeItem("evaluationResults");
-        await AsyncStorage.removeItem("totalScores");
-        await AsyncStorage.removeItem("uploadedResultIds");
+        await handleLoadEvaluationData();
       }
+    } catch (error) {
+      console.error("Error during download evaluation:", error);
+      alert("An unexpected error occurred. Please try again later.");
+    }
+  };
+
+  const handleLoadEvaluationData = async () => {
+    if (!evaluationFile.length) {
+      alert("Please select an evaluation file.");
+      return;
+    }
+    try {
+      const uri = evaluationFile[0].uri;
+      const res = await RNFS.readFile(uri, "utf8");
+      console.log(res);
+      const data = JSON.parse(res);
+      await AsyncStorage.setItem(
+        "downloadedEvaluationData",
+        JSON.stringify(data)
+      );
+      const { station_name, station_number } = data.data;
+      const evaluationDetails = { station_name, station_number };
+      await AsyncStorage.setItem(
+        "EvaluationDetails",
+        JSON.stringify(evaluationDetails)
+      );
+      console.log("EvaluationDetails:", evaluationDetails);
+      alert("Data loaded successfully");
+      await AsyncStorage.removeItem("evaluationResults");
+      await AsyncStorage.removeItem("totalScores");
+      await AsyncStorage.removeItem("uploadedResultIds");
     }catch (error) {
       console.error("Error loading evaluation data:", error);
       alert("An error occurred while loading evaluation data.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -931,7 +956,7 @@ const Setup = () => {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={handleLoadEvaluationData}
+              onPress={handleLocalDownloadEvaluation}
               style={{
                 backgroundColor: "#111F51",
                 height: 50,
