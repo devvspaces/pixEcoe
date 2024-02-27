@@ -331,9 +331,18 @@ const Setup = () => {
         Alert.alert("Error", "Please select a CSV file.");
         return;
       }
-      const fileContent = await RNFS.readFile(competitorFile.uri, "utf8");
+      const uri = competitorFile[0].uri;
+      const fileContent = await RNFS.readFile(uri, "utf8");
+      console.log("CSV File Content:", fileContent);
       const parsedData = Papa.parse(fileContent, { header: true }).data;
-      await AsyncStorage.setItem("competitorData", JSON.stringify(parsedData));
+      await AsyncStorage.setItem(
+        "downloadedCompetitorData",
+        JSON.stringify(parsedData)
+      );
+      await AsyncStorage.setItem(
+        "downloadedCompetitorRawData",
+        JSON.stringify(parsedData)
+      );
       Alert.alert("Success", "CSV data loaded and stored successfully");
     } catch (error) {
       console.error("Error loading competitor data:", error);
