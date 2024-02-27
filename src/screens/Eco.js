@@ -253,7 +253,6 @@ const Eco = () => {
   };
 
   const saveResultsAsJSON = async () => {
-
     try {
       const evaluationResults = await AsyncStorage.getItem("evaluationResults");
       if (!evaluationResults) {
@@ -261,7 +260,9 @@ const Eco = () => {
         return;
       }
       const parsedEvaluationResults = JSON.parse(evaluationResults);
-      const filePath = `${RNFS.DocumentDirectoryPath}/${folderName}/${fileName}.json`;
+      const folderPath = `${RNFS.DocumentDirectoryPath}/${folderName}`;
+      await RNFS.mkdir(folderPath);
+      const filePath = `${folderPath}/${fileName}.json`;
       await RNFS.writeFile(
         filePath,
         JSON.stringify(parsedEvaluationResults),

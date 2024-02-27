@@ -18,13 +18,13 @@ export default {
   downloadev: "Descargar estaciones",
   downloadcomp: "Descargar alumnos",
   rootsubtitle:
-    "Seleccionar y elegir competidores y datos de evaluación localmente.",
-  rootcomp: "Competidor (CSV)",
-  rooteva: "Evaluación (JSON)",
+    "Seleccionar y elegir competidores y datos de sstaciones localmente.",
+  rootcomp: "Alumnos (CSV)",
+  rooteva: "Estaciones (JSON)",
   rootcompinf:
-    "Seleccione el archivo csv que contiene los datos de la competencia.",
+    "Seleccione el archivo csv que contiene los datos de la alumnos.",
   rootevainf:
-    "Seleccione el archivo json que contiene los datos de evaluación.",
+    "Seleccione el archivo json que contiene los datos de sstaciones.",
   dataload: "Cargar datos",
   passtext: "Ingrese la contraseña del dispositivo",
   submittext: "Entregar",
