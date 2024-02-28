@@ -176,22 +176,38 @@ const EvaluationProcess = () => {
   const saveEvaluation = async () => {
     try {
       const currentStudent = studentId[currentStudentIndex];
-      const formattedAnswers = formatSelectedAnswers(selectedAnswers);
+      const totalQuestions = sections.reduce(
+        (count, section) => count + section.questions.length,
+        0
+      );
+
+      const formattedAnswers = Array.from(
+        { length: totalQuestions },
+        (_, index) => {
+          const questionNumber = index + 1;
+          return selectedAnswers[questionNumber] || ""; // Use selected answer if available, otherwise use empty string
+        }
+      );
+
       let evaluationResults = await AsyncStorage.getItem("evaluationResults");
       evaluationResults = evaluationResults
         ? JSON.parse(evaluationResults)
         : {};
-      evaluationResults[currentStudent] = formattedAnswers; // Update selected answers for the current student
+      evaluationResults[currentStudent] = formattedAnswers;
+
       await AsyncStorage.setItem(
         "evaluationResults",
         JSON.stringify(evaluationResults)
       );
+
       console.log("Updated Evaluation Results:", evaluationResults);
     } catch (error) {
       console.error("Error saving evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");
     }
   };
+
+
 
 
   const saveTotalScore = async () => {
