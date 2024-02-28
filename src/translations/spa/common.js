@@ -3,7 +3,7 @@ export default {
   languageSelector: "Elige tu idioma",
   language: "Idioma",
   theme: "Tema predeterminado",
-  save: "Ahorrar",
+  save: "Guardar",
   setupapi: "Autenticación API",
   setuproot: "App raíz",
   refreeid: "ID Evaluador",
@@ -14,7 +14,7 @@ export default {
   pass: "Contraseña",
   evalua: "Estaciones",
   select: "Seleccionar",
-  loadev: "Cegar estaciones",
+  loadev: "Cargar estaciones",
   downloadev: "Descargar estaciones",
   downloadcomp: "Descargar alumnos",
   rootsubtitle:

@@ -20,25 +20,54 @@ const EvaluationProcess = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { t } = useTranslation();
-  const { students } = route.params;
+  const { students, studentDi } = route.params;
+
   const studentId = students.map((student) => student.id);
   const studentIds = students.map((student) => student.group);
   const studentfamilyname = students.map((student) => student.family_name);
   const studentfirstname = students.map((student) => student.first_name);
+  const [currentStudentIndex, setCurrentStudentIndex] = useState(
+    students.findIndex((student) => student.id === studentDi)
+  );
+  const [loading, setLoading] = useState(true);
   const loadingcRef = useRef(null);
   const loadingdRef = useRef(null);
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
   const [loadingc, setLoadingc] = useState(false);
   const [loadingd, setLoadingd] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [currentStudentIndex, setCurrentStudentIndex] = useState(0);
   const [showMarkStatus, setShowMarkStatus] = useState(false);
   const [showCompetitorsStatus, setShowCompetitorsStatus] = useState(false);
 
   useEffect(() => {
     loadDownloadedEvaluationData();
     loadStatus();
+    loadSelectedAnswers();
   }, [currentStudentIndex]);
+
+  useEffect(() => {
+    saveEvaluation();
+    saveTotalScore();
+  }, [selectedAnswers]);
+
+  const loadSelectedAnswers = async () => {
+    try {
+      const currentStudent = studentId[currentStudentIndex];
+      let evaluationResults = await AsyncStorage.getItem("evaluationResults");
+      evaluationResults = evaluationResults
+        ? JSON.parse(evaluationResults)
+        : {};
+      const currentStudentAnswers = evaluationResults[currentStudent] || [];
+      setSelectedAnswers(
+        currentStudentAnswers.reduce((acc, answer, index) => {
+          acc[index + 1] = answer;
+          return acc;
+        }, {})
+      );
+    } catch (error) {
+      console.error("Error loading selected answers:", error);
+    }
+  };
 
   const loadDownloadedEvaluationData = async () => {
     try {
@@ -50,8 +79,11 @@ const EvaluationProcess = () => {
         setEvaluations(parsedData);
         // console.log("Downloaded Evaluation Data:", parsedData);
       }
+      setLoading(false);
     } catch (error) {
-      console.error("Error loading downloaded data:", error);
+      console.error("Error loading evaluation data:", error);
+      setLoading(false); 
+      Alert.alert("Error", "An unexpected error occurred");
     }
   };
 
@@ -149,21 +181,18 @@ const EvaluationProcess = () => {
       evaluationResults = evaluationResults
         ? JSON.parse(evaluationResults)
         : {};
-      evaluationResults[currentStudent] = evaluationResults[currentStudent]
-        ? evaluationResults[currentStudent].concat(formattedAnswers)
-        : formattedAnswers;
-
+      evaluationResults[currentStudent] = formattedAnswers; // Update selected answers for the current student
       await AsyncStorage.setItem(
         "evaluationResults",
         JSON.stringify(evaluationResults)
       );
-
       console.log("Updated Evaluation Results:", evaluationResults);
     } catch (error) {
       console.error("Error saving evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");
     }
   };
+
 
   const saveTotalScore = async () => {
     try {
@@ -182,12 +211,8 @@ const EvaluationProcess = () => {
   const handleNext = () => {
     setLoadingc(true);
     try {
-      saveEvaluation();
-      saveTotalScore();
       setSelectedAnswers({});
-      setCurrentStudentIndex((prevIndex) =>
-        Math.min(prevIndex + 1, studentId.length - 1)
-      );
+      setCurrentStudentIndex((prevIndex) => (prevIndex + 1) % studentId.length);
     } catch (error) {
       console.error("Error saving evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");
@@ -248,7 +273,7 @@ const EvaluationProcess = () => {
           <TouchableOpacity
             style={styles.button}
             onPress={handleNext}
-            disabled={currentStudentIndex === studentId.length - 1 || loadingc}
+            // disabled={currentStudentIndex === studentId.length - 1 || loadingc}
           >
             {loadingc ? (
               <ActivityIndicator size="small" color="#fff" />
@@ -259,69 +284,76 @@ const EvaluationProcess = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.content}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            height: 50,
-          }}
-        >
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#FFFFFF" />
+          <Text style={styles.loaderText}>{t("common:loading")}</Text>
+        </View>
+      ) : (
+        <View style={styles.content}>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              width: "70%",
-              borderRadius: 20,
-              backgroundColor: "#ffffff",
-              height: 40,
-              alignItems: "center",
-              paddingLeft: 10,
-              paddingRight: 10,
+              height: 50,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "500" }}>
-              {evaluations.data.station_name}
-            </Text>
-            <View style={{ alignItems: "center", flexDirection: "row" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "70%",
+                borderRadius: 20,
+                backgroundColor: "#ffffff",
+                height: 40,
+                alignItems: "center",
+                paddingLeft: 10,
+                paddingRight: 10,
+              }}
+            >
               <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                {studentIds[currentStudentIndex]} -
+                {evaluations.data.station_name}
               </Text>
-              {showCompetitorsStatus && (
-                <Text
-                  style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
-                >
-                  {studentfamilyname[currentStudentIndex]}{" "}
-                  {studentfirstname[currentStudentIndex]}
+              <View style={{ alignItems: "center", flexDirection: "row" }}>
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                  {studentIds[currentStudentIndex]} -
                 </Text>
-              )}
-              {showMarkStatus && (
-                <Text
-                  style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
-                >
-                  ({getTotalPoints()})
-                </Text>
-              )}
+                {showCompetitorsStatus && (
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
+                  >
+                    {studentfamilyname[currentStudentIndex]}{" "}
+                    {studentfirstname[currentStudentIndex]}
+                  </Text>
+                )}
+                {showMarkStatus && (
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
+                  >
+                    ({getTotalPoints()})
+                  </Text>
+                )}
+              </View>
             </View>
           </View>
+          {/* <Text>{formattedAnswersArray}</Text> */}
+          <FlatList
+            data={sections}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <QuestionList
+                section={item}
+                handleAnswerSelection={handleAnswerSelection}
+                selectedAnswers={selectedAnswers}
+              />
+            )}
+            contentContainerStyle={{
+              paddingBottom: Platform.OS === "ios" ? 30 : 65,
+            }}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
-        {/* <Text>{formattedAnswersArray}</Text> */}
-        <FlatList
-          data={sections}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <QuestionList
-              section={item}
-              handleAnswerSelection={handleAnswerSelection}
-              selectedAnswers={selectedAnswers}
-            />
-          )}
-          contentContainerStyle={{
-            paddingBottom: Platform.OS === "ios" ? 30 : 65,
-          }}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -372,7 +404,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "40%",
     backgroundColor: "#9FD1FF",
-    alignItems:'center'
+    alignItems: "center",
   },
   button: {
     width: "45%",
@@ -380,13 +412,23 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    alignSelf:'center',
-    flexDirection:'row'
+    alignSelf: "center",
+    flexDirection: "row",
   },
   buttonText: {
     fontSize: 19,
     fontWeight: "600",
     color: "#fff",
-    marginRight:10
+    marginRight: 10,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loaderText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#fff",
   },
 });

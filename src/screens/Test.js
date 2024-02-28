@@ -118,7 +118,7 @@ const Test = () => {
                   {t("common:station")}: {evaluations.data.station_name}
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                  {t("common:subject")}: Medicina Interna
+                  {/* {t("common:subject")}: Medicina Intern */}
                 </Text>
               </View>
             </View>

@@ -170,6 +170,7 @@ const Eco = () => {
         // navigation.navigate("evalutaionProcess", { studentId: student.id })
         navigation.navigate("evalutaionProcess", {
           students: downloadedCompetitorData.students,
+          studentDi: student.id,
         })
       }
     >
