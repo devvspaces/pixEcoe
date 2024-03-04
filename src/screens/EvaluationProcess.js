@@ -207,9 +207,6 @@ const EvaluationProcess = () => {
     }
   };
 
-
-
-
   const saveTotalScore = async () => {
     try {
       const currentStudent = studentId[currentStudentIndex];
@@ -229,6 +226,7 @@ const EvaluationProcess = () => {
     try {
       setSelectedAnswers({});
       setCurrentStudentIndex((prevIndex) => (prevIndex + 1) % studentId.length);
+      Alert.alert("Success", "Evaluation saved");
     } catch (error) {
       console.error("Error saving evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");
@@ -240,8 +238,10 @@ const EvaluationProcess = () => {
   const handlePrevious = async () => {
     setLoadingd(true);
     try {
-      setCurrentStudentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-      const prevStudent = studentId[currentStudentIndex - 1];
+      const prevIndex =
+        (currentStudentIndex - 1 + studentId.length) % studentId.length;
+      setCurrentStudentIndex(prevIndex);
+      const prevStudent = studentId[prevIndex];
       let evaluationResults = await AsyncStorage.getItem("evaluationResults");
       evaluationResults = evaluationResults
         ? JSON.parse(evaluationResults)
@@ -261,6 +261,7 @@ const EvaluationProcess = () => {
     }
   };
 
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#000" />
@@ -276,7 +277,7 @@ const EvaluationProcess = () => {
           <TouchableOpacity
             style={styles.button}
             onPress={handlePrevious}
-            disabled={currentStudentIndex === 0 || loadingd}
+            // disabled={currentStudentIndex === 0 || loadingd}
           >
             {loadingd ? (
               <ActivityIndicator size="small" color="#fff" />

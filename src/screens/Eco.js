@@ -82,14 +82,12 @@ const Eco = () => {
         ? JSON.parse(evaluationDetailsString)
         : null;
       setEvaluationDetails(parsedEvaluationDetails);
-      // console.log("EvaluationDetails:", parsedEvaluationDetails);
       const downloadedData = await AsyncStorage.getItem(
         "downloadedEvaluationData"
       );
       if (downloadedData) {
         const parsedData = JSON.parse(downloadedData);
-        setEvaluations(parsedData);
-        // console.log("Downloaded Evaluation Data:", parsedData);
+        setEvaluations(parsedData);      
       }
     } catch (error) {
       console.error("Error loading downloaded data:", error);

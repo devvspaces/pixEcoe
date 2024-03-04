@@ -413,10 +413,13 @@ const Setup = () => {
         JSON.stringify(data)
       );
       const { station_name, station_number } = data.data;
-      const evaluationDetails = { station_name, station_number };
+      const transformedDetails = {
+        id: station_number,
+        name: station_name.trim(),
+      };
       await AsyncStorage.setItem(
         "EvaluationDetails",
-        JSON.stringify(evaluationDetails)
+        JSON.stringify(transformedDetails)
       );
       console.log("EvaluationDetails:", evaluationDetails);
       alert("Data loaded successfully");
