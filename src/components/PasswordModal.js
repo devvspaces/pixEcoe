@@ -24,7 +24,7 @@ const PasswordModal = ({ isVisible, onPasswordSubmit, onCancel }) => {
           <Text style={styles.modalTitle}>{t("common:passtext")}</Text>
           <TextInput
             style={styles.inputBox}
-            placeholder="Password"
+            placeholder={t("common:password")}
             secureTextEntry
             value={password}
             onChangeText={(text) => setPassword(text)}

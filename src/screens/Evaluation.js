@@ -37,10 +37,10 @@ const Evaluation = () => {
           backgroundColor: "#9FD1FF",
           flex: 1,
           paddingTop: 40,
-          paddingLeft: 40,
+          padding: 40,
         }}
       >
-        <View style={{ flexDirection: "row", width: "100%" }}>
+        <View style={{ flexDirection: "row", width: "100%", justifyContent:'space-between' }}>
           <TouchableOpacity onPress={() => navigation.navigate("filter")}>
             <View
               style={{
@@ -75,7 +75,6 @@ const Evaluation = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ marginLeft: 60 }}
             onPress={() => navigation.navigate("competitorslist")}
           >
             <View
@@ -110,8 +109,6 @@ const Evaluation = () => {
               {t("common:competlist")}
             </Text>
           </TouchableOpacity>
-        </View>
-        <View style={{ flexDirection: "row", width: "100%", paddingTop: 40 }}>
           <TouchableOpacity onPress={() => navigation.navigate("test")}>
             <View
               style={{
@@ -145,8 +142,9 @@ const Evaluation = () => {
               {t("common:test")}
             </Text>
           </TouchableOpacity>
+        </View>
+        <View style={{ flexDirection: "row", width: "100%", paddingTop: 40, justifyContent:'center' }}>
           <TouchableOpacity
-            style={{ marginLeft: 60 }}
             onPress={() => navigation.navigate("eco")}
           >
             <View

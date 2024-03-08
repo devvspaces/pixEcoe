@@ -253,6 +253,7 @@ const EvaluationProcess = () => {
           return acc;
         }, {})
       );
+      Alert.alert("Success", "Evaluation saved");
     } catch (error) {
       console.error("Error loading previous evaluation:", error);
       Alert.alert("Error", "An unexpected error occurred");

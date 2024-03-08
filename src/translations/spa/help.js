@@ -18,13 +18,13 @@ export default {
   testIcon:
     "(icono de estación) - Ir a la pantalla de prueba para previsualizar la estación actual",
   ecoIcon:
-    "(icono eco) - Ir a la pantalla Eco para evaluar a los participantes",
+    "(icono eco) - Ir a la pantalla Evaluación para evaluar a los participantes",
   backIcon: "(icono atrás) - Volver a la pantalla anterior",
   topic1: "Cómo filtrar participantes",
   topic2: "Cómo empezar a trabajar",
   topic3: "Cambiar el idioma de la aplicación",
   topic4: "Base de datos interna (almacenamiento asíncrono)",
-  topic5: "Evaluating students",
+  topic5: "Evaluar estudiantes",
   topic6: "Cargar los resultados",
   filterhelp1: "Ir a la pestaña de evaluación",
   filterhelp2: "Haga clic en el icono de filtro",
@@ -48,13 +48,13 @@ export default {
     "Cuando se cargan los resultados, se guardan en la base de datos interna, que funciona mediante almacenamiento asíncrono.",
   storage2:
     "Los resultados de la evaluación se guardan automáticamente en la base de datos interna.",
-  evaluate1: "Después de configurar la aplicación",
+  evaluate1: "Evaluando estudiantes",
   evaluate2: " Vaya a la pestaña de evaluación",
-  evaluate3: "Haga clic en el icono Eco",
+  evaluate3: "Haga click en el icono Evaluación",
   evaluate4: "Haz clic en cualquier participante",
-  evaluate5: "Califica al participanteMMM.",
+  evaluate5: "Evalua al participante.",
   result1: "Ir a la pestaña de evaluación.",
-  result2: "Haga clic en el icono Eco.",
+  result2: " Haga click en el icono Evaluación",
   result3: "Haga clic en el botón de carga en la parte superior de la pantalla",
   result4:
     "Los resultados se cargan en el servidor web y se guardan en la base de datos interna.",

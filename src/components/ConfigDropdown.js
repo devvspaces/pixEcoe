@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 
 const LANGUAGES = [
   { code: "en", label: "English" },
-  { code: "spa", label: "Spanish" },
+  { code: "spa", label: "Español" },
 ];
 
 const ConfigDropdown = ({ options, onSelect }) => {
@@ -57,7 +57,7 @@ const ConfigDropdown = ({ options, onSelect }) => {
   if (selectedLanguageCode === "en") {
     selectedLanguageLabel = "English";
   } else if (selectedLanguageCode === "spa") {
-    selectedLanguageLabel = "Spanish";
+    selectedLanguageLabel = "Español";
   }
 
   return (

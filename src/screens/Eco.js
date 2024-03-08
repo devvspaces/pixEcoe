@@ -189,7 +189,6 @@ const Eco = () => {
       console.error("Error: Evaluation details not available.");
       return;
     }
-   
     try {
       const evaluationResults = await AsyncStorage.getItem(
         "evaluationResults"
@@ -223,7 +222,7 @@ const Eco = () => {
           "uploadedResultIds",
           JSON.stringify(evaluationResultIds)
         );
-        Alert.alert("Success", "Evaluation saved successfully!", [
+        Alert.alert(t("alert:uploadevaluation"), [
           {
             text: "Save as JSON",
             onPress: () => setModalVisible(true),
@@ -259,7 +258,7 @@ const Eco = () => {
         return;
       }
       const parsedEvaluationResults = JSON.parse(evaluationResults);
-      const folderPath = `${RNFS.DocumentDirectoryPath}/${folderName}`;
+      const folderPath = `${RNFS.DownloadDirectoryPath}/${folderName}`;
       await RNFS.mkdir(folderPath);
       const filePath = `${folderPath}/${fileName}.json`;
       await RNFS.writeFile(

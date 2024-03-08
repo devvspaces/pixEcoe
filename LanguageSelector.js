@@ -1,11 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 
 const LANGUAGES = [
   { code: "en", label: "English" },
-  { code: "span", label: "Spanish" },
+  { code: "span", label: "Español" },
 ];
 
 const Selector = () => {

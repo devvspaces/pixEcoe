@@ -179,15 +179,13 @@ const Setup = () => {
               label: option.station_name,
             }))
           );
-          alert("Evaluation loaded successfully");
+          alert(t("alert:loadstation"));
           storeInputValues();
         } else {
           alert("Invalid response format. Please check your API.");
         }
       } else {
-        alert(
-          "Failed to load evaluation. Please check your credentials and try again."
-        );
+        alert(t("alert:loaderrorstation"));
       }
     } catch (error) {
       console.error("Error during API request:", error);
@@ -205,25 +203,27 @@ const Setup = () => {
   };
 
   const handleDownloadEvaluation = async () => {
+    if (
+      !selectedEvaluation
+    ) {
+      alert("Please Select a station.");
+      return;
+    }
     try {
       const evaluatedData = await AsyncStorage.getItem("evaluationResults");
       if (evaluatedData) {
-        Alert.alert(
-          "Evaluated data is found on the device",
-          "Do you want to proceed with downloading the evaluation which will result in deletion of the existing data?",
-          [
-            {
-              text: "Yes",
-              onPress: async () => {
-                await downloadEvaluation();
-              },
+        Alert.alert(t("alert:datatext1"), t("alert:datatext2"), [
+          {
+            text: t("alert:yes"),
+            onPress: async () => {
+              await downloadEvaluation();
             },
-            {
-              text: "No",
-              style: "cancel",
-            },
-          ]
-        );
+          },
+          {
+            text: t("alert:no"),
+            style: "cancel",
+          },
+        ]);
       } else {
         await downloadEvaluation();
       }
@@ -266,7 +266,7 @@ const Setup = () => {
         );
         console.log("Download Evaluation Response:", data);
         console.log("EvaluationDetails:", evaluationDetails);
-        alert("Download successful");
+        alert("alert:loadonestation");
         await AsyncStorage.removeItem("evaluationResults");
         await AsyncStorage.removeItem("totalScores");
         await AsyncStorage.removeItem("uploadedResultIds");
@@ -313,7 +313,7 @@ const Setup = () => {
           JSON.stringify(data)
         );
         console.log("Downloaded Competitor Response:", data);
-        alert("Download successful");
+        alert(t("alert:loadstudent"));
       } else {
         alert("Failed to download competitor. Please try again.");
       }
@@ -362,7 +362,7 @@ const Setup = () => {
         JSON.stringify(jsonData)
       );
        console.log("JSON Data:", jsonData);
-      Alert.alert("Success", "CSV student data loaded successfully");
+      Alert.alert(t("alert:loadstudent"));
     } catch (error) {
       console.error("Error loading student data:", error);
       Alert.alert("Error", "An error occurred while loading student data.");
@@ -373,22 +373,18 @@ const Setup = () => {
     try {
       const evaluatedData = await AsyncStorage.getItem("evaluationResults");
       if (evaluatedData) {
-        Alert.alert(
-          "Evaluated data is found on the device",
-          "Do you want to proceed with downloading the evaluation which will result in deletion of the existing data?",
-          [
-            {
-              text: "Yes",
-              onPress: async () => {
-                await handleLoadEvaluationData();
-              },
+        Alert.alert(t("alert:datatext1"), t("alert:datatext2"), [
+          {
+            text: t("alert:yes"),
+            onPress: async () => {
+              await handleLoadEvaluationData();
             },
-            {
-              text: "No",
-              style: "cancel",
-            },
-          ]
-        );
+          },
+          {
+            text: t("alert:no"),
+            style: "cancel",
+          },
+        ]);
       } else {
         await handleLoadEvaluationData();
       }
@@ -422,7 +418,7 @@ const Setup = () => {
         JSON.stringify(transformedDetails)
       );
       console.log("EvaluationDetails:", evaluationDetails);
-      alert("Data loaded successfully");
+      alert(t("alert:loadonestation"));
       await AsyncStorage.removeItem("evaluationResults");
       await AsyncStorage.removeItem("totalScores");
       await AsyncStorage.removeItem("uploadedResultIds");
@@ -549,6 +545,8 @@ const Setup = () => {
                   placeholder=""
                   value={refreeID}
                   onChangeText={(text) => setRefreeID(text)}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
               </View>
               <View>
@@ -560,13 +558,15 @@ const Setup = () => {
                     marginTop: 20,
                   }}
                 >
-                  {t("common:refreemail")} (License)
+                  {t("common:refreemail")}
                 </Text>
                 <TextInput
                   style={styles.inputBox}
                   placeholder=""
                   value={refreeEmail}
                   onChangeText={(text) => setRefreeEmail(text)}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
               </View>
               <View
@@ -665,6 +665,8 @@ const Setup = () => {
                   placeholder=""
                   value={serverUrl}
                   onChangeText={(text) => setServerUrl(text)}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
               </View>
               <View>
@@ -683,6 +685,8 @@ const Setup = () => {
                   placeholder=""
                   value={subjectId}
                   onChangeText={(text) => setSubjectId(text)}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
               </View>
               <View>
@@ -701,6 +705,8 @@ const Setup = () => {
                   placeholder=""
                   value={password}
                   onChangeText={(text) => setPassword(text)}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
               </View>
               <View

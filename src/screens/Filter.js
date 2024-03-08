@@ -11,7 +11,6 @@ import {
   SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Icon from "react-native-vector-icons/FontAwesome";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
@@ -108,9 +107,9 @@ const Filter = () => {
         "downloadedCompetitorData",
         JSON.stringify(newData)
       );
-      alert("Filter applied successfully");
+      alert(t("alert:filteralert"));
       console.log("Filtered competitor data saved successfully.");
-
+      navigation.goBack();
     } catch (error) {
       console.error("Error saving filtered competitor data:", error);
     }
