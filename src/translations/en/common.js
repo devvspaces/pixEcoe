@@ -50,4 +50,18 @@ export default {
   upload: "UPLOAD",
   showm: "Show Marks",
   showc: "Show Competitors name",
+
+  devicei: "Device info",
+  namei: "Name",
+  modeli: "Model",
+  versioni: "Version",
+  uuidi: "UUID",
+  seriai: "Serial",
+  othersi: "Others",
+  deviceq: "There is a tablet?",
+  devicelan: "Device Language",
+  activec: "Active Connection",
+  connectty: "Connection Type",
+  lastup: "Last Update",
+  validl: "Valid Liecence",
 };

@@ -19,7 +19,7 @@ import Setup from "../screens/Setup";
 import Evaluation from "../screens/Evaluation";
 import Configuration from "../screens/Configuration";
 import Help from "../screens/Help";
-
+import DeviceScreen from "../screens/DeviceScreen";
 import EvaluationProcess from "../screens/EvaluationProcess";
 import HelpDetails from "../screens/HelpDetails";
 import Filter from "../screens/Filter";
@@ -73,6 +73,11 @@ const TabNavigator = () => {
               ? require("../../assets/icons/helpa.png")
               : require("../../assets/icons/help.png");
             label = t("navigate:help");
+          } else if (route.name === "DeviceScreen") {
+            iconSource = focused
+              ? require("../../assets/icons/infoa.png")
+              : require("../../assets/icons/info.png");
+            label = t("navigate:deviceinfo");
           }
 
           return (
@@ -113,6 +118,11 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Help"
         component={Help}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="DeviceScreen"
+        component={DeviceScreen}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>
