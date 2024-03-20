@@ -19,6 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNFS from "react-native-fs";
 import { useTranslation } from "react-i18next";
+import { PermissionsAndroid } from "react-native";
 
 const Eco = () => {
 
@@ -37,13 +38,40 @@ const Eco = () => {
   const [folderName, setFolderName] = useState("");
   const [fileName, setFileName] = useState("");
   const [parsedEvaluationResults, setParsedEvaluationResults] = useState([]);
-  
+    const [storagePermissionGranted, setStoragePermissionGranted] =
+      useState(false);
+
   useFocusEffect(
     React.useCallback(() => {
       loadDownloadedEvaluationData();
       loadStoredValues();
+      requestStoragePermission();      
     }, [])
   );
+
+  const requestStoragePermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: "Storage Permission Required",
+          message: "This app requires storage permission to save files.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK",
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Storage permission granted");
+        setStoragePermissionGranted(true);
+      } else {
+        console.log("Storage permission denied");
+        setStoragePermissionGranted(false);
+      }
+    } catch (err) {
+      console.warn("Error requesting storage permission:", err);
+    }
+  };
 
   const loadStoredValues = async () => {
     setLoading(true);
@@ -247,6 +275,20 @@ const Eco = () => {
        ]);
     } finally {
       setLoadingc(false);
+    }
+  };
+
+  const checkAndSetModalVisibility = async () => {
+    const permissionGranted = await requestStoragePermission();
+    if (permissionGranted) {
+      setModalVisible(true);
+    } else {
+      // Handle case where permission is not granted
+      Alert.alert(
+        "Permission Required",
+        "Please grant permission to access storage to continue.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
     }
   };
 
