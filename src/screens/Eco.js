@@ -45,9 +45,12 @@ const Eco = () => {
     React.useCallback(() => {
       loadDownloadedEvaluationData();
       loadStoredValues();
-      requestStoragePermission();      
     }, [])
   );
+
+   useEffect(() => {
+    requestStoragePermission();
+  }, []);
 
   const requestStoragePermission = async () => {
     try {
