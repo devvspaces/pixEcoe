@@ -221,15 +221,13 @@ const Eco = () => {
       return;
     }
     try {
-      const evaluationResults = await AsyncStorage.getItem(
-        "evaluationResults"
-      );
+      const evaluationResults = await AsyncStorage.getItem("evaluationResults");
       if (!evaluationResults) {
         console.error("No evaluation results found.");
         return;
       }
       const parsedEvaluationResults = JSON.parse(evaluationResults);
-      console.log("Evaluation results.",parsedEvaluationResults);
+      console.log("Evaluation results.", parsedEvaluationResults);
       setLoadingc(true);
       const response = await fetch(`${serverUrl}/results/upload/`, {
         method: "POST",
@@ -241,41 +239,37 @@ const Eco = () => {
           email: refreeEmail,
           password: password,
           evaluation_id: evaluationDetails.id,
-          results: parsedEvaluationResults,      
+          results: parsedEvaluationResults,
         }),
       });
 
+      const errorMessage = await response.text();
       if (response.ok) {
-
         const evaluationResultIds = Object.keys(parsedEvaluationResults);
         console.log("Evaluation result IDs:", evaluationResultIds);
         await AsyncStorage.setItem(
           "uploadedResultIds",
           JSON.stringify(evaluationResultIds)
         );
+      }
+      setTimeout(() => {
         Alert.alert(t("alert:uploadevaluation"), [
           {
             text: "Save as JSON",
             onPress: () => setModalVisible(true),
           },
         ]);
-      } else {
-        const errorMessage = await response.text();
-        Alert.alert("Error", `Failed to save evaluation: ${errorMessage}`, [
-          {
-            text: "Save as JSON",
-            onPress: () => setModalVisible(true),
-          },
-        ]);
-      }
+      }, 1000); // Wait for 1 second before showing the alert
     } catch (error) {
       console.error("Error saving evaluation:", error);
-       Alert.alert("Error", "An unexpected error occurred", [
-         {
-           text: "Save as JSON",
-           onPress: () => setModalVisible(true),
-         },
-       ]);
+        setTimeout(() => {
+          Alert.alert("Error", "An unexpected error occurred", [
+            {
+              text: "Save as JSON",
+              onPress: () => setModalVisible(true),
+            },
+          ]);
+        }, 1000);
     } finally {
       setLoadingc(false);
     }
@@ -340,8 +334,8 @@ const Eco = () => {
         <>
           <ScrollView
             style={{
-              paddingLeft: 40,
-              paddingRight: 40,
+              paddingLeft: 20,
+              paddingRight: 20,
               flex: 1,
               backgroundColor: "#9FD1FF",
               paddingTop: 20,
@@ -464,27 +458,40 @@ const Eco = () => {
                 </View>
               </View>
             </Modal>
-            <ScrollView>
-              <View style={styles.tableRow}>
-                <View style={styles.firstColumn}>
-                  <Text style={styles.cellText}>ID</Text>
+
+            <ScrollView
+              style={{
+                flex: 1,
+                backgroundColor: "#9FD1FF",
+                paddingTop: 20,
+              }}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ flexGrow: 1 }}
+            >
+              <View style={{ flex: 1 }}>
+                <View style={styles.tableRow}>
+                  <View style={[styles.firstColumn, { width: 80 }]}>
+                    <Text style={styles.cellText}>ID</Text>
+                  </View>
+
+                  {tableHead.map((section) =>
+                    section.map(({ questionNumber }) => (
+                      <View style={[styles.tableCell, { width: 50 }]}>
+                        <Text key={questionNumber} style={styles.cellText}>
+                          {questionNumber}
+                        </Text>
+                      </View>
+                    ))
+                  )}
                 </View>
 
-                {tableHead.map((section) =>
-                  section.map(({ questionNumber }) => (
-                    <View style={styles.tableCell}>
-                      <Text key={questionNumber} style={styles.cellText}>
-                        {questionNumber}
-                      </Text>
-                    </View>
-                  ))
-                )}
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                  {students.map((student) => renderTableRow(student, parsedEvaluationResults))}
+                </ScrollView>
               </View>
-
-              {students.map((student) =>
-                renderTableRow(student, parsedEvaluationResults)
-              )}
             </ScrollView>
+
           </ScrollView>
         </>
       )}
@@ -562,16 +569,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#BDD6FC",
   },
   firstColumn: {
-    flex: 2,
-    width: "30%",
+    width: 80,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 10,
     borderWidth: 1,
     borderColor: "#000",
   },
   tableCell: {
-    flex: 1,
+    width: 50,
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 10,
