@@ -243,7 +243,9 @@ const Eco = () => {
         }),
       });
 
-      const errorMessage = await response.text();
+      const responseData = await response.json();
+      console.log("API Response:", responseData);
+
       if (response.ok) {
         const evaluationResultIds = Object.keys(parsedEvaluationResults);
         console.log("Evaluation result IDs:", evaluationResultIds);
@@ -252,14 +254,7 @@ const Eco = () => {
           JSON.stringify(evaluationResultIds)
         );
       }
-      setTimeout(() => {
-        Alert.alert(t("alert:uploadevaluation"), [
-          {
-            text: "Save as JSON",
-            onPress: () => setModalVisible(true),
-          },
-        ]);
-      }, 1000); // Wait for 1 second before showing the alert
+      setModalVisible(true)
     } catch (error) {
       console.error("Error saving evaluation:", error);
         setTimeout(() => {
