@@ -2,8 +2,7 @@ import "react-native-gesture-handler";
 import AppStack from "./src/navigation/AppStack";
 import {
   QueryClient,
-  QueryClientProvider,
-  focusManager,
+  QueryClientProvider
 } from "@tanstack/react-query";
 import FlashMessage from "react-native-flash-message";
 import "./src/constants/IMLocalize";
