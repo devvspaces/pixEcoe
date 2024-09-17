@@ -1,12 +1,22 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
-node_modules/
+v1/node_modules/
+v2/mobile/node_modules/
+v2/pc/node_modules/
 
 # Expo
-.expo/
-dist/
-web-build/
+v1/.expo/
+v1/dist/
+v1/web-build/
+
+v2/mobile/.expo/
+v2/mobile/dist/
+v2/mobile/web-build/
+
+v2/pc/.expo/
+v2/pc/dist/
+v2/pc/web-build/
 
 # Native
 *.orig.*
