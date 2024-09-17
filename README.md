@@ -34,13 +34,12 @@ For Android development:
 
 1. Clone the repository:
 
-   ```bash
+   ```
    git clone https://github.com/your-username/pixEcoe.git
    cd pixEcoe
 
 2. Install dependencies:
 ```
-bash
 npm install
 # or
 yarn install
@@ -48,7 +47,6 @@ yarn install
 
 3. Install CocoaPods dependencies (iOS only):
 ```
-bash
 cd ios
 pod install
 cd ..
@@ -58,7 +56,6 @@ cd ..
 Start the Development Server
 Start the Metro bundler:
 ```
-bash
 npm start
 # or
 yarn start
@@ -67,13 +64,11 @@ yarn start
 For iOS:
 
 ```
-bash
 npx react-native run-ios
 ```
 For Android:
 
 ```
-bash
 npx react-native run-android
 Building the Project
 ```
@@ -82,7 +77,6 @@ Building the Project
 Open the ios folder in Xcode:
 
 ```
-bash
 open ios/pixEcoe.xcworkspace
 Select your device or simulator and click the build button.
 ```
@@ -90,11 +84,11 @@ Select your device or simulator and click the build button.
 2. For Android
 Generate a release APK:
 ```
-bash
 cd android
 ./gradlew assembleRelease
 The APK can be found in android/app/build/outputs/apk/release.
 ```
+
 Usage
 Once the app is running, follow the on-screen instructions to download questions and student data.
 Use the language option in the settings to change the app's language.
@@ -156,8 +150,7 @@ Open a pull request.
 #### Testing
 To run tests, use the following command:
 
-```bash
-Copy code
+```
 npm test
 # or
 yarn test
