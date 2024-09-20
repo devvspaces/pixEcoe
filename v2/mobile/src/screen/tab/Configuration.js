@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Configuartion = () => {
+const Configuration = () => {
   return (
     <View>
       <Text>Configuartion</Text>
@@ -9,6 +9,6 @@ const Configuartion = () => {
   )
 }
 
-export default Configuartion
+export default Configuration
 
 const styles = StyleSheet.create({})

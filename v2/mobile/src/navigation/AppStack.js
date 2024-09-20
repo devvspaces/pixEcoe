@@ -15,18 +15,18 @@ import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 //Bottom tab navigator screens
-import Setup from "../screens/Setup";
-import Evaluation from "../screens/Evaluation";
-import Configuration from "../screens/Configuration";
-import Help from "../screens/Help";
-import DeviceScreen from "../screens/DeviceScreen";
-import EvaluationProcess from "../screens/EvaluationProcess";
-import HelpDetails from "../screens/HelpDetails";
-import Filter from "../screens/Filter";
-import Test from "../screens/Test";
-import CompetitorsList from "../screens/CompetitorsList";
-import Eco from "../screens/Eco";
-import DevicePassword from "../screens/DevicePassword";
+import Setup from "../screen/tab/Setup";
+import Evaluation from "../screen/tab/Evaluation";
+import Configuration from "../screen/tab/Configuration";
+import Help from "../screen/tab/Help";
+import DeviceInfo from "../screen/general/DeviceInfo";
+import DevicePassword from "../screen/general/DevicePassword";
+import Eco from "../screen/general/Eco";
+import Evaluate from "../screen/general/Evaluate";
+import Filter from "../screen/general/Filter";
+import HelpDetails from "../screen/general/HelpDetails";
+import Students from "../screen/general/Students";
+import Test from "../screen/general/Test";
 
 const Tab = createBottomTabNavigator();
 
@@ -55,29 +55,24 @@ const TabNavigator = () => {
 
           if (route.name === "Setup") {
             iconSource = focused
-              ? require("../../assets/icons/setupa.png")
-              : require("../../assets/icons/setup.png");
+              ? require("../../assets/icons/configactive.png")
+              : require("../../assets/icons/configinactive.png");
             label = t("navigate:setup");
           } else if (route.name === "Evaluation") {
             iconSource = focused
-              ? require("../../assets/icons/evaluationa.png")
-              : require("../../assets/icons/evaluation.png");
+              ? require("../../assets/icons/evaluationactive.png")
+              : require("../../assets/icons/evaluationinactive.png");
             label = t("navigate:evaluation");
           } else if (route.name === "Configuration") {
             iconSource = focused
-              ? require("../../assets/icons/settingsa.png")
-              : require("../../assets/icons/settings.png");
+              ? require("../../assets/icons/settingsactive.png")
+              : require("../../assets/icons/settingsinactive.png");
             label = t("navigate:configuration");
           } else if (route.name === "Help") {
             iconSource = focused
-              ? require("../../assets/icons/helpa.png")
-              : require("../../assets/icons/help.png");
+              ? require("../../assets/icons/helpactive.png")
+              : require("../../assets/icons/helpinactive.png");
             label = t("navigate:help");
-          } else if (route.name === "DeviceScreen") {
-            iconSource = focused
-              ? require("../../assets/icons/infoa.png")
-              : require("../../assets/icons/info.png");
-            label = t("navigate:deviceinfo");
           }
 
           return (
@@ -118,11 +113,6 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Help"
         component={Help}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="DeviceScreen"
-        component={DeviceScreen}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>
@@ -166,12 +156,13 @@ const AppStack = () => {
       >
         <Stack.Screen name="Auth" component={DevicePassword} />
         <Stack.Screen name="Home" component={TabNavigator} />
-        <Stack.Screen name="evalutaionProcess" component={EvaluationProcess} />
+        <Stack.Screen name="evalutaion" component={Evaluate} />
         <Stack.Screen name="helpdetails" component={HelpDetails} />
         <Stack.Screen name="filter" component={Filter} />
         <Stack.Screen name="test" component={Test} />
-        <Stack.Screen name="competitorslist" component={CompetitorsList} />
+        <Stack.Screen name="students" component={Students} />
         <Stack.Screen name="eco" component={Eco} />
+        <Stack.Screen name="deviceinfo" component={DeviceInfo} />
       </Stack.Navigator>
     </NavigationContainer>
   );
