@@ -2,17 +2,17 @@ import { Dimensions } from 'react-native'
 const { height, width } = Dimensions.get('window')
 
 export const COLORS = {
-   
-    white: "#FFFFFF",
-    gray: "#ECF0F4",
-    primary: '#3D8361',
-    // primary: "#6360DC",
-    black: "#000000",
-    dark: "#161719",
-    body: "#405792",
-    bg: "#ECECEC",
-    grey: "#F5F6F7"
-}
+  white: "#FFFFFF",
+  gray: "#ECF0F4",
+  primary: "#111F51",
+  mainBlue: "#BFE0FF",
+  AltBlue: "#9FD1FF",
+  black: "#000000",
+  dark: "#161719",
+  body: "#405792",
+  bg: "#ECECEC",
+  grey: "#F5F6F7",
+};
 
 export const SIZES = {
     // Global SIZES
