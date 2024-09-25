@@ -19,7 +19,7 @@ import Setup from "../screen/tab/Setup";
 import Evaluation from "../screen/tab/Evaluation";
 import Configuration from "../screen/tab/Configuration";
 import Help from "../screen/tab/Help";
-import DeviceInfo from "../screen/general/DeviceInfo";
+import DeviceInformation from "../screen/general/DeviceInfo";
 import DevicePassword from "../screen/general/DevicePassword";
 import Eco from "../screen/general/Eco";
 import Evaluate from "../screen/general/Evaluate";
@@ -162,7 +162,7 @@ const AppStack = () => {
         <Stack.Screen name="test" component={Test} />
         <Stack.Screen name="students" component={Students} />
         <Stack.Screen name="eco" component={Eco} />
-        <Stack.Screen name="deviceinfo" component={DeviceInfo} />
+        <Stack.Screen name="deviceinfo" component={DeviceInformation} />
       </Stack.Navigator>
     </NavigationContainer>
   );
