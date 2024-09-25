@@ -11,13 +11,14 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { COLORS } from "../../constants/theme";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import TabCustomHeader from "../../components/TabCustomHeader";
 import { useTranslation } from "react-i18next";
 
 const Evaluation = () => {
-    const { t } = useTranslation();
+
+  const { t } = useTranslation();
+  const navigation = useNavigation();
 
   return (
     <View style={{ flex: 1 }}>
@@ -25,6 +26,7 @@ const Evaluation = () => {
       <TabCustomHeader title={t("common:evaluation")} />
 
       {/* screen content */}
+
       <View
         style={{
           paddingLeft: 20,
@@ -34,6 +36,7 @@ const Evaluation = () => {
         }}
       >
         <TouchableOpacity
+          onPress={() => navigation.navigate("filter")}
           style={{
             height: "20%",
             width: "100%",
@@ -68,6 +71,7 @@ const Evaluation = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          onPress={() => navigation.navigate("students")}
           style={{
             height: "20%",
             width: "100%",
@@ -102,6 +106,7 @@ const Evaluation = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          onPress={() => navigation.navigate("test")}
           style={{
             height: "20%",
             width: "100%",
@@ -136,6 +141,7 @@ const Evaluation = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          onPress={() => navigation.navigate("evaluate")}
           style={{
             height: "20%",
             width: "100%",

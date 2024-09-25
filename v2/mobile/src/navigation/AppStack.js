@@ -156,7 +156,7 @@ const AppStack = () => {
       >
         <Stack.Screen name="Auth" component={DevicePassword} />
         <Stack.Screen name="Home" component={TabNavigator} />
-        <Stack.Screen name="evalutaion" component={Evaluate} />
+        <Stack.Screen name="evaluate" component={Evaluate} />
         <Stack.Screen name="helpdetails" component={HelpDetails} />
         <Stack.Screen name="filter" component={Filter} />
         <Stack.Screen name="test" component={Test} />

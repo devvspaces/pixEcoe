@@ -3,7 +3,7 @@ export default {
   languageSelector: "Select Your Language",
   language: "Language",
   theme: "Default Theme",
-  save: "SAVE",
+  save: "Save",
   refreeid: "Evaluator ID",
   refreemail: "Evaluator Email (License)",
   webserver: "Web Server Access",
@@ -57,6 +57,8 @@ export default {
   showm: "Show Marks",
   showc: "Show Competitors name",
   others: "Others",
+  studentsl: "Student List",
+  studentstotal: "Students Total",
 
   devicei: "Device info",
   deviceilang: "Device Language",

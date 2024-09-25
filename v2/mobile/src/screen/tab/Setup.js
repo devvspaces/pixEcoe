@@ -34,6 +34,16 @@ const Setup = () => {
     const updatePassword = (password) => {
       setPasswordState((prevState) => ({ ...prevState, password }));
     };
+
+  const handlePasswordVisibility = (field) => {
+    if (field === "password") {
+      setPasswordState((prevState) => ({
+        ...prevState,
+        isSecure: !prevState.isSecure,
+      }));
+    }
+  };
+  
   const data = [
     { key: "1", value: "8080", disabled: true },
     { key: "2", value: "2020" },
