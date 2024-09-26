@@ -14,13 +14,13 @@ import {
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { COLORS } from "../../constants/theme";
-import CustomHeader from "../../components/CustomHeader";
 import { useTranslation } from "react-i18next";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNFS from "react-native-fs";
 import { PermissionsAndroid } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { showError, showSuccess } from "../../utils/helperFunction";
 
 const Test = () => {
 
@@ -266,17 +266,9 @@ const Test = () => {
             JSON.stringify(evaluationResultIds)
           );
         }
-        setModalVisible(true);
+        saveResultsAsJSON();
       } catch (error) {
-        console.error("Error saving evaluation:", error);
-        setTimeout(() => {
-          Alert.alert("Error", "An unexpected error occurred", [
-            {
-              text: "Save as JSON",
-              onPress: () => setModalVisible(true),
-            },
-          ]);
-        }, 1000);
+        saveResultsAsJSON();
       } finally {
         setLoadingc(false);
       }
@@ -285,7 +277,7 @@ const Test = () => {
     const checkAndSetModalVisibility = async () => {
       const permissionGranted = await requestStoragePermission();
       if (permissionGranted) {
-        setModalVisible(true);
+        saveResultsAsJSON();
       } else {
         // Handle case where permission is not granted
         Alert.alert(
@@ -302,23 +294,40 @@ const Test = () => {
           "evaluationResults"
         );
         if (!evaluationResults) {
-          console.error("No evaluation results found.");
+          showError("No evaluation results found.");
           return;
         }
         const parsedEvaluationResults = JSON.parse(evaluationResults);
+
+        const folderName = await AsyncStorage.getItem("folderName");
+        const fileName = await AsyncStorage.getItem("fileName");
+
+        if (!folderName || !fileName) {
+          showError("Error", "Please set the folder and file name.");
+          return;
+        }
+
         const folderPath = `${RNFS.DownloadDirectoryPath}/${folderName}`;
         await RNFS.mkdir(folderPath);
-        const filePath = `${folderPath}/${fileName}.json`;
+        // Get the current date and time for unique file name
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().replace(/[:.]/g, "-");
+
+        // Append date and time to the file name
+        const dynamicFileName = `${fileName}_${formattedDate}.json`;
+
+        const filePath = `${folderPath}/${dynamicFileName}`;
+
         await RNFS.writeFile(
           filePath,
           JSON.stringify(parsedEvaluationResults),
           "utf8"
         );
-        Alert.alert("Success", "Evaluation results saved as JSON file!");
+
+        showSuccess("Success", "Evaluation results saved as JSON file!");
       } catch (error) {
         console.error("Error saving evaluation results:", error);
-        Alert.alert(
-          "Error",
+        showError(
           "An unexpected error occurred while saving evaluation results."
         );
       }
@@ -411,41 +420,6 @@ const Test = () => {
                 {t("common:subject")}: Medicina Interna
               </Text>
             </View>
-
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(false);
-              }}
-            >
-              <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Folder Name"
-                    value={folderName}
-                    onChangeText={(text) => setFolderName(text)}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="File Name"
-                    value={fileName}
-                    onChangeText={(text) => setFileName(text)}
-                  />
-                  <TouchableOpacity
-                    style={styles.modalButton}
-                    onPress={() => {
-                      saveResultsAsJSON();
-                      setModalVisible(false);
-                    }}
-                  >
-                    <Text style={styles.modalButtonText}>Save</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Modal>
 
             <ScrollView
                 style={{

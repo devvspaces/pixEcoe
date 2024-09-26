@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -36,9 +37,7 @@ const Setup = () => {
   const [selected, setSelected] = React.useState("");
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const loadingRef = useRef(null);
   const [loadingd, setLoadingd] = useState(false);
-  const loadingdRef = useRef(null);
   const [loadingc, setLoadingc] = useState(false);
   const loadingcRef = useRef(null);
   const [selectedEvaluation, setSelectedEvaluation] = useState(null);
@@ -54,7 +53,9 @@ const Setup = () => {
   const [evaluationFile, setEvaluationFile] = useState([]);
   const [localLoading, setLocalLoading] = useState(false);
   const localLoadingRef = useRef(null);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [folderName, setFolderName] = useState("");
+  const [fileName, setFileName] = useState("");
   useEffect(() => {
     AsyncStorage.setItem("showmark", JSON.stringify({ status: false }));
     AsyncStorage.setItem("showcompetitors", JSON.stringify({ status: false }));
@@ -194,6 +195,7 @@ const Setup = () => {
         return;
       }
       setLoading(true);
+      // console.log(refreeID, refreeEmail, password, serverUrl, subjectId);
       const response = await fetch(
         `${serverUrl}/evaluations/?subject=${subjectId}`,
         {
@@ -226,7 +228,7 @@ const Setup = () => {
         showError(t("alert:loaderrorstation"));
       }
     } catch (error) {
-      console.error("Error during API request:", error);
+      console.log(error);
       showError("An unexpected error occurred. Please try again later.");
     } finally {
       setLoading(false);
@@ -311,7 +313,8 @@ const Setup = () => {
         showError("Failed to download evaluation. Please try again.");
       }
     } catch (error) {
-      console.error("Error during API request:", error);
+      console.log("Error during API request:", error);
+      
       showError("An unexpected error occurred. Please try again later.");
     } finally {
       setLoadingd(false);
@@ -351,6 +354,7 @@ const Setup = () => {
         );
         console.log("Downloaded Competitor Response:", data);
         showSuccess(t("alert:loadstudent"));
+        setModalVisible(true);
       } else {
         showError("Failed to download competitor. Please try again.");
       }
@@ -371,8 +375,10 @@ const Setup = () => {
       // After competitor data load is complete, initiate the evaluation data load
       await handleLocalDownloadEvaluation();
 
+      await saveSettings();
+
       // Optionally, show an alert or console log to indicate both processes are complete
-      console.log(
+      showSuccess(
         "Both competitor and evaluation data have been loaded successfully."
       );
       setLocalLoading(false);
@@ -440,6 +446,23 @@ const Setup = () => {
     } catch (error) {
       console.error("Error during download evaluation:", error);
       showError("An unexpected error occurred. Please try again later.");
+    }
+  };
+
+  const saveSettings = async () => {
+    try {
+      if (!folderName || !fileName) {
+        showError("Error", "Please enter both folder name and file name.");
+        return;
+      }
+      // Save folder and file names to AsyncStorage
+      await AsyncStorage.setItem("folderName", folderName);
+      await AsyncStorage.setItem("fileName", fileName);
+      showSuccess("Folder and file names saved successfully!");
+    } catch (error) {
+      showError(
+        "An unexpected error occurred while saving settings."
+      );
     }
   };
 
@@ -557,6 +580,41 @@ const Setup = () => {
           onPasswordSubmit={handlePasswordSubmit}
           onCancel={handlePasswordCancel}
         />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TextInput
+                style={styles.input}
+                placeholder="Folder Name"
+                value={folderName}
+                onChangeText={(text) => setFolderName(text)}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="File Name"
+                value={fileName}
+                onChangeText={(text) => setFileName(text)}
+              />
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  saveSettings();
+                  setModalVisible(false);
+                }}
+              >
+                <Text style={styles.modalButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         {evaluationOption === "api" && (
           <ScrollView
             style={{
@@ -683,7 +741,7 @@ const Setup = () => {
                         : "check-box-outline-blank"
                     }
                     size={25}
-                    color="#000"
+                    color={COLORS.primary}
                   />
                   <Text
                     style={{
@@ -887,7 +945,6 @@ const Setup = () => {
             >
               {!!loadingd ? (
                 <ActivityIndicator
-                  ref={loadingdRef}
                   style={{ marginLeft: 10 }}
                   size="small"
                   color="#fff"
@@ -1091,6 +1148,8 @@ const Setup = () => {
                 <TextInput
                   style={{ flex: 1, fontSize: 16 }}
                   placeholder={t("common:directory")}
+                  value={folderName}
+                  onChangeText={(text) => setFolderName(text)}
                 />
               </TouchableOpacity>
               <Text
@@ -1122,6 +1181,8 @@ const Setup = () => {
                 <TextInput
                   style={{ flex: 1, fontSize: 16 }}
                   placeholder={t("common:rootansw")}
+                  value={fileName}
+                  onChangeText={(text) => setFileName(text)}
                 />
               </View>
               <Text
@@ -1188,5 +1249,50 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#49454F",
     justifyContent: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: "50%",
+  },
+  selectFolderButton: {
+    backgroundColor: "#007bff",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  selectFolderButtonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  folderUriText: {
+    marginBottom: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  modalButton: {
+    backgroundColor: "#111F51",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontSize: 16,
   },
 });

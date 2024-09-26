@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useTranslation } from "react-i18next";
+import { COLORS } from "../constants/theme";
 
 const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
   
@@ -25,17 +26,28 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
       </Text>
       {section.questions.map((question) => (
         <View key={question.questionnumber}>
-          <Text
+          <View
             style={{
-              color: "#111F51",
-              fontSize: 18,
-              fontWeight: "500",
-              marginTop: 50,
-              marginBottom: 10,
+              width: 45,
+              height: 45,
+              justifyContent: "center",
+              marginTop: 30,
+              backgroundColor: COLORS.primary,
+              alignItems: "center",
+              borderRadius: 10,
+              marginBottom: 20,
             }}
           >
-            {t("common:questnum")}: {question.questionnumber}
-          </Text>
+            <Text
+              style={{
+                color: "#FFFFFF",
+                fontSize: 18,
+                fontWeight: "500",
+              }}
+            >
+              {question.questionnumber}
+            </Text>
+          </View>
           {/* map the answer array */}
 
           {Object.entries(question.answers).map(([answerNumber, answer]) => (
@@ -56,7 +68,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                   borderColor:
                     selectedAnswers[question.questionnumber] ===
                     parseInt(answerNumber)
-                      ? "#eee"
+                      ? "#14AE5C"
                       : "transparent",
                   borderWidth: 2,
                   borderRadius: 10,
@@ -65,7 +77,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                   backgroundColor:
                     selectedAnswers[question.questionnumber] ===
                     parseInt(answerNumber)
-                      ? "#rgba(17,31,81, 0.45)"
+                      ? "#14AE5C"
                       : "transparent",
                   opacity: 10,
                 }}
@@ -120,7 +132,10 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                   {/* text2 */}
                   <Text
                     style={{
-                      color: "#111F51",
+                      color: selectedAnswers[question.questionnumber] ===
+                    parseInt(answerNumber)
+                      ? "#FFFFFF"
+                      : "#111F51",
                       fontSize: 20,
                       fontWeight: "500",
                       textAlign: "justify",

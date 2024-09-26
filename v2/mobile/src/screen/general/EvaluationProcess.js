@@ -9,13 +9,17 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
-  Platform
+  Platform,
+  ScrollView
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import QuestionList from "../../components/QuestionList";
 import { useTranslation } from "react-i18next";
+import { COLORS } from "../../constants/theme";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const EvaluationProcess = () => {
   const navigation = useNavigation();
@@ -263,117 +267,135 @@ const EvaluationProcess = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          height: "100%",
+          backgroundColor: COLORS.mainBlue,
+          alignSelf: "center",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#FFFFFF" />
+        <Text style={styles.loaderText}>{t("common:loading")}</Text>
+      </View>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#000" />
-      <View style={styles.header}>
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign name="leftcircleo" size={25} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerText}>{t("common:evaproce")}</Text>
-        </View>
+    <View style={{ flex: 1 }}>
+      {/* top bar and page title */}
+      <View>
+        <StatusBar backgroundColor={COLORS.primary} />
+        <View style={[styles.headert]}>
+          {/* Back Icon */}
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handlePrevious}
-            // disabled={currentStudentIndex === 0 || loadingd}
-          >
-            {loadingd ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>{t("common:prev")}</Text>
-            )}
-            <AntDesign name="banckward" size={25} color="#fff" />
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name={"arrow-back"} size={30} color={COLORS.white} />
+            </TouchableOpacity>
+            <Text style={styles.titlet}>{t("common:evaproce")}</Text>
+          </View>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleNext}
-            // disabled={currentStudentIndex === studentId.length - 1 || loadingc}
-          >
-            {loadingc ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>{t("common:next")}</Text>
-            )}
-            <AntDesign name="forward" size={25} color="#fff" />
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handlePrevious}
+              // disabled={currentStudentIndex === 0 || loadingd}
+            >
+              {loadingd ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <FontAwesome name="arrow-left" size={25} color="#fff" />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleNext}
+              // disabled={currentStudentIndex === studentId.length - 1 || loadingc}
+            >
+              {loadingc ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <FontAwesome name="arrow-right" size={25} color="#fff" />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-      {loading ? (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color="#FFFFFF" />
-          <Text style={styles.loaderText}>{t("common:loading")}</Text>
-        </View>
-      ) : (
-        <View style={styles.content}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              height: 50,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "70%",
-                borderRadius: 20,
-                backgroundColor: "#ffffff",
-                height: 40,
-                alignItems: "center",
-                paddingLeft: 10,
-                paddingRight: 10,
-              }}
-            >
-              <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                {evaluations.data.station_name}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          paddingLeft: 20,
+          paddingRight: 20,
+          flex: 1,
+          backgroundColor: COLORS.mainBlue,
+        }}
+      >
+        <View
+          style={{
+            justifyContent: "space-between",
+            borderRadius: 10,
+            backgroundColor: COLORS.AltBlue,
+            paddingLeft: 10,
+            paddingRight: 10,
+            marginTop: 10,
+            marginBottom:5,
+            width: "100%",
+            height: 90,
+            paddingTop: 15,
+            paddingBottom: 15,
+          }}
+        >
+          
+          <Text style={{ fontSize: 16, fontWeight: "500" }}>
+            {evaluations.data.station_name}
+          </Text>
+          <View style={{ alignItems: "center", flexDirection: "row" }}>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+              {studentIds[currentStudentIndex]} -
+            </Text>
+            {showCompetitorsStatus && (
+              <Text
+                style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
+              >
+                {studentfamilyname[currentStudentIndex]}{" "}
+                {studentfirstname[currentStudentIndex]}
               </Text>
-              <View style={{ alignItems: "center", flexDirection: "row" }}>
-                <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                  {studentIds[currentStudentIndex]} -
-                </Text>
-                {showCompetitorsStatus && (
-                  <Text
-                    style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
-                  >
-                    {studentfamilyname[currentStudentIndex]}{" "}
-                    {studentfirstname[currentStudentIndex]}
-                  </Text>
-                )}
-                {showMarkStatus && (
-                  <Text
-                    style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
-                  >
-                    ({getTotalPoints()})
-                  </Text>
-                )}
-              </View>
-            </View>
-          </View>
-          {/* <Text>{formattedAnswersArray}</Text> */}
-          <FlatList
-            data={sections}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <QuestionList
-                section={item}
-                handleAnswerSelection={handleAnswerSelection}
-                selectedAnswers={selectedAnswers}
-              />
             )}
-            contentContainerStyle={{
-              paddingBottom: Platform.OS === "ios" ? 30 : 65,
-            }}
-            showsVerticalScrollIndicator={false}
-          />
+            {showMarkStatus && (
+              <Text
+                style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
+              >
+                ({getTotalPoints()})
+              </Text>
+            )}
+          </View>
+          
         </View>
-      )}
-    </SafeAreaView>
+        {/* <Text>{formattedAnswersArray}</Text> */}
+        <FlatList
+          data={sections}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <QuestionList
+              section={item}
+              handleAnswerSelection={handleAnswerSelection}
+              selectedAnswers={selectedAnswers}
+            />
+          )}
+          contentContainerStyle={{
+            paddingBottom: Platform.OS === "ios" ? 30 : 65,
+          }}
+          showsVerticalScrollIndicator={false}
+        />
+      </ScrollView>
+    </View>
   );
 };
 
@@ -399,13 +421,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginLeft: 20,
   },
-  content: {
-    backgroundColor: "#9FD1FF",
-    flex: 1,
-    paddingTop: 40,
-    paddingLeft: 40,
-    paddingRight: 40,
-  },
   topicBox: {
     width: "100%",
     height: 55,
@@ -421,8 +436,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "40%",
-    backgroundColor: "#9FD1FF",
+    width: "35%",
     alignItems: "center",
   },
   button: {
@@ -449,5 +463,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: "#fff",
+  },
+  headert: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 70,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: COLORS.primary,
+    justifyContent: "space-between",
+  },
+  titlet: {
+    color: COLORS.white,
+    fontSize: 20,
+    marginLeft: 10,
   },
 });

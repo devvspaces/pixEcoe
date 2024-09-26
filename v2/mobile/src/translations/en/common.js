@@ -20,12 +20,12 @@ export default {
   downloadcomp: "Download students",
   rootsubtitle: "This is the starting point to access the data folder",
   dirsubtitle:
-    "The director path relative to the base folder where the required files are stored and synchronized using any measures.",
+    "The folder name where the required files are stored and synchronized using any measures in the document directory.",
   answsubtitle:
     "This is file name where the results of the evaluation will be stored to be processed externally.",
   rootcomp: "Competitor (CSV)",
   rooteva: "Evaluation (JSON)",
-  rootansw: "Answers (CSV)",
+  rootansw: "Results (JSON)",
   rootcompinf: "Select the csv file that contains the competitors data",
   rootevainf: "Select the json file that contains the evaluation data",
   dataload: "Load Data",
