@@ -132,12 +132,7 @@ const CompetitorsList = () => {
       <Text style={styles.celli}>{item.group}</Text>
     </View>
   );
-
-
-
-
-
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#000" />

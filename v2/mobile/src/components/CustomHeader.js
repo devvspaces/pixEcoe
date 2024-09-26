@@ -13,6 +13,7 @@ const CustomHeader = ({
   title,
   onBackPress,
   backgroundColor = COLORS.primary,
+  screen
 }) => {
   return (
     <View>
@@ -26,6 +27,7 @@ const CustomHeader = ({
         {/* Title */}
         <Text style={styles.title}>{title}</Text>
       </View>
+      
     </View>
   );
 };

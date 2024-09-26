@@ -31,6 +31,7 @@ export default {
   dataload: "Load Data",
   passtext: "Enter Device Password",
   password: "Password",
+  id: "ID",
   submittext: "Submit",
   evaluation: "Evaluation",
   setupt: "Setup",

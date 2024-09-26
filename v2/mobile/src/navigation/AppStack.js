@@ -27,6 +27,7 @@ import Filter from "../screen/general/Filter";
 import HelpDetails from "../screen/general/HelpDetails";
 import Students from "../screen/general/Students";
 import Test from "../screen/general/Test";
+import EvaluationProcess from "../screen/general/EvaluationProcess";
 
 const Tab = createBottomTabNavigator();
 
@@ -161,6 +162,7 @@ const AppStack = () => {
         <Stack.Screen name="filter" component={Filter} />
         <Stack.Screen name="test" component={Test} />
         <Stack.Screen name="students" component={Students} />
+        <Stack.Screen name="evalutaionProcess" component={EvaluationProcess} />
         <Stack.Screen name="eco" component={Eco} />
         <Stack.Screen name="deviceinfo" component={DeviceInformation} />
       </Stack.Navigator>
