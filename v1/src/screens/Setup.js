@@ -21,6 +21,7 @@ import DocumentPicker from "react-native-document-picker";
 import { useTranslation } from "react-i18next";
 import RNFS from "react-native-fs";
 import Papa from "papaparse";
+
 const { width } = Dimensions.get("window");
 const cardWidth = (width - 60) / 2;
 

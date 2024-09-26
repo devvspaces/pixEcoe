@@ -38,6 +38,5 @@ const truncateText = (text, length) => {
 export {
     showError,
     showSuccess,
-    getExchangeRate,
     truncateText
 }

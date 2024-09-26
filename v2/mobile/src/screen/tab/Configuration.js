@@ -15,7 +15,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import TabCustomHeader from "../../components/TabCustomHeader";
 import { useTranslation } from "react-i18next";
 import { SelectList } from "react-native-dropdown-select-list";
-
+import ConfigDropdown from "../../components/ConfigDropdown";
+import ColorConfigDropdown from "../../components/ColorConfigDropdown";
 const Configuration = () => {
   const { t } = useTranslation();
   const [selected, setSelected] = React.useState("");
@@ -52,29 +53,10 @@ const Configuration = () => {
             paddingRight: 20,
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "600", marginBottom: 10 }}>
-            {t("common:language")}
-          </Text>
-          <SelectList
-            setSelected={(val) => setSelected(val)}
-            data={data}
-            save="value"
-          />
-
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "600",
-              marginBottom: 10,
-              marginTop: 10,
-            }}
-          >
-            {t("common:theme")}
-          </Text>
-          <SelectList
-            setSelected={(val) => setSelected(val)}
-            data={data}
-            save="value"
+          <ConfigDropdown />
+          <ColorConfigDropdown
+            label={t("common:theme")}
+            placeholderLabel="Dark Blue"
           />
         </View>
       </View>
