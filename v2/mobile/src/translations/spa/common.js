@@ -53,7 +53,7 @@ export default {
   upload: "Subir",
   showm: "Ver notas",
   showc: "Ver nombre",
-
+  folderheader: "Please input the folder name and file name for offline storage of results",
   devicei: "Datos del dispositivo",
   namei: "Nombre",
   modeli: "Modelo",

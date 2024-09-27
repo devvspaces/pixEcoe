@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert
 } from "react-native";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { COLORS } from "../../constants/theme";
@@ -590,6 +591,10 @@ const Setup = () => {
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                Please input the folder name and file name for offline storage
+                of results
+              </Text>
               <TextInput
                 style={styles.input}
                 placeholder="Folder Name"
@@ -985,7 +990,7 @@ const Setup = () => {
                   ref={loadingcRef}
                   style={{ marginLeft: 10 }}
                   size="small"
-                  color="#fff"
+                  color={COLORS.primary}
                 />
               ) : (
                 <View style={{ flexDirection: "row" }}>
@@ -1260,7 +1265,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    width: "50%",
+    width: "80%",
   },
   selectFolderButton: {
     backgroundColor: "#007bff",
@@ -1294,5 +1299,12 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: "#fff",
     fontSize: 16,
+  },
+  modalTitle: {
+    fontSize: 15,
+    fontWeight: "400",
+    marginBottom: 10,
+    marginTop: 10,
+    marginBottom:20
   },
 });

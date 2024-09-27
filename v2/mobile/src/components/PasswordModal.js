@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useTranslation } from "react-i18next";
+import { COLORS } from "../constants/theme";
 
 const PasswordModal = ({ isVisible, onPasswordSubmit, onCancel }) => {
   const [password, setPassword] = useState("");
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom:20
   },
   button: {
-    backgroundColor: "#111F51",
+    backgroundColor: COLORS.primary,
     padding: 10,
     borderRadius: 5,
     marginTop: 10,

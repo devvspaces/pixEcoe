@@ -227,7 +227,7 @@ const Test = () => {
 
     const uploadEvaluation = async () => {
       if (!evaluationDetails) {
-        console.error("Error: Evaluation details not available.");
+        console.error("Evaluation details not available.");
         return;
       }
       try {
@@ -257,7 +257,7 @@ const Test = () => {
 
         const responseData = await response.json();
         console.log("API Response:", responseData);
-
+        showSuccess('Evaluation uploaded successfully')
         if (response.ok) {
           const evaluationResultIds = Object.keys(parsedEvaluationResults);
           console.log("Evaluation result IDs:", evaluationResultIds);
@@ -269,6 +269,7 @@ const Test = () => {
         saveResultsAsJSON();
       } catch (error) {
         saveResultsAsJSON();
+        showError(error)
       } finally {
         setLoadingc(false);
       }
@@ -303,7 +304,7 @@ const Test = () => {
         const fileName = await AsyncStorage.getItem("fileName");
 
         if (!folderName || !fileName) {
-          showError("Error", "Please set the folder and file name.");
+          showError("Please configure the folder and file name at setup.");
           return;
         }
 
@@ -324,7 +325,7 @@ const Test = () => {
           "utf8"
         );
 
-        showSuccess("Success", "Evaluation results saved as JSON file!");
+        showSuccess("Evaluation results saved as JSON file!");
       } catch (error) {
         console.error("Error saving evaluation results:", error);
         showError(
