@@ -35,7 +35,6 @@ const Setup = () => {
   const [evaluationOption, setEvaluationOption] = useState("api");
   const [showMarkStatus, setShowMarkStatus] = useState(false);
   const [showCompetitorsStatus, setShowCompetitorsStatus] = useState(false);
-  const [selected, setSelected] = React.useState("");
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingd, setLoadingd] = useState(false);
@@ -54,9 +53,9 @@ const Setup = () => {
   const [evaluationFile, setEvaluationFile] = useState([]);
   const [localLoading, setLocalLoading] = useState(false);
   const localLoadingRef = useRef(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [folderName, setFolderName] = useState("");
-  const [fileName, setFileName] = useState("");
+  // const [modalVisible, setModalVisible] = useState(false);
+  // const [folderName, setFolderName] = useState("");
+  // const [fileName, setFileName] = useState("");
   useEffect(() => {
     AsyncStorage.setItem("showmark", JSON.stringify({ status: false }));
     AsyncStorage.setItem("showcompetitors", JSON.stringify({ status: false }));
@@ -141,13 +140,6 @@ const Setup = () => {
       }));
     }
   };
-  
-  const data = [
-    { key: "1", value: "8080", disabled: true },
-    { key: "2", value: "2020" },
-    { key: "3", value: "7043" },
-    { key: "7", value: "6023" },
-  ];
 
   const storeInputValues = async () => {
     try {
@@ -306,7 +298,7 @@ const Setup = () => {
         );
         console.log("Download Evaluation Response:", data);
         console.log("EvaluationDetails:", evaluationDetails);
-        showSuccess("alert:loadonestation");
+        showSuccess(t("alert:loadonestation"));
         await AsyncStorage.removeItem("evaluationResults");
         await AsyncStorage.removeItem("totalScores");
         await AsyncStorage.removeItem("uploadedResultIds");
@@ -376,9 +368,6 @@ const Setup = () => {
       // After competitor data load is complete, initiate the evaluation data load
       await handleLocalDownloadEvaluation();
 
-      // await saveSettings();
-
-      // Optionally, show an alert or console log to indicate both processes are complete
       showSuccess(
         "Both competitor and evaluation data have been loaded successfully."
       );
@@ -770,11 +759,7 @@ const Setup = () => {
                   {t("common:webserver")}
                 </Text>
 
-                <SelectList
-                  setSelected={(val) => setSelected(val)}
-                  data={data}
-                  save="value"
-                />
+                
               </View>
             </View>
 

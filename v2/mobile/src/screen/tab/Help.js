@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { COLORS } from "../../constants/theme";
-import TabCustomHeader from "../../components/TabCustomHeader";
 import { useTranslation } from "react-i18next";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Feather from "react-native-vector-icons/Feather";
@@ -68,7 +67,13 @@ const Help = () => {
           {t("help:helptitle")}
         </Text>
 
-        <View
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 1,
+              title: t("help:help1"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -98,8 +103,14 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 2,
+              title: t("help:help2"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -129,8 +140,14 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 3,
+              title: t("help:help3"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -160,8 +177,14 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 4,
+              title: t("help:help4"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -191,8 +214,14 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 5,
+              title: t("help:help5"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -222,8 +251,14 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 6,
+              title: t("help:help6"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -253,8 +288,14 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 7,
+              title: t("help:help7"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -284,8 +325,14 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 8,
+              title: t("help:help8"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -315,8 +362,14 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("helpdetails", {
+              topicId: 9,
+              title: t("help:help9"),
+            })
+          }
           style={{
             width: "100%",
             height: 60,
@@ -346,331 +399,333 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </View>
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "400",
-            color: COLORS.primary,
-            marginTop: 20,
-            lineHeight: 30,
-          }}
-        >
-          {t("help:helpicontitle")}
-        </Text>
-
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Feather name={"home"} size={25} color={COLORS.primary} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
-            }}
-          >
-            {t("help:helpicon1")}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Feather name={"arrow-left"} size={25} color={COLORS.primary} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
-            }}
-          >
-            {t("help:helpicon2")}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Feather name={"arrow-right"} size={25} color={COLORS.primary} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
-            }}
-          >
-            {t("help:helpicon3")}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <AntDesign name={"delete"} size={25} color={COLORS.primary} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
-            }}
-          >
-            {t("help:helpicon4")}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Feather name={"save"} size={25} color={COLORS.primary} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
-            }}
-          >
-            {t("help:helpicon5")}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <AntDesign name={"doubleleft"} size={20} color={COLORS.primary} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
-            }}
-          >
-            {t("help:helpicon6")}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <AntDesign name={"doubleright"} size={20} color={COLORS.primary} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
-            }}
-          >
-            {t("help:helpicon7")}
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate("deviceinfo")}
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Feather name={"info"} size={20} color={COLORS.primary} />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
-            }}
-          >
-            {t("help:helpicon8")}
-          </Text>
         </TouchableOpacity>
+        <View>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "400",
+              color: COLORS.primary,
+              marginTop: 20,
+              lineHeight: 30,
+            }}
+          >
+            {t("help:helpicontitle")}
+          </Text>
 
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <AntDesign
-            name={"questioncircleo"}
-            size={20}
-            color={COLORS.primary}
-          />
-          <Text
+          <View
             style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
             }}
           >
-            {t("help:helpicon9")}
-          </Text>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Feather name={"download"} size={20} color={COLORS.primary} />
-          <Text
+            <Feather name={"home"} size={25} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon1")}
+            </Text>
+          </View>
+
+          <View
             style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
             }}
           >
-            {t("help:helpicon10")}
-          </Text>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Feather name={"upload"} size={20} color={COLORS.primary} />
-          <Text
+            <Feather name={"arrow-left"} size={25} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon2")}
+            </Text>
+          </View>
+
+          <View
             style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
             }}
           >
-            {t("help:helpicon11")}
-          </Text>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            height: 60,
-            borderRadius: 10,
-            backgroundColor: COLORS.AltBlue,
-            marginTop: 15,
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Feather name={"edit"} size={20} color={COLORS.primary} />
-          <Text
+            <Feather name={"arrow-right"} size={25} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon3")}
+            </Text>
+          </View>
+
+          <View
             style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-              marginLeft: 5,
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
             }}
           >
-            {t("help:helpicon12")}
-          </Text>
+            <AntDesign name={"delete"} size={25} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon4")}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
+            }}
+          >
+            <Feather name={"save"} size={25} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon5")}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
+            }}
+          >
+            <AntDesign name={"doubleleft"} size={20} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon6")}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
+            }}
+          >
+            <AntDesign name={"doubleright"} size={20} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon7")}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("deviceinfo")}
+            style={{
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
+            }}
+          >
+            <Feather name={"info"} size={20} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon8")}
+            </Text>
+          </TouchableOpacity>
+
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
+            }}
+          >
+            <AntDesign
+              name={"questioncircleo"}
+              size={20}
+              color={COLORS.primary}
+            />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon9")}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
+            }}
+          >
+            <Feather name={"download"} size={20} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon10")}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
+            }}
+          >
+            <Feather name={"upload"} size={20} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon11")}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: COLORS.AltBlue,
+              marginTop: 15,
+              flexDirection: "row",
+              paddingLeft: 15,
+              paddingRight: 15,
+              alignItems: "center",
+            }}
+          >
+            <Feather name={"edit"} size={20} color={COLORS.primary} />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "400",
+                color: COLORS.primary,
+                marginLeft: 5,
+              }}
+            >
+              {t("help:helpicon12")}
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>
