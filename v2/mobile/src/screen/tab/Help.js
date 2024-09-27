@@ -5,7 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
+  StatusBar,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -25,7 +25,25 @@ const Help = () => {
   return (
     <View style={{ flex: 1 }}>
       {/* top bar and page title */}
-      <TabCustomHeader title={t("common:help")} />
+      <View>
+        <StatusBar backgroundColor={COLORS.primary} />
+        <View style={[styles.header]}>
+          <Text style={styles.title}>{t("common:help")}</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("deviceinfo")}
+            style={{
+              width: 35,
+              height: 35,
+              backgroundColor: COLORS.AltBlue,
+              borderRadius: 10,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Feather name={"info"} size={25} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
+      </View>
       <ScrollView
         style={{
           paddingLeft: 20,
@@ -661,4 +679,18 @@ const Help = () => {
 
 export default Help;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 70,
+    paddingLeft: 20,
+    paddingRight: 20,
+    justifyContent: "space-between",
+    backgroundColor: COLORS.primary
+  },
+  title: {
+    color: COLORS.white,
+    fontSize: 25,
+  },
+});

@@ -355,7 +355,7 @@ const Setup = () => {
         );
         console.log("Downloaded Competitor Response:", data);
         showSuccess(t("alert:loadstudent"));
-        setModalVisible(true);
+        
       } else {
         showError("Failed to download competitor. Please try again.");
       }
@@ -376,7 +376,7 @@ const Setup = () => {
       // After competitor data load is complete, initiate the evaluation data load
       await handleLocalDownloadEvaluation();
 
-      await saveSettings();
+      // await saveSettings();
 
       // Optionally, show an alert or console log to indicate both processes are complete
       showSuccess(
@@ -450,22 +450,22 @@ const Setup = () => {
     }
   };
 
-  const saveSettings = async () => {
-    try {
-      if (!folderName || !fileName) {
-        showError("Error", "Please enter both folder name and file name.");
-        return;
-      }
-      // Save folder and file names to AsyncStorage
-      await AsyncStorage.setItem("folderName", folderName);
-      await AsyncStorage.setItem("fileName", fileName);
-      showSuccess("Folder and file names saved successfully!");
-    } catch (error) {
-      showError(
-        "An unexpected error occurred while saving settings."
-      );
-    }
-  };
+  // const saveSettings = async () => {
+  //   try {
+  //     if (!folderName || !fileName) {
+  //       showError("Error", "Please enter both folder name and file name.");
+  //       return;
+  //     }
+  //     // Save folder and file names to AsyncStorage
+  //     await AsyncStorage.setItem("folderName", folderName);
+  //     await AsyncStorage.setItem("fileName", fileName);
+  //     showSuccess("Folder and file names saved successfully!");
+  //   } catch (error) {
+  //     showError(
+  //       "An unexpected error occurred while saving settings."
+  //     );
+  //   }
+  // };
 
   const handleLoadEvaluationData = async () => {
     if (!evaluationFile.length) {
@@ -581,7 +581,7 @@ const Setup = () => {
           onPasswordSubmit={handlePasswordSubmit}
           onCancel={handlePasswordCancel}
         />
-        <Modal
+        {/* <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
@@ -618,7 +618,7 @@ const Setup = () => {
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
 
         {evaluationOption === "api" && (
           <ScrollView
@@ -1134,7 +1134,7 @@ const Setup = () => {
                 {t("common:rootevainf")}
               </Text>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   height: 50,
                   width: "100%",
@@ -1199,7 +1199,7 @@ const Setup = () => {
                 }}
               >
                 {t("common:answsubtitle")}
-              </Text>
+              </Text> */}
               <TouchableOpacity
                 onPress={initiateDataLoad}
                 style={{
