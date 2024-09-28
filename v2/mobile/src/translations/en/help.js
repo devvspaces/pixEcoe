@@ -18,9 +18,9 @@ export default {
   helpicon5: "Save",
   helpicon6: "Back to previous Eco page",
   helpicon7: "Forward to next Eco page",
-  helpicon8: "Info and About",
+  helpicon8: "Device Info",
   helpicon9: "Help",
-  helpicon10: "Download data from database",
+  helpicon10: "Download stations or competitors",
   helpicon11: "Upload results to database",
   helpicon12: "Change results file name",
 };

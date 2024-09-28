@@ -492,7 +492,7 @@ const Help = () => {
             </Text>
           </View>
 
-          <View
+          {/* <View
             style={{
               width: "100%",
               height: 60,
@@ -516,9 +516,9 @@ const Help = () => {
             >
               {t("help:helpicon4")}
             </Text>
-          </View>
+          </View> */}
 
-          <View
+          {/* <View
             style={{
               width: "100%",
               height: 60,
@@ -542,7 +542,7 @@ const Help = () => {
             >
               {t("help:helpicon5")}
             </Text>
-          </View>
+          </View> */}
 
           <View
             style={{
