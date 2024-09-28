@@ -399,9 +399,9 @@ const Evaluate = () => {
             <Text style={{ fontSize: 16, fontWeight: "400" }}>
               {t("common:station")}: {evaluations.data.station_name}
             </Text>
-            <Text style={{ fontSize: 16, fontWeight: "400" }}>
+            {/* <Text style={{ fontSize: 16, fontWeight: "400" }}>
               {t("common:subject")}: Medicina Interna
-            </Text>
+            </Text> */}
           </View>
 
           <ScrollView

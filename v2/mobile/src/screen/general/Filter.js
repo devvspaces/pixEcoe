@@ -185,7 +185,7 @@ const Filter = () => {
               style={{
                 fontSize: 18,
                 fontWeight: "400",
-                color: COLORS.gray,
+                color: COLORS.black,
               }}
               placeholder=""
               value={groupWheel}

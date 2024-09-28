@@ -16,6 +16,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Feather from "react-native-vector-icons/Feather";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const Help = () => {
   const { t } = useTranslation();
@@ -326,7 +327,7 @@ const Help = () => {
             color={COLORS.primary}
           />
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() =>
             navigation.navigate("helpdetails", {
               topicId: 8,
@@ -399,7 +400,7 @@ const Help = () => {
             size={30}
             color={COLORS.primary}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View>
           <Text
             style={{
@@ -556,7 +557,7 @@ const Help = () => {
               alignItems: "center",
             }}
           >
-            <AntDesign name={"doubleleft"} size={20} color={COLORS.primary} />
+            <FontAwesome name="arrow-left" size={20} color={COLORS.primary} />
             <Text
               style={{
                 fontSize: 20,
@@ -582,7 +583,7 @@ const Help = () => {
               alignItems: "center",
             }}
           >
-            <AntDesign name={"doubleright"} size={20} color={COLORS.primary} />
+            <FontAwesome name="arrow-right" size={20} color={COLORS.primary} />
             <Text
               style={{
                 fontSize: 20,
@@ -701,7 +702,7 @@ const Help = () => {
               {t("help:helpicon11")}
             </Text>
           </View>
-          <View
+          {/* <View
             style={{
               width: "100%",
               height: 60,
@@ -725,7 +726,7 @@ const Help = () => {
             >
               {t("help:helpicon12")}
             </Text>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </View>

@@ -748,7 +748,7 @@ const Setup = () => {
                   </Text>
                 </TouchableOpacity>
 
-                <Text
+                {/* <Text
                   style={{
                     fontSize: 18,
                     color: COLORS.primary,
@@ -757,7 +757,7 @@ const Setup = () => {
                   }}
                 >
                   {t("common:webserver")}
-                </Text>
+                </Text> */}
 
                 
               </View>

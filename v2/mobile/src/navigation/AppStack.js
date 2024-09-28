@@ -21,7 +21,6 @@ import Configuration from "../screen/tab/Configuration";
 import Help from "../screen/tab/Help";
 import DeviceInformation from "../screen/general/DeviceInfo";
 import DevicePassword from "../screen/general/DevicePassword";
-import Eco from "../screen/general/Eco";
 import Evaluate from "../screen/general/Evaluate";
 import Filter from "../screen/general/Filter";
 import HelpDetails from "../screen/general/HelpDetails";
@@ -163,7 +162,6 @@ const AppStack = () => {
         <Stack.Screen name="test" component={Test} />
         <Stack.Screen name="students" component={Students} />
         <Stack.Screen name="evalutaionProcess" component={EvaluationProcess} />
-        <Stack.Screen name="eco" component={Eco} />
         <Stack.Screen name="deviceinfo" component={DeviceInformation} />
       </Stack.Navigator>
     </NavigationContainer>
