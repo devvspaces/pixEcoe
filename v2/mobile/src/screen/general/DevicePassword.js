@@ -5,10 +5,13 @@ import { COLORS } from '../../constants/theme';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { showError, showSuccess } from "../../utils/helperFunction";
+import { useTranslation } from "react-i18next";
 
 const DevicePassword = () => {
 
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const [passwordState, setPasswordState] = useState({
     password: "",
@@ -68,7 +71,7 @@ const DevicePassword = () => {
         passwordState.password.trim() === "" ||
         confirmPasswordState.confirmPassword.trim() === ""
       ) {
-        alert("Password cannot be empty. Please enter a password.");
+        showError(t("alert:alert14"));
         return;
       }
       
@@ -76,7 +79,7 @@ const DevicePassword = () => {
         await AsyncStorage.setItem("@appPassword", passwordState.password);
         navigation.navigate("Home");
       } else {
-        alert("Passwords do not match. Please try again.");
+        showError(t("alert:alert15"));
       }
     } catch (err) {
       console.log("Error @savePassword: ", err);
@@ -144,7 +147,7 @@ const DevicePassword = () => {
               style={{ flex: 1, fontSize: 20 }}
               secureTextEntry={passwordState.isSecure}
               onChangeText={updatePassword}
-              placeholder="Password"
+              placeholder={t("common:password")}
             />
             <Pressable onPress={() => handlePasswordVisibility("password")}>
               <MaterialCommunityIcons
@@ -175,7 +178,7 @@ const DevicePassword = () => {
               style={{ fontSize: 20, flex: 1 }}
               secureTextEntry={confirmPasswordState.isSecure}
               onChangeText={updateConfirmPassword}
-              placeholder="Repeat Password"
+              placeholder={t("common:rpassword")}
             />
             <Pressable
               onPress={() => handlePasswordVisibility("confirmPassword")}
@@ -210,7 +213,7 @@ const DevicePassword = () => {
               fontWeight: "600",
             }}
           >
-            {initialSetup ? "Confirm password" : "Set password"}
+            {t("common:setpass")}
           </Text>
         </TouchableOpacity>
       </View>

@@ -18,6 +18,7 @@ import TestQuestionList from "../../components/TestQuestionList";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../../constants/theme";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { showError } from "../../utils/helperFunction";
 
 const Test = () => {
   const navigation = useNavigation();
@@ -43,7 +44,7 @@ const Test = () => {
     } catch (error) {
       console.error("Error loading evaluation data:", error);
       setLoading(false);
-      Alert.alert("Error", "An unexpected error occurred");
+      showError(t("alert:alert4"));
     }
   };
 

@@ -1,31 +1,17 @@
 import {
-  Image,
-  Platform,
-  Pressable,
-  ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { COLORS } from "../../constants/theme";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import TabCustomHeader from "../../components/TabCustomHeader";
 import { useTranslation } from "react-i18next";
-import { SelectList } from "react-native-dropdown-select-list";
 import ConfigDropdown from "../../components/ConfigDropdown";
 import ColorConfigDropdown from "../../components/ColorConfigDropdown";
+
 const Configuration = () => {
   const { t } = useTranslation();
-  const [selected, setSelected] = React.useState("");
- const data = [
-   { key: "1", value: "8080", disabled: true },
-   { key: "2", value: "2020" },
-   { key: "3", value: "7043" },
-   { key: "7", value: "6023" },
- ];
+
   return (
     <View style={{ flex: 1 }}>
       {/* top bar and page title */}
@@ -65,5 +51,3 @@ const Configuration = () => {
 };
 
 export default Configuration;
-
-const styles = StyleSheet.create({});

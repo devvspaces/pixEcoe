@@ -35,9 +35,6 @@ const Evaluate = () => {
   const [downloadedCompetitorData, setDownloadedCompetitorData] =
     useState(null);
   const [loadingc, setLoadingc] = useState(false);
-  // const [modalVisible, setModalVisible] = useState(false);
-  // const [folderName, setFolderName] = useState("");
-  // const [fileName, setFileName] = useState("");
   const [parsedEvaluationResults, setParsedEvaluationResults] = useState([]);
   const [storagePermissionGranted, setStoragePermissionGranted] =
     useState(false);
@@ -219,13 +216,13 @@ const Evaluate = () => {
 
   const uploadEvaluation = async () => {
     if (!evaluationDetails) {
-      console.error("Evaluation details not available.");
+      showError(t("alert:alert21"));
       return;
     }
     try {
       const evaluationResults = await AsyncStorage.getItem("evaluationResults");
       if (!evaluationResults) {
-        console.error("No evaluation results found.");
+        showError(t("alert:alert22"));
         return;
       }
       const parsedEvaluationResults = JSON.parse(evaluationResults);
@@ -247,7 +244,7 @@ const Evaluate = () => {
 
       const responseData = await response.json();
       console.log("API Response:", responseData);
-      showSuccess("Evaluation uploaded successfully");
+      showSuccess(t("alert:alert16"));
       if (response.ok) {
         const evaluationResultIds = Object.keys(parsedEvaluationResults);
         console.log("Evaluation result IDs:", evaluationResultIds);
@@ -259,7 +256,7 @@ const Evaluate = () => {
       saveResultsAsJSON();
     } catch (error) {
       saveResultsAsJSON();
-      showError(error);
+      showError(t("alert:alert17"));
     } finally {
       setLoadingc(false);
     }
@@ -283,7 +280,7 @@ const Evaluate = () => {
     try {
       const evaluationResults = await AsyncStorage.getItem("evaluationResults");
       if (!evaluationResults) {
-        showError("No evaluation results found.");
+        showError(t("alert:alert18"));
         return;
       }
       const parsedEvaluationResults = JSON.parse(evaluationResults);
@@ -311,9 +308,7 @@ const Evaluate = () => {
       showSuccess("Evaluation results saved as JSON file!");
     } catch (error) {
       console.error("Error saving evaluation results:", error);
-      showError(
-        "An unexpected error occurred while saving evaluation results."
-      );
+      showError(t("alert:alert19"));
     }
   };
 
@@ -399,9 +394,6 @@ const Evaluate = () => {
             <Text style={{ fontSize: 16, fontWeight: "400" }}>
               {t("common:station")}: {evaluations.data.station_name}
             </Text>
-            {/* <Text style={{ fontSize: 16, fontWeight: "400" }}>
-              {t("common:subject")}: Medicina Interna
-            </Text> */}
           </View>
 
           <ScrollView

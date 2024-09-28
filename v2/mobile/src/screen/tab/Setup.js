@@ -19,7 +19,6 @@ import TabCustomHeader from "../../components/TabCustomHeader";
 import { useTranslation } from "react-i18next";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Feather from "react-native-vector-icons/Feather";
-import { SelectList } from "react-native-dropdown-select-list";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import RNFS from "react-native-fs";
 import Papa from "papaparse";
@@ -47,15 +46,11 @@ const Setup = () => {
   const [subjectId, setSubjectId] = useState("");
   const [password, setPassword] = useState("");
   const [evaluationOptions, setEvaluationOptions] = useState([]);
-  // console.log(evaluationOptions);
   const [evaluationDetails, setEvaluationDetails] = useState(null);
   const [competitorFile, setcompetitorFile] = useState([]);
   const [evaluationFile, setEvaluationFile] = useState([]);
   const [localLoading, setLocalLoading] = useState(false);
   const localLoadingRef = useRef(null);
-  // const [modalVisible, setModalVisible] = useState(false);
-  // const [folderName, setFolderName] = useState("");
-  // const [fileName, setFileName] = useState("");
   useEffect(() => {
     AsyncStorage.setItem("showmark", JSON.stringify({ status: false }));
     AsyncStorage.setItem("showcompetitors", JSON.stringify({ status: false }));
@@ -106,7 +101,7 @@ const Setup = () => {
       if (enteredPassword === storedPassword) {
         setPasswordModalVisible(false);
       } else {
-        showError("Incorrect password. Try again.");
+        showSuccess(t("alert:alert1"));
       }
     } catch (error) {
       console.error("Error retrieving stored password:", error);
@@ -184,11 +179,10 @@ const Setup = () => {
         !serverUrl ||
         !subjectId
       ) {
-        showError("Please fill in all required fields.");
+        showError(t("alert:alert2"));
         return;
       }
       setLoading(true);
-      // console.log(refreeID, refreeEmail, password, serverUrl, subjectId);
       const response = await fetch(
         `${serverUrl}/evaluations/?subject=${subjectId}`,
         {
@@ -215,14 +209,14 @@ const Setup = () => {
           showSuccess(t("alert:loadstation"));
           storeInputValues();
         } else {
-          showError("Invalid response format. Please check your API.");
+          showError(t("alert:alert3"));
         }
       } else {
         showError(t("alert:loaderrorstation"));
       }
     } catch (error) {
       console.log(error);
-      showError("An unexpected error occurred. Please try again later.");
+      showError(t("alert:alert4"));
     } finally {
       setLoading(false);
     }
@@ -238,7 +232,7 @@ const Setup = () => {
 
   const handleDownloadEvaluation = async () => {
     if (!selectedEvaluation) {
-      showError("Please Select a station.");
+      showError(t("alert:alert12"));
       return;
     }
     try {
@@ -261,7 +255,7 @@ const Setup = () => {
       }
     } catch (error) {
       console.error("Error during download evaluation:", error);
-      showError("An unexpected error occurred. Please try again later.");
+      showError(t("alert:alert4"));
     }
   };
 
@@ -303,12 +297,11 @@ const Setup = () => {
         await AsyncStorage.removeItem("totalScores");
         await AsyncStorage.removeItem("uploadedResultIds");
       } else {
-        showError("Failed to download evaluation. Please try again.");
+        showError(t("alert:alert5"));
       }
     } catch (error) {
       console.log("Error during API request:", error);
-      
-      showError("An unexpected error occurred. Please try again later.");
+      showError(t("alert:alert4"));
     } finally {
       setLoadingd(false);
     }
@@ -317,7 +310,7 @@ const Setup = () => {
   const handleDownloadCompetitors = async () => {
     try {
       if (!selectedEvaluation) {
-        showError("Please select an evaluation before downloading.");
+        showError(t("alert:alert6"));
         return;
       }
       setLoadingc(true);
@@ -347,13 +340,12 @@ const Setup = () => {
         );
         console.log("Downloaded Competitor Response:", data);
         showSuccess(t("alert:loadstudent"));
-        
       } else {
-        showError("Failed to download competitor. Please try again.");
+        showError(t("alert:alert7"));
       }
     } catch (error) {
       console.error("Error during API request:", error);
-      showError("An unexpected error occurred. Please try again later.");
+      showError(t("alert:alert4"));
     } finally {
       setLoadingc(false);
     }
@@ -364,17 +356,12 @@ const Setup = () => {
       // Initiate the competitor data load
       setLocalLoading(true)
       await handleLoadCompetitorData();
-
       // After competitor data load is complete, initiate the evaluation data load
       await handleLocalDownloadEvaluation();
-
-      showSuccess(
-        "Both competitor and evaluation data have been loaded successfully."
-      );
+      showSuccess(t("alert:alert13"));
       setLocalLoading(false);
     } catch (error) {
-      console.error("Error during data load process:", error);
-      showError("An error occurred during the data load process.");
+      showError(t("alert:alert8"));
       setLocalLoading(false)
     }
   };
@@ -382,7 +369,7 @@ const Setup = () => {
   const handleLoadCompetitorData = async () => {
     try {
       if (!competitorFile) {
-        showError("Please select a CSV file.");
+        showError(t("alert:alert9"));
         return;
       }
       const uri = competitorFile[0].uri;
@@ -410,7 +397,7 @@ const Setup = () => {
       showSuccess(t("alert:loadstudent"));
     } catch (error) {
       console.error("Error loading student data:", error);
-      showError("Error", "An error occurred while loading student data.");
+      showError(t("alert:alert10"));
     }
   };
 
@@ -435,30 +422,13 @@ const Setup = () => {
       }
     } catch (error) {
       console.error("Error during download evaluation:", error);
-      showError("An unexpected error occurred. Please try again later.");
+      showError(t("alert:alert4"));
     }
   };
 
-  // const saveSettings = async () => {
-  //   try {
-  //     if (!folderName || !fileName) {
-  //       showError("Error", "Please enter both folder name and file name.");
-  //       return;
-  //     }
-  //     // Save folder and file names to AsyncStorage
-  //     await AsyncStorage.setItem("folderName", folderName);
-  //     await AsyncStorage.setItem("fileName", fileName);
-  //     showSuccess("Folder and file names saved successfully!");
-  //   } catch (error) {
-  //     showError(
-  //       "An unexpected error occurred while saving settings."
-  //     );
-  //   }
-  // };
-
   const handleLoadEvaluationData = async () => {
     if (!evaluationFile.length) {
-      showError("Please select an evaluation file.");
+      showError(t("alert:alert11"));
       return;
     }
     try {
@@ -570,44 +540,6 @@ const Setup = () => {
           onPasswordSubmit={handlePasswordSubmit}
           onCancel={handlePasswordCancel}
         />
-        {/* <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(false);
-          }}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                Please input the folder name and file name for offline storage
-                of results
-              </Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Folder Name"
-                value={folderName}
-                onChangeText={(text) => setFolderName(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="File Name"
-                value={fileName}
-                onChangeText={(text) => setFileName(text)}
-              />
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => {
-                  saveSettings();
-                  setModalVisible(false);
-                }}
-              >
-                <Text style={styles.modalButtonText}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal> */}
 
         {evaluationOption === "api" && (
           <ScrollView
@@ -622,7 +554,7 @@ const Setup = () => {
             }}
           >
             <Text style={{ fontSize: 20, fontWeight: "600", marginTop: 20 }}>
-              Evaluator
+              {t("common:evaluator")}
             </Text>
 
             <View
@@ -747,19 +679,6 @@ const Setup = () => {
                     {t("common:showc")}
                   </Text>
                 </TouchableOpacity>
-
-                {/* <Text
-                  style={{
-                    fontSize: 18,
-                    color: COLORS.primary,
-                    marginTop: 15,
-                    marginBottom: 5,
-                  }}
-                >
-                  {t("common:webserver")}
-                </Text> */}
-
-                
               </View>
             </View>
 
@@ -1118,73 +1037,6 @@ const Setup = () => {
               >
                 {t("common:rootevainf")}
               </Text>
-
-              {/* <TouchableOpacity
-                style={{
-                  height: 50,
-                  width: "100%",
-                  borderRadius: 10,
-                  borderColor: COLORS.grey,
-                  borderWidth: 2,
-                  justifyContent: "space-between",
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  alignItems: "center",
-                  flexDirection: "row",
-                  alignSelf: "center",
-                  marginTop: 10,
-                }}
-              >
-                <TextInput
-                  style={{ flex: 1, fontSize: 16 }}
-                  placeholder={t("common:directory")}
-                  value={folderName}
-                  onChangeText={(text) => setFolderName(text)}
-                />
-              </TouchableOpacity>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "400",
-                  marginTop: 10,
-                  color: COLORS.gray,
-                }}
-              >
-                {t("common:dirsubtitle")}
-              </Text>
-              <View
-                style={{
-                  height: 50,
-                  width: "100%",
-                  borderRadius: 10,
-                  borderColor: COLORS.grey,
-                  borderWidth: 2,
-                  justifyContent: "space-between",
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  alignItems: "center",
-                  flexDirection: "row",
-                  alignSelf: "center",
-                  marginTop: 10,
-                }}
-              >
-                <TextInput
-                  style={{ flex: 1, fontSize: 16 }}
-                  placeholder={t("common:rootansw")}
-                  value={fileName}
-                  onChangeText={(text) => setFileName(text)}
-                />
-              </View>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "400",
-                  marginTop: 10,
-                  color: COLORS.gray,
-                }}
-              >
-                {t("common:answsubtitle")}
-              </Text> */}
               <TouchableOpacity
                 onPress={initiateDataLoad}
                 style={{

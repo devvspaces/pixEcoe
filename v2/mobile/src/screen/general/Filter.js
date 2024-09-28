@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showError, showSuccess } from "../../utils/helperFunction";
 
 const Filter = () => {
   const { t } = useTranslation();
@@ -54,6 +55,7 @@ const Filter = () => {
       }
     } catch (error) {
       console.error("Error loading downloaded data:", error);
+      showError(t("alert:alert27"));
     }
   };
 
@@ -64,7 +66,8 @@ const Filter = () => {
         setGroupWheel(storedInput);
       }
     } catch (error) {
-      console.error("Error loading stored input:", error);
+      // console.error("Error loading stored input:", error);
+      showError(t("alert:alert26"));
     }
   };
 
@@ -73,7 +76,7 @@ const Filter = () => {
       await AsyncStorage.setItem("groupWheelInput", value);
       console.log("Input saved successfully.");
     } catch (error) {
-      console.error("Error saving input:", error);
+      showError(t("alert:alert25"));
     }
   };
 
@@ -84,7 +87,7 @@ const Filter = () => {
       !parsedDownloadedCompetitorData.students ||
       !Array.isArray(parsedDownloadedCompetitorData.students)
     ) {
-      console.error("Competitor data is not in the expected format.");
+      showError(t("alert:alert24"));
       return;
     }
 
@@ -109,11 +112,12 @@ const Filter = () => {
         "downloadedCompetitorData",
         JSON.stringify(newData)
       );
-      alert(t("alert:filteralert"));
-      console.log("Filtered competitor data saved successfully.");
+      showSuccess(t("alert:filteralert"));
+      // console.log("Filtered competitor data saved successfully.");
       navigation.goBack();
     } catch (error) {
       console.error("Error saving filtered competitor data:", error);
+      showError(t("alert:alert28"));
     }
   };
 

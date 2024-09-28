@@ -327,80 +327,6 @@ const Help = () => {
             color={COLORS.primary}
           />
         </TouchableOpacity>
-        {/* <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("helpdetails", {
-              topicId: 8,
-              title: t("help:help8"),
-            })
-          }
-          style={{
-            width: "100%",
-            height: 60,
-            borderWidth: 1,
-            borderRadius: 10,
-            borderColor: COLORS.gray,
-            backgroundColor: COLORS.white,
-            marginTop: 15,
-            justifyContent: "space-between",
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-            }}
-          >
-            {t("help:help8")}
-          </Text>
-          <MaterialIcons
-            name={"keyboard-arrow-right"}
-            size={30}
-            color={COLORS.primary}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("helpdetails", {
-              topicId: 9,
-              title: t("help:help9"),
-            })
-          }
-          style={{
-            width: "100%",
-            height: 60,
-            borderWidth: 1,
-            borderRadius: 10,
-            borderColor: COLORS.gray,
-            backgroundColor: COLORS.white,
-            marginTop: 15,
-            justifyContent: "space-between",
-            flexDirection: "row",
-            paddingLeft: 15,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "400",
-              color: COLORS.primary,
-            }}
-          >
-            {t("help:help9")}
-          </Text>
-          <MaterialIcons
-            name={"keyboard-arrow-right"}
-            size={30}
-            color={COLORS.primary}
-          />
-        </TouchableOpacity> */}
         <View>
           <Text
             style={{
@@ -491,58 +417,6 @@ const Help = () => {
               {t("help:helpicon3")}
             </Text>
           </View>
-
-          {/* <View
-            style={{
-              width: "100%",
-              height: 60,
-              borderRadius: 10,
-              backgroundColor: COLORS.AltBlue,
-              marginTop: 15,
-              flexDirection: "row",
-              paddingLeft: 15,
-              paddingRight: 15,
-              alignItems: "center",
-            }}
-          >
-            <AntDesign name={"delete"} size={25} color={COLORS.primary} />
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "400",
-                color: COLORS.primary,
-                marginLeft: 5,
-              }}
-            >
-              {t("help:helpicon4")}
-            </Text>
-          </View> */}
-
-          {/* <View
-            style={{
-              width: "100%",
-              height: 60,
-              borderRadius: 10,
-              backgroundColor: COLORS.AltBlue,
-              marginTop: 15,
-              flexDirection: "row",
-              paddingLeft: 15,
-              paddingRight: 15,
-              alignItems: "center",
-            }}
-          >
-            <Feather name={"save"} size={25} color={COLORS.primary} />
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "400",
-                color: COLORS.primary,
-                marginLeft: 5,
-              }}
-            >
-              {t("help:helpicon5")}
-            </Text>
-          </View> */}
 
           <View
             style={{
@@ -702,31 +576,6 @@ const Help = () => {
               {t("help:helpicon11")}
             </Text>
           </View>
-          {/* <View
-            style={{
-              width: "100%",
-              height: 60,
-              borderRadius: 10,
-              backgroundColor: COLORS.AltBlue,
-              marginTop: 15,
-              flexDirection: "row",
-              paddingLeft: 15,
-              paddingRight: 15,
-              alignItems: "center",
-            }}
-          >
-            <Feather name={"edit"} size={20} color={COLORS.primary} />
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "400",
-                color: COLORS.primary,
-                marginLeft: 5,
-              }}
-            >
-              {t("help:helpicon12")}
-            </Text>
-          </View> */}
         </View>
       </ScrollView>
     </View>

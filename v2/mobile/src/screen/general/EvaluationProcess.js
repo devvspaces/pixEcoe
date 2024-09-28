@@ -13,13 +13,13 @@ import {
   ScrollView
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import QuestionList from "../../components/QuestionList";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../../constants/theme";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { showError, showSuccess } from "../../utils/helperFunction";
 
 const EvaluationProcess = () => {
   const navigation = useNavigation();
@@ -35,8 +35,6 @@ const EvaluationProcess = () => {
     students.findIndex((student) => student.id === studentDi)
   );
   const [loading, setLoading] = useState(true);
-  const loadingcRef = useRef(null);
-  const loadingdRef = useRef(null);
   const [evaluations, setEvaluations] = useState({ data: { detail: {} } });
   const [loadingc, setLoadingc] = useState(false);
   const [loadingd, setLoadingd] = useState(false);
@@ -88,7 +86,7 @@ const EvaluationProcess = () => {
     } catch (error) {
       console.error("Error loading evaluation data:", error);
       setLoading(false); 
-      Alert.alert("Error", "An unexpected error occurred");
+      showError(t("alert:alert20"));
     }
   };
 
@@ -208,7 +206,7 @@ const EvaluationProcess = () => {
       console.log("Updated Evaluation Results:", evaluationResults);
     } catch (error) {
       console.error("Error saving evaluation:", error);
-      Alert.alert("Error", "An unexpected error occurred");
+      showError(t("alert:alert4"));
     }
   };
 
@@ -234,7 +232,7 @@ const EvaluationProcess = () => {
       Alert.alert("Success", "Evaluation saved");
     } catch (error) {
       console.error("Error saving evaluation:", error);
-      Alert.alert("Error", "An unexpected error occurred");
+      showError(t("alert:alert4"));
     } finally {
       setLoadingc(false);
     }
@@ -258,10 +256,10 @@ const EvaluationProcess = () => {
           return acc;
         }, {})
       );
-      Alert.alert("Success", "Evaluation saved");
+      showSuccess(t("alert:alert23"));
     } catch (error) {
-      console.error("Error loading previous evaluation:", error);
-      Alert.alert("Error", "An unexpected error occurred");
+      // console.error("Error loading previous evaluation:", error);
+      showError(t("alert:alert4"));
     } finally {
       setLoadingd(false);
     }

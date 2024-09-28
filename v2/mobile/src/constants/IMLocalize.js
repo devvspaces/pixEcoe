@@ -54,4 +54,7 @@ i18n
       escapeValue: false,
     },
     defaultNS: "common",
+    interpolation: {
+      escapeValue: false,
+    },
   });
