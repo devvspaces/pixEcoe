@@ -3,7 +3,7 @@
 # dependencies
 v1/node_modules/
 v2/mobile/node_modules/
-v2/pc/node_modules/
+v2/desktop/node_modules/
 
 # Expo
 v1/.expo/
@@ -14,9 +14,9 @@ v2/mobile/.expo/
 v2/mobile/dist/
 v2/mobile/web-build/
 
-v2/pc/.expo/
-v2/pc/dist/
-v2/pc/web-build/
+v2/desktop/.expo/
+v2/desktop/dist/
+v2/desktop/web-build/
 
 # Native
 *.orig.*
