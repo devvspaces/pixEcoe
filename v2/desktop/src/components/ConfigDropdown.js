@@ -15,6 +15,9 @@ import { useTranslation } from "react-i18next";
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "spa", label: "Español" },
+  { code: "ca", label: "Catalan" },
+  { code: "gl", label: "Galician" },
+  { code: "eu", label: "Euskera" },
 ];
 
 const ConfigDropdown = ({ options, onSelect }) => {
@@ -58,6 +61,12 @@ const ConfigDropdown = ({ options, onSelect }) => {
     selectedLanguageLabel = "English";
   } else if (selectedLanguageCode === "spa") {
     selectedLanguageLabel = "Español";
+  } else if (selectedLanguageCode === "ca") {
+    selectedLanguageLabel = "Catalan";
+  } else if (selectedLanguageCode === "gl") {
+    selectedLanguageLabel = "Galician";
+  } else if (selectedLanguageCode === "eu") {
+    selectedLanguageLabel = "Euskera";
   }
 
   return (

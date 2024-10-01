@@ -5,10 +5,16 @@ import * as RNLocalize from "react-native-localize";
 
 import en from "../translations/en";
 import spa from "../translations/spa";
+import ca from "../translations/cat";
+import gl from "../translations/gal";
+import eu from "../translations/eus";
 
 const LANGUAGES = {
   en,
   spa,
+  ca,
+  gl,
+  eu,
 };
 
 const LANG_CODES = Object.keys(LANGUAGES);

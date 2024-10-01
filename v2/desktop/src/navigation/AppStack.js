@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 16,
     marginTop: 8,
-    width: 100,
+    width: 120,
     textAlign: "center",
   },
   loaderContainer: {

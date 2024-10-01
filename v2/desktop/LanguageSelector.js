@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "span", label: "Español" },
+  { code: "ca", label: "Catalan" },
+  { code: "gl", label: "Galician" },
+  { code: "eu", label: "Euskera" },
 ];
 
 const Selector = () => {

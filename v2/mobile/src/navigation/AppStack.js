@@ -14,7 +14,6 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
-//Bottom tab navigator screens
 import Setup from "../screen/tab/Setup";
 import Evaluation from "../screen/tab/Evaluation";
 import Configuration from "../screen/tab/Configuration";
