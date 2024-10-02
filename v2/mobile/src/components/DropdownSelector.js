@@ -30,7 +30,12 @@ const DropdownSelector = ({ label, options, onSelect, placeholderLabel }) => {
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <View style={styles.inputBox}>
           <Text style={styles.placeholder}>{placeholder}</Text>
-          <Icon name="chevron-with-circle-down" size={20} color={COLORS.primary} style={{right:10}}/>
+          <Icon
+            name="chevron-with-circle-down"
+            size={20}
+            color={COLORS.primary}
+            style={{ right: 10 }}
+          />
         </View>
       </TouchableOpacity>
       <Modal
@@ -41,6 +46,12 @@ const DropdownSelector = ({ label, options, onSelect, placeholderLabel }) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Icon name="cross" size={24} color={COLORS.primary} />
+            </TouchableOpacity>
             <FlatList
               data={options}
               showsVerticalScrollIndicator={false}
@@ -68,17 +79,21 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     marginTop: 10,
   },
+  closeButton: {
+    alignSelf: "flex-end", // Align close button to the right
+    marginBottom: 10, // Add margin for better spacing
+  },
   inputBox: {
     flexDirection: "row",
     height: 50,
-    backgroundColor:COLORS.white,
+    backgroundColor: COLORS.white,
     marginTop: 10,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "space-between",
-    borderWidth:1,
-    borderColor:COLORS.gray,
-    paddingLeft:10
+    borderWidth: 1,
+    borderColor: COLORS.gray,
+    paddingLeft: 10,
   },
   placeholder: {
     color: COLORS.gray,
