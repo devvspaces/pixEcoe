@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { COLORS } from "../constants/theme";
 
 const ColorConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => {
   
@@ -40,6 +41,12 @@ const ColorConfigDropdown = ({ label, options, onSelect, placeholderLabel }) => 
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Icon name="close" size={24} color={COLORS.primary} />
+            </TouchableOpacity>
             <FlatList
               data={options}
               showsVerticalScrollIndicator={false}
@@ -99,6 +106,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: "90%",
     maxHeight: 500,
+  },
+  closeButton: {
+    alignSelf: "flex-end", // Align close button to the right
+    marginBottom: 10, // Add margin for better spacing
   },
   optionItem: {
     padding: 10,

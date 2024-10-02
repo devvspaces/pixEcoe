@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTranslation } from "react-i18next";
+import { COLORS } from "../constants/theme";
 
 const LANGUAGES = [
   { code: "en", label: "English" },
@@ -70,7 +71,7 @@ const ConfigDropdown = ({ options, onSelect }) => {
   }
 
   return (
-    <View style={{width: "100%" }}>
+    <View style={{ width: "100%" }}>
       <Text style={styles.label}>{t("common:language")}</Text>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <View style={styles.inputBox}>
@@ -86,6 +87,12 @@ const ConfigDropdown = ({ options, onSelect }) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Icon name="close" size={24} color={COLORS.primary} />
+            </TouchableOpacity>
             <FlatList
               data={options}
               showsVerticalScrollIndicator={false}
@@ -133,6 +140,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  closeButton: {
+    alignSelf: "flex-end", // Align close button to the right
+    marginBottom: 10, // Add margin for better spacing
   },
   placeholder: {
     color: "#555",

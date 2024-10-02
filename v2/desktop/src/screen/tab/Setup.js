@@ -22,7 +22,6 @@ import Feather from "react-native-vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 // import RNFS from "react-native-fs";
 import * as DocumentPicker from 'expo-document-picker';
-
 import * as FileSystem from "expo-file-system";
 
 import Papa from "papaparse";
@@ -232,7 +231,7 @@ const Setup = () => {
       }
     } catch (error) {
       console.log(error);
-      showError(t("alert:alert4"));
+      showError(error.message);
     } finally {
       setLoading(false);
     }
