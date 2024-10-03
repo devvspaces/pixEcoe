@@ -78,7 +78,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                     selectedAnswers[question.questionnumber] ===
                     parseInt(answerNumber)
                       ? "#14AE5C"
-                      : "transparent",
+                      : "#ffffff",
                   opacity: 10,
                 }}
               >

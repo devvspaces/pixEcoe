@@ -78,7 +78,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                     selectedAnswers[question.questionnumber] ===
                     parseInt(answerNumber)
                       ? "#14AE5C"
-                      : "transparent",
+                      : "#ffffff",
                   opacity: 10,
                 }}
               >
@@ -98,7 +98,6 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                   >
                     {answer.text1} | {answer.text2}
                   </Text>
-                  
                 </View>
               </View>
             </TouchableOpacity>
