@@ -35,145 +35,160 @@ const Evaluation = () => {
           backgroundColor: COLORS.mainBlue,
         }}
       >
-        <TouchableOpacity
-          onPress={() => navigation.navigate("filter")}
+        <View
           style={{
-            height: "20%",
-            width: "100%",
-            backgroundColor: COLORS.secBlue,
-            marginTop: 20,
-            borderRadius: 20,
             flexDirection: "row",
-            alignItems: "center",
+            height: "40%",
             justifyContent: "space-between",
-            paddingLeft: 20,
-            paddingRight: 20,
           }}
         >
-          <Text
+          <TouchableOpacity
+            onPress={() => navigation.navigate("filter")}
             style={{
-              fontSize: 30,
-              fontWeight: "600",
-              color: COLORS.white,
+              height: "80%",
+              width: "45%",
+              backgroundColor: COLORS.secBlue,
+              marginTop: 20,
+              borderRadius: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingLeft: 20,
+              paddingRight: 20,
             }}
           >
-            {t("common:filt")}
-          </Text>
-          <Image
-            source={require("../../../assets/icons/filter.png")}
-            resizeMode="contain"
-            style={{
-              height: 90,
-              width: 90,
-              alignSelf: "center",
-            }}
-          />
-        </TouchableOpacity>
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: "600",
+                color: COLORS.white,
+              }}
+            >
+              {t("common:filt")}
+            </Text>
+            <Image
+              source={require("../../../assets/icons/filter.png")}
+              resizeMode="contain"
+              style={{
+                height: 90,
+                width: 90,
+                alignSelf: "center",
+              }}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => navigation.navigate("students")}
-          style={{
-            height: "20%",
-            width: "100%",
-            backgroundColor: COLORS.secBlue,
-            marginTop: 20,
-            borderRadius: 20,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingLeft: 20,
-            paddingRight: 20,
-          }}
-        >
-          <Text
+          <TouchableOpacity
+            onPress={() => navigation.navigate("students")}
             style={{
-              fontSize: 30,
-              fontWeight: "600",
-              color: COLORS.white,
+              height: "80%",
+              width: "45%",
+              backgroundColor: COLORS.secBlue,
+              marginTop: 20,
+              borderRadius: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingLeft: 20,
+              paddingRight: 20,
             }}
           >
-            {t("common:competlist")}
-          </Text>
-          <Image
-            source={require("../../../assets/icons/students.png")}
-            resizeMode="contain"
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: "600",
+                color: COLORS.white,
+              }}
+            >
+              {t("common:competlist")}
+            </Text>
+            <Image
+              source={require("../../../assets/icons/students.png")}
+              resizeMode="contain"
+              style={{
+                height: 90,
+                width: 90,
+                alignSelf: "center",
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            height: "40%",
+            justifyContent: "space-between",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.navigate("test")}
             style={{
-              height: 90,
-              width: 90,
-              alignSelf: "center",
+              height: "80%",
+              width: "45%",
+              backgroundColor: COLORS.secBlue,
+              marginTop: 20,
+              borderRadius: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingLeft: 20,
+              paddingRight: 20,
             }}
-          />
-        </TouchableOpacity>
+          >
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: "600",
+                color: COLORS.white,
+              }}
+            >
+              {t("common:test")}
+            </Text>
+            <Image
+              source={require("../../../assets/icons/test.png")}
+              resizeMode="contain"
+              style={{
+                height: 90,
+                width: 90,
+                alignSelf: "center",
+              }}
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => navigation.navigate("test")}
-          style={{
-            height: "20%",
-            width: "100%",
-            backgroundColor: COLORS.secBlue,
-            marginTop: 20,
-            borderRadius: 20,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingLeft: 20,
-            paddingRight: 20,
-          }}
-        >
-          <Text
+          <TouchableOpacity
+            onPress={() => navigation.navigate("evaluate")}
             style={{
-              fontSize: 30,
-              fontWeight: "600",
-              color: COLORS.white,
+              height: "80%",
+              width: "45%",
+              backgroundColor: COLORS.secBlue,
+              marginTop: 20,
+              borderRadius: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingLeft: 20,
+              paddingRight: 20,
             }}
           >
-            {t("common:test")}
-          </Text>
-          <Image
-            source={require("../../../assets/icons/test.png")}
-            resizeMode="contain"
-            style={{
-              height: 90,
-              width: 90,
-              alignSelf: "center",
-            }}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate("evaluate")}
-          style={{
-            height: "20%",
-            width: "100%",
-            backgroundColor: COLORS.secBlue,
-            marginTop: 20,
-            borderRadius: 20,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingLeft: 20,
-            paddingRight: 20,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 30,
-              fontWeight: "600",
-              color: COLORS.white,
-            }}
-          >
-            {t("common:eco")}
-          </Text>
-          <Image
-            source={require("../../../assets/icons/evaluate.png")}
-            resizeMode="contain"
-            style={{
-              height: 90,
-              width: 90,
-              alignSelf: "center",
-            }}
-          />
-        </TouchableOpacity>
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: "600",
+                color: COLORS.white,
+              }}
+            >
+              {t("common:eco")}
+            </Text>
+            <Image
+              source={require("../../../assets/icons/evaluate.png")}
+              resizeMode="contain"
+              style={{
+                height: 90,
+                width: 90,
+                alignSelf: "center",
+              }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
