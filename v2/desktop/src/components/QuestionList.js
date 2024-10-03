@@ -82,73 +82,22 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                   opacity: 10,
                 }}
               >
-                {/* <View style={{ width: "6%", height: 80, borderRadius: 20 }}>
-                  <View
-                    style={{
-                      height: 40,
-                      backgroundColor: "#111F51",
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 20,
-                        fontWeight: "500",
-                      }}
-                    >
-                      {answer.literal}
-                    </Text>
-                   
-                  </View>
-                  <View
-                    style={{
-                      height: 40,
-                      backgroundColor: "#3E3E3E",
-                      borderBottomLeftRadius: 10,
-                      borderBottomRightRadius: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 20,
-                        fontWeight: "500",
-                      }}
-                    >
-                      {answer.points}
-                    </Text>
-                   
-                  </View>
-                </View> */}
                 <View style={{ marginLeft: 20, width: "95%" }}>
                   {/* text2 */}
                   <Text
                     style={{
-                      color: selectedAnswers[question.questionnumber] ===
-                    parseInt(answerNumber)
-                      ? "#FFFFFF"
-                      : "#111F51",
+                      color:
+                        selectedAnswers[question.questionnumber] ===
+                        parseInt(answerNumber)
+                          ? "#FFFFFF"
+                          : "#111F51",
                       fontSize: 20,
                       fontWeight: "500",
                       textAlign: "justify",
                     }}
                   >
-                    {answer.text1}
+                    {answer.text1} | {answer.text2}
                   </Text>
-                  {/* text2 */}
-                  <View style={styles.topicBox}>
-                    {/* text1 */}
-                    <Text style={styles.topicText}>{answer.text2}</Text>
-                    {/* text1 */}
-                  </View>
                 </View>
               </View>
             </TouchableOpacity>

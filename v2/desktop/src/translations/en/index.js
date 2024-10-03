@@ -41,7 +41,7 @@ const common = {
   filt: "Filter",
   competlist: "Students",
   test: "Test",
-  eco: "Eco",
+  eco: "Evaluation",
   cevaluate: "Current Evaluation",
   gwheel: "Group (Wheel)",
   status: "Status",

@@ -20,15 +20,11 @@ import { useTranslation } from "react-i18next";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Feather from "react-native-vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-// import RNFS from "react-native-fs";
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from "expo-file-system";
-
 import Papa from "papaparse";
-// import DocumentPicker from "react-native-document-picker";
 import PasswordModal from "../../components/PasswordModal";
 import DropdownSelector from "../../components/DropdownSelector";
 import { showError, showSuccess } from "../../utils/helperFunction";
+import DownloadEvaluationModal from "../../components/DownloadEvaluationModal";
 
 const Setup = () => {
 
@@ -50,10 +46,12 @@ const Setup = () => {
   const [password, setPassword] = useState("");
   const [evaluationOptions, setEvaluationOptions] = useState([]);
   const [evaluationDetails, setEvaluationDetails] = useState(null);
-  const [competitorFile, setcompetitorFile] = useState([]);
+  const [competitorFile, setCompetitorFile] = useState([]);
   const [evaluationFile, setEvaluationFile] = useState([]);
   const [localLoading, setLocalLoading] = useState(false);
   const localLoadingRef = useRef(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
   useEffect(() => {
     AsyncStorage.setItem("showmark", JSON.stringify({ status: false }));
     AsyncStorage.setItem("showcompetitors", JSON.stringify({ status: false }));
@@ -104,7 +102,7 @@ const Setup = () => {
       if (enteredPassword === storedPassword) {
         setPasswordModalVisible(false);
       } else {
-        showSuccess(t("alert:alert1"));
+        showError(t("alert:alert1"));
       }
     } catch (error) {
       console.error("Error retrieving stored password:", error);
@@ -113,6 +111,15 @@ const Setup = () => {
 
   const handlePasswordCancel = () => {
     setPasswordModalVisible(false);
+  };
+
+  const confirmDownload = async () => {
+    setModalVisible(false); // Close modal
+    await downloadEvaluation(); // Perform the download
+  };
+
+  const cancelDownload = () => {
+    setModalVisible(false); // Just close the modal
   };
 
   useEffect(() => {
@@ -151,39 +158,24 @@ const Setup = () => {
     }
   };
 
-  const handleCompetitorFile = useCallback(async () => {
-    try {
-      const res = await DocumentPicker.getDocumentAsync({
-        type: "*/*", // Allow any file type; adjust as necessary
-        copyToCacheDirectory: true, // Ensure the file is accessible in the cache
-      });
+ const competitorFileInputRef = useRef(null);
+ const evaluationFileInputRef = useRef(null);
 
-      if (res.type === "success") {
-        setcompetitorFile([res]); // Set the file in state as an array
-      } else {
-        console.warn("Document selection was canceled");
-      }
-    } catch (err) {
-      console.warn(err);
+  const handleCompetitorFile = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setCompetitorFile([file]);
+      console.log(file);
     }
-  }, []);
+  };
 
-  const handleEvaluationFile = useCallback(async () => {
-    try {
-      const response = await DocumentPicker.getDocumentAsync({
-        type: "*/*", // Allow any file type; adjust as necessary
-        copyToCacheDirectory: true, // Ensure the file is accessible in the cache
-      });
-
-      if (response.type === "success") {
-        setEvaluationFile([response]); // Set the file in state as an array
-      } else {
-        console.warn("Document selection was canceled");
-      }
-    } catch (err) {
-      console.warn(err);
+  const handleEvaluationFile = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setEvaluationFile([file]);
+      console.log(file);
     }
-  }, []);
+  };
 
   const handleLoadEvaluation = async () => {
     try {
@@ -244,7 +236,6 @@ const Setup = () => {
     }
   };
 
-
   const handleDownloadEvaluation = async () => {
     if (!selectedEvaluation) {
       showError(t("alert:alert12"));
@@ -253,18 +244,7 @@ const Setup = () => {
     try {
       const evaluatedData = await AsyncStorage.getItem("evaluationResults");
       if (evaluatedData) {
-        Alert.alert(t("alert:datatext1"), t("alert:datatext2"), [
-          {
-            text: t("alert:yes"),
-            onPress: async () => {
-              await downloadEvaluation();
-            },
-          },
-          {
-            text: t("alert:no"),
-            style: "cancel",
-          },
-        ]);
+        setModalVisible(true);
       } else {
         await downloadEvaluation();
       }
@@ -293,6 +273,7 @@ const Setup = () => {
       );
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         await AsyncStorage.setItem(
           "downloadedEvaluationData",
           JSON.stringify(data)
@@ -388,35 +369,45 @@ const Setup = () => {
         return;
       }
 
-      const uri = competitorFile[0].uri;
-      // Use FileSystem.readAsStringAsync to read the file
-      const fileContent = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.UTF8,
-      });
+      // Use FileReader to read the file on the web
+      const file = competitorFile[0];
+      const reader = new FileReader();
 
-      console.log("CSV File Content:", fileContent);
-      const parsedData = Papa.parse(fileContent, { header: true }).data;
+      reader.onload = async (event) => {
+        const fileContent = event.target.result;
 
-      const jsonData = {
-        students: parsedData.map((student, index) => ({
-          id: index + 1,
-          family_name: student.FAMILY_NAME,
-          first_name: student.FIRST_NAME,
-          group: student.GROUP,
-        })),
+        console.log("CSV File Content:", fileContent);
+        const parsedData = Papa.parse(fileContent, { header: true }).data;
+
+        const jsonData = {
+          students: parsedData.map((student, index) => ({
+            id: index + 1,
+            family_name: student.FAMILY_NAME,
+            first_name: student.FIRST_NAME,
+            group: student.GROUP,
+          })),
+        };
+
+        await AsyncStorage.setItem(
+          "downloadedCompetitorData",
+          JSON.stringify(jsonData)
+        );
+        await AsyncStorage.setItem(
+          "downloadedCompetitorRawData",
+          JSON.stringify(jsonData)
+        );
+
+        console.log("JSON Data:", jsonData);
+        showSuccess(t("alert:loadstudent"));
       };
 
-      await AsyncStorage.setItem(
-        "downloadedCompetitorData",
-        JSON.stringify(jsonData)
-      );
-      await AsyncStorage.setItem(
-        "downloadedCompetitorRawData",
-        JSON.stringify(jsonData)
-      );
+      reader.onerror = (error) => {
+        console.error("Error reading the file:", error);
+        showError(t("alert:alert10"));
+      };
 
-      console.log("JSON Data:", jsonData);
-      showSuccess(t("alert:loadstudent"));
+      // Read the file as text
+      reader.readAsText(file);
     } catch (error) {
       console.error("Error loading student data:", error);
       showError(t("alert:alert10"));
@@ -427,18 +418,7 @@ const Setup = () => {
     try {
       const evaluatedData = await AsyncStorage.getItem("evaluationResults");
       if (evaluatedData) {
-        Alert.alert(t("alert:datatext1"), t("alert:datatext2"), [
-          {
-            text: t("alert:yes"),
-            onPress: async () => {
-              await handleLoadEvaluationData();
-            },
-          },
-          {
-            text: t("alert:no"),
-            style: "cancel",
-          },
-        ]);
+        setModalVisible(true);
       } else {
         await handleLoadEvaluationData();
       }
@@ -448,48 +428,71 @@ const Setup = () => {
     }
   };
 
-  const handleLoadEvaluationData = async () => {
-    if (!evaluationFile.length) {
-      showError(t("alert:alert11"));
-      return;
-    }
+ const handleLoadEvaluationData = async () => {
+   try {
+     if (!evaluationFile || evaluationFile.length === 0) {
+       showError(t("alert:alert11")); // Notify user that no file is selected
+       return;
+     }
 
-    try {
-      const uri = evaluationFile[0].uri;
-      // Read the file using expo-file-system
-      const fileContent = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.UTF8,
-      });
+     // Use FileReader to read the file on the web
+     const file = evaluationFile[0];
+     const reader = new FileReader();
 
-      // Parse the JSON data
-      const data = JSON.parse(fileContent);
-      await AsyncStorage.setItem(
-        "downloadedEvaluationData",
-        JSON.stringify(data)
-      );
+     reader.onload = async (event) => {
+       const fileContent = event.target.result;
 
-      const { station_name, station_number } = data.data;
-      const transformedDetails = {
-        id: station_number,
-        name: station_name.trim(),
-      };
-      await AsyncStorage.setItem(
-        "EvaluationDetails",
-        JSON.stringify(transformedDetails)
-      );
+       console.log("JSON File Content:", fileContent); // Log the content of the file
 
-      console.log("EvaluationDetails:", transformedDetails);
-      showSuccess(t("alert:loadonestation"));
+       // Parse the JSON data
+       let data;
+       try {
+         data = JSON.parse(fileContent);
+       } catch (jsonError) {
+         console.error("Error parsing JSON:", jsonError);
+         showError("The file content is not valid JSON.");
+         return;
+       }
 
-      // Optionally clear previous evaluation results
-      await AsyncStorage.removeItem("evaluationResults");
-      await AsyncStorage.removeItem("totalScores");
-      await AsyncStorage.removeItem("uploadedResultIds");
-    } catch (error) {
-      console.error("Error loading evaluation data:", error);
-      showError("An error occurred while loading evaluation data.");
-    }
-  };
+       // Store the evaluation data
+       await AsyncStorage.setItem(
+         "downloadedEvaluationData",
+         JSON.stringify(data)
+       );
+
+       const { station_name, station_number } = data.data;
+       const transformedDetails = {
+         id: station_number,
+         name: station_name.trim(),
+       };
+
+       await AsyncStorage.setItem(
+         "EvaluationDetails",
+         JSON.stringify(transformedDetails)
+       );
+
+       console.log("EvaluationDetails:", transformedDetails);
+       showSuccess(t("alert:loadonestation"));
+
+       // Optionally clear previous evaluation results
+       await AsyncStorage.removeItem("evaluationResults");
+       await AsyncStorage.removeItem("totalScores");
+       await AsyncStorage.removeItem("uploadedResultIds");
+     };
+
+     reader.onerror = (error) => {
+       console.error("Error reading the file:", error);
+       showError(t("alert:alert10"));
+     };
+
+     // Read the file as text
+     reader.readAsText(file);
+   } catch (error) {
+     console.error("Error loading evaluation data:", error);
+     showError("An error occurred while loading evaluation data.");
+   }
+ };
+
 
   const toggleStatus = async (item) => {
     try {
@@ -570,6 +573,13 @@ const Setup = () => {
           isVisible={isPasswordModalVisible}
           onPasswordSubmit={handlePasswordSubmit}
           onCancel={handlePasswordCancel}
+        />
+
+        <DownloadEvaluationModal
+          visible={modalVisible}
+          onConfirm={confirmDownload}
+          onCancel={cancelDownload}
+          t={t}
         />
 
         {evaluationOption === "api" && (
@@ -981,7 +991,7 @@ const Setup = () => {
               }}
             >
               <TouchableOpacity
-                onPress={handleCompetitorFile}
+                onPress={() => competitorFileInputRef.current.click()} // Trigger file input
                 style={{
                   height: 50,
                   width: "100%",
@@ -1005,7 +1015,8 @@ const Setup = () => {
                       numberOfLines={1}
                       ellipsizeMode={"middle"}
                     >
-                      {file?.uri}
+                      {file?.name}{" "}
+                      {/* Display file name instead of uri for web */}
                     </Text>
                   ))
                 ) : (
@@ -1014,6 +1025,13 @@ const Setup = () => {
                   </Text>
                 )}
               </TouchableOpacity>
+              <input
+                type="file"
+                ref={competitorFileInputRef} // Reference to trigger the click
+                style={{ display: "none" }} // Hidden input field
+                onChange={handleCompetitorFile} // Handle file selection
+              />
+
               <Text
                 style={{
                   fontSize: 14,
@@ -1025,7 +1043,7 @@ const Setup = () => {
                 {t("common:rootcompinf")}
               </Text>
               <TouchableOpacity
-                onPress={handleEvaluationFile}
+                onPress={() => evaluationFileInputRef.current.click()} // Trigger file input
                 style={{
                   height: 50,
                   width: "100%",
@@ -1049,7 +1067,7 @@ const Setup = () => {
                       numberOfLines={1}
                       ellipsizeMode={"middle"}
                     >
-                      {file?.uri}
+                      {file?.name}
                     </Text>
                   ))
                 ) : (
@@ -1058,6 +1076,12 @@ const Setup = () => {
                   </Text>
                 )}
               </TouchableOpacity>
+              <input
+                type="file"
+                ref={evaluationFileInputRef} // Reference for the second file input
+                style={{ display: "none" }}
+                onChange={handleEvaluationFile} // Handle evaluation file selection
+              />
               <Text
                 style={{
                   fontSize: 14,

@@ -276,41 +276,44 @@ const Evaluate = () => {
     }
   };
 
-  // const saveResultsAsJSON = async () => {
-  //   try {
-  //     const evaluationResults = await AsyncStorage.getItem("evaluationResults");
-  //     if (!evaluationResults) {
-  //       showError(t("alert:alert18"));
-  //       return;
-  //     }
-  //     const parsedEvaluationResults = JSON.parse(evaluationResults);
+  const saveResultsAsJSON = async () => {
+    try {
+      const evaluationResults = await AsyncStorage.getItem("evaluationResults");
+      if (!evaluationResults) {
+        showError(t("alert:alert18")); // Notify user if no results are found
+        return;
+      }
 
-  //     const folderName = "PIXECOE";
-  //     const fileName = "result";
+      const parsedEvaluationResults = JSON.parse(evaluationResults);
 
-  //     const folderPath = `${RNFS.DownloadDirectoryPath}/${folderName}`;
-  //     await RNFS.mkdir(folderPath);
-  //     // Get the current date and time for unique file name
-  //     const currentDate = new Date();
-  //     const formattedDate = currentDate.toISOString().replace(/[:.]/g, "-");
+      // Get the current date and time for unique file name
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().replace(/[:.]/g, "-");
 
-  //     // Append date and time to the file name
-  //     const dynamicFileName = `${fileName}_${formattedDate}.json`;
+      // Construct the file name
+      const fileName = `result_${formattedDate}.json`;
 
-  //     const filePath = `${folderPath}/${dynamicFileName}`;
+      // Create a Blob from the JSON data
+      const jsonBlob = new Blob([JSON.stringify(parsedEvaluationResults)], {
+        type: "application/json",
+      });
 
-  //     await RNFS.writeFile(
-  //       filePath,
-  //       JSON.stringify(parsedEvaluationResults),
-  //       "utf8"
-  //     );
+      // Create a link element
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(jsonBlob);
+      link.download = fileName; // Set the file name for download
 
-  //     showSuccess("Evaluation results saved as JSON file!");
-  //   } catch (error) {
-  //     console.error("Error saving evaluation results:", error);
-  //     showError(t("alert:alert19"));
-  //   }
-  // };
+      // Append the link to the document, trigger a click, and then remove it
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showSuccess("Evaluation results saved as JSON file!"); // Notify user of success
+    } catch (error) {
+      console.error("Error saving evaluation results:", error);
+      showError(t("alert:alert19")); // Notify user of any errors
+    }
+  };
 
   if (loading) {
     return (
