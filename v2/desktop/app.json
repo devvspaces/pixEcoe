@@ -24,6 +24,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
+      "output": "server",
+      "bundler": "metro",
+      "serviceWorker": {
+        "src": "/service-worker.js",
+        "scope": "/"
+      },
       "manifest": {
         "name": "pixEcoe",
         "short_name": "pixEcoe",
