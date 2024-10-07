@@ -3068,6 +3068,11 @@ expo-modules-core@1.12.24:
   dependencies:
     invariant "^2.2.4"
 
+expo-network@~6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/expo-network/-/expo-network-6.0.1.tgz#0e1f8e2476d8094ae7eada651a58219eda2ec4e8"
+  integrity sha512-WXXvkt1H75ojHVa263Jq+qjIyMzCfaoRzHKzOBMuSyDDcma9WpvKJpR1YpEQZH/zDhSfkKvh7Q3wRGOJr1J+dQ==
+
 expo-splash-screen@~0.27.5:
   version "0.27.6"
   resolved "https://registry.yarnpkg.com/expo-splash-screen/-/expo-splash-screen-0.27.6.tgz#d57f3f80d22f4ada90fd2edf573bbc148f956f67"

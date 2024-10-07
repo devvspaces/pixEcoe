@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { COLORS } from "../../constants/theme";
 import { useNavigation } from "@react-navigation/native";
 import TabCustomHeader from "../../components/TabCustomHeader";

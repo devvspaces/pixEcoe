@@ -21,6 +21,7 @@ import RNFS from "react-native-fs";
 import { PermissionsAndroid } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { showError, showSuccess } from "../../utils/helperFunction";
+import * as Network from "expo-network";
 
 const Evaluate = () => {
   const navigation = useNavigation();
@@ -88,7 +89,7 @@ const Evaluate = () => {
       );
 
       setParsedEvaluationResults(EvalvaluationResults);
-      console.log("evaluation result", parsedEvaluationResults);
+      console.log("evaluation result", EvalvaluationResults);
       const parsedDownloadedCompetitorData = downloadedCompetitorDataString
         ? JSON.parse(downloadedCompetitorDataString)
         : null;
@@ -182,9 +183,28 @@ const Evaluate = () => {
     const answerIndex = questionNumber - 1;
     const answer = cellData ? cellData[answerIndex] : "";
 
+    // Determine the display value based on the answer
+    let displayValue = "";
+
+    // Check if the answer is a number or a string
+    if (!isNaN(answer)) {
+      // Convert to number for comparison
+      const numericAnswer = Number(answer);
+      if (numericAnswer > 1) {
+        displayValue = "E"; // Render "E" if the value is greater than 1
+      } else {
+        displayValue = answer; // Render the answer as is if it's 1 or less
+      }
+    } else if (typeof answer === "string" && answer.trim() !== "") {
+      // If the answer is a non-empty string (alphabet), render "E"
+      displayValue = "E";
+    } else {
+      displayValue = ""; // If the answer is empty, render nothing
+    }
+
     return (
       <View key={`${questionNumber}-${student.group}`} style={styles.tableCell}>
-        <Text style={styles.cellText}>{answer}</Text>
+        <Text style={styles.cellText}>{displayValue}</Text>
       </View>
     );
   };
@@ -217,6 +237,11 @@ const Evaluate = () => {
   const uploadEvaluation = async () => {
     if (!evaluationDetails) {
       showError(t("alert:alert21"));
+      return;
+    }
+    const isUserAllowed = await validateUser(refreeEmail);
+    if (!isUserAllowed) {
+      showError("User not allowed in this operation");
       return;
     }
     try {
@@ -259,6 +284,64 @@ const Evaluate = () => {
       showError(t("alert:alert17"));
     } finally {
       setLoadingc(false);
+    }
+  };
+
+  const validateUser = async (email) => {
+    try {
+      // Fetch network details
+      const networkState = await Network.getNetworkStateAsync(); // Assuming expo-network package
+      const ip_wan = networkState.ipAddress || "n/a";
+      const mac = networkState.macAddress || "n/a";
+
+      // Send POST request to check user's status
+      const response = await fetch("http://v.dinaten.com/customers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          ip_wan: ip_wan,
+          mac: mac,
+          hostid: "n/a",
+          license: "n/a",
+          program: "pixecoe",
+          version: "1.0",
+        }),
+      });
+
+      // Parse the JSON only once
+      const customerData = await response.json();
+      console.log("Customer data:", customerData);
+
+      const { duedate } = customerData;
+
+      // Get the current date and strip time
+      const currentDate = new Date();
+      const currentDateWithoutTime = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
+
+      // Create a date object from the duedate and strip time
+      const dueDate = new Date(duedate);
+      const dueDateWithoutTime = new Date(
+        dueDate.getFullYear(),
+        dueDate.getMonth(),
+        dueDate.getDate()
+      );
+
+      console.log(currentDateWithoutTime);
+      console.log(dueDateWithoutTime);
+
+      // Compare dates without time
+      return currentDateWithoutTime <= dueDateWithoutTime;
+    } catch (error) {
+      console.error("Error validating user:", error);
+      return false; // Return false in case of an error
     }
   };
 

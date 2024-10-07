@@ -149,19 +149,25 @@ const EvaluationProcess = () => {
     sections.push(section);
   }
 
-  // console.log(JSON.stringify(sections, null, 2));
+  console.log(JSON.stringify(sections, null, 2));
 
   const handleAnswerSelection = (questionNumber, answerId) => {
     setSelectedAnswers((prevSelectedAnswers) => {
       const updatedSelectedAnswers = { ...prevSelectedAnswers };
-      if (updatedSelectedAnswers[questionNumber] === answerId) {
-        delete updatedSelectedAnswers[questionNumber];
-      } else {
+      if (typeof answerId === "string") {
+        // Handle text input
         updatedSelectedAnswers[questionNumber] = answerId;
+      } else {
+        if (updatedSelectedAnswers[questionNumber] === answerId) {
+          delete updatedSelectedAnswers[questionNumber]; // Deselect if already selected
+        } else {
+          updatedSelectedAnswers[questionNumber] = answerId; // Select answer
+        }
       }
       return updatedSelectedAnswers;
     });
   };
+
 
   const formatSelectedAnswers = (selectedAnswers) => {
     const questionNumbers = Object.keys(selectedAnswers).map(Number).sort();
@@ -188,7 +194,7 @@ const EvaluationProcess = () => {
         { length: totalQuestions },
         (_, index) => {
           const questionNumber = index + 1;
-          return selectedAnswers[questionNumber] || ""; // Use selected answer if available, otherwise use empty string
+          return selectedAnswers[questionNumber] || ""; // Return selected or empty
         }
       );
 
@@ -202,13 +208,12 @@ const EvaluationProcess = () => {
         "evaluationResults",
         JSON.stringify(evaluationResults)
       );
-
-      console.log("Updated Evaluation Results:", evaluationResults);
     } catch (error) {
       console.error("Error saving evaluation:", error);
       showError(t("alert:alert4"));
     }
   };
+
 
   const saveTotalScore = async () => {
     try {

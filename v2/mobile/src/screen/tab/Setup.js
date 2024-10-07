@@ -26,10 +26,10 @@ import DocumentPicker from "react-native-document-picker";
 import PasswordModal from "../../components/PasswordModal";
 import DropdownSelector from "../../components/DropdownSelector";
 import { showError, showSuccess } from "../../utils/helperFunction";
+import * as Network from "expo-network";
 
 const Setup = () => {
 
-  const navigation = useNavigation();
   const { t } = useTranslation();
   const [evaluationOption, setEvaluationOption] = useState("api");
   const [showMarkStatus, setShowMarkStatus] = useState(false);
@@ -172,17 +172,22 @@ const Setup = () => {
 
   const handleLoadEvaluation = async () => {
     try {
-      if (
-        !refreeID ||
-        !refreeEmail ||
-        !password ||
-        !serverUrl ||
-        !subjectId
-      ) {
+      if (!refreeID || !refreeEmail || !password || !serverUrl || !subjectId) {
         showError(t("alert:alert2"));
         return;
       }
+
       setLoading(true);
+
+      // Step 1: Validate user
+      const isUserAllowed = await validateUser(refreeEmail);
+
+      if (!isUserAllowed) {
+        showError("User not allowed");
+        return;
+      }
+
+      // Step 2: Proceed to fetch evaluations
       const response = await fetch(
         `${serverUrl}/evaluations/?subject=${subjectId}`,
         {
@@ -197,6 +202,7 @@ const Setup = () => {
           }),
         }
       );
+
       if (response.ok) {
         const data = await response.json();
         if (Array.isArray(data)) {
@@ -262,6 +268,12 @@ const Setup = () => {
   const downloadEvaluation = async () => {
     try {
       setLoadingd(true);
+      const isUserAllowed = await validateUser(refreeEmail);
+
+      if (!isUserAllowed) {
+        showError("User not allowed in this operation");
+        return;
+      }
       const response = await fetch(
         `${serverUrl}/evaluation/${selectedEvaluation.id}/`,
         {
@@ -314,6 +326,12 @@ const Setup = () => {
         return;
       }
       setLoadingc(true);
+      const isUserAllowed = await validateUser(refreeEmail);
+
+      if (!isUserAllowed) {
+        showError("User not allowed in this operation");
+        return;
+      }
       const response = await fetch(
         `${serverUrl}/students/?subject_id=${subjectId}`,
         {
@@ -476,6 +494,64 @@ const Setup = () => {
       }
     } catch (error) {
       console.error("Error toggling status:", error);
+    }
+  };
+
+  const validateUser = async (email) => {
+    try {
+      // Fetch network details
+      const networkState = await Network.getNetworkStateAsync(); // Assuming expo-network package
+      const ip_wan = networkState.ipAddress || "n/a";
+      const mac = networkState.macAddress || "n/a";
+
+      // Send POST request to check user's status
+      const response = await fetch("http://v.dinaten.com/customers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          ip_wan: ip_wan,
+          mac: mac,
+          hostid: "n/a",
+          license: "n/a",
+          program: "pixecoe",
+          version: "1.0",
+        }),
+      });
+
+      // Parse the JSON only once
+      const customerData = await response.json();
+      console.log("Customer data:", customerData);
+
+      const { duedate } = customerData;
+
+      // Get the current date and strip time
+      const currentDate = new Date();
+      const currentDateWithoutTime = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
+
+      // Create a date object from the duedate and strip time
+      const dueDate = new Date(duedate);
+      const dueDateWithoutTime = new Date(
+        dueDate.getFullYear(),
+        dueDate.getMonth(),
+        dueDate.getDate()
+      );
+
+      console.log(currentDateWithoutTime);
+      console.log(dueDateWithoutTime);
+
+      // Compare dates without time
+      return currentDateWithoutTime <= dueDateWithoutTime;
+    } catch (error) {
+      console.error("Error validating user:", error);
+      return false; // Return false in case of an error
     }
   };
 
