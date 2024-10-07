@@ -144,7 +144,7 @@ const DevicePassword = () => {
             }}
           >
             <TextInput
-              style={{ flex: 1, fontSize: 20 }}
+              style={{ flex: 1, fontSize: 20, height: 40 }}
               secureTextEntry={passwordState.isSecure}
               onChangeText={updatePassword}
               placeholder={t("common:password")}
@@ -175,7 +175,7 @@ const DevicePassword = () => {
             }}
           >
             <TextInput
-              style={{ fontSize: 20, flex: 1 }}
+              style={{ fontSize: 20, flex: 1, height: 40 }}
               secureTextEntry={confirmPasswordState.isSecure}
               onChangeText={updateConfirmPassword}
               placeholder={t("common:rpassword")}

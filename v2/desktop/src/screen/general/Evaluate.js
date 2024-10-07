@@ -171,23 +171,45 @@ const Evaluate = () => {
     ? downloadedCompetitorData.students
     : [];
 
-  const renderTableCell = (
-    questionNumber,
-    student,
-    parsedEvaluationResults
-  ) => {
-    const cellData = parsedEvaluationResults
-      ? parsedEvaluationResults[student.id]
-      : null;
-    const answerIndex = questionNumber - 1;
-    const answer = cellData ? cellData[answerIndex] : "";
+    const renderTableCell = (
+      questionNumber,
+      student,
+      parsedEvaluationResults
+    ) => {
+      const cellData = parsedEvaluationResults
+        ? parsedEvaluationResults[student.id]
+        : null;
+      const answerIndex = questionNumber - 1;
+      const answer = cellData ? cellData[answerIndex] : "";
 
-    return (
-      <View key={`${questionNumber}-${student.group}`} style={styles.tableCell}>
-        <Text style={styles.cellText}>{answer}</Text>
-      </View>
-    );
-  };
+      // Determine the display value based on the answer
+      let displayValue = "";
+
+      // Check if the answer is a number or a string
+      if (!isNaN(answer)) {
+        // Convert to number for comparison
+        const numericAnswer = Number(answer);
+        if (numericAnswer > 1) {
+          displayValue = "E"; // Render "E" if the value is greater than 1
+        } else {
+          displayValue = answer; // Render the answer as is if it's 1 or less
+        }
+      } else if (typeof answer === "string" && answer.trim() !== "") {
+        // If the answer is a non-empty string (alphabet), render "E"
+        displayValue = "E";
+      } else {
+        displayValue = ""; // If the answer is empty, render nothing
+      }
+
+      return (
+        <View
+          key={`${questionNumber}-${student.group}`}
+          style={styles.tableCell}
+        >
+          <Text style={styles.cellText}>{displayValue}</Text>
+        </View>
+      );
+    };
 
   // Function to render each row in the table
   const renderTableRow = (student, parsedEvaluationResults) => (
