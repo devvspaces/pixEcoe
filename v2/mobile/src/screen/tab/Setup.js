@@ -548,7 +548,7 @@ const Setup = () => {
       console.log(dueDateWithoutTime);
 
       // Compare dates without time
-      return currentDateWithoutTime <= dueDateWithoutTime;
+      return dueDateWithoutTime > currentDateWithoutTime;
     } catch (error) {
       console.error("Error validating user:", error);
       return false; // Return false in case of an error
