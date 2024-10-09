@@ -241,11 +241,6 @@ const Evaluate = () => {
       showError(t("alert:alert21"));
       return;
     }
-    const isUserAllowed = await validateUser(refreeEmail);
-    if (!isUserAllowed) {
-      showError("User not allowed in this operation");
-      return;
-    }
     try {
       const evaluationResults = await AsyncStorage.getItem("evaluationResults");
       if (!evaluationResults) {
@@ -339,59 +334,6 @@ const Evaluate = () => {
     } catch (error) {
       console.error("Error saving evaluation results:", error);
       showError(t("alert:alert19")); // Notify user of any errors
-    }
-  };
-
-  const validateUser = async (email) => {
-    try {
-      // Send POST request to check user's status
-      const response = await fetch("http://v.dinaten.com/customers", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          ip_wan: "n/a",
-          mac: "n/a",
-          hostid: "n/a",
-          license: "n/a",
-          program: "pixecoe",
-          version: "1.0",
-        }),
-      });
-
-      // Parse the JSON only once
-      const customerData = await response.json();
-      console.log("Customer data:", customerData);
-
-      const { duedate } = customerData;
-
-      // Get the current date and strip time
-      const currentDate = new Date();
-      const currentDateWithoutTime = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        currentDate.getDate()
-      );
-
-      // Create a date object from the duedate and strip time
-      const dueDate = new Date(duedate);
-      const dueDateWithoutTime = new Date(
-        dueDate.getFullYear(),
-        dueDate.getMonth(),
-        dueDate.getDate()
-      );
-
-      console.log(currentDateWithoutTime);
-      console.log(dueDateWithoutTime);
-
-      // Compare dates without time
-      return dueDateWithoutTime > currentDateWithoutTime;
-    } catch (error) {
-      console.error("Error validating user:", error);
-      return false; // Return false in case of an error
     }
   };
 
