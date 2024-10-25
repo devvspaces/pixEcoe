@@ -26,6 +26,7 @@ const EvaluationProcess = () => {
   const route = useRoute();
   const { t } = useTranslation();
   const { students, studentDi } = route.params;
+  const flatListRef = useRef(null);
 
   const studentId = students.map((student) => student.id);
   const studentIds = students.map((student) => student.group);
@@ -234,6 +235,9 @@ const EvaluationProcess = () => {
       setSelectedAnswers({});
       setCurrentStudentIndex((prevIndex) => (prevIndex + 1) % studentId.length);
       Alert.alert("Success", "Evaluation saved");
+      if (flatListRef.current) {
+        flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+      }
     } catch (error) {
       console.error("Error saving evaluation:", error);
       showError(t("alert:alert4"));
@@ -261,6 +265,9 @@ const EvaluationProcess = () => {
         }, {})
       );
       showSuccess(t("alert:alert23"));
+      if (flatListRef.current) {
+        flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+      }
     } catch (error) {
       // console.error("Error loading previous evaluation:", error);
       showError(t("alert:alert4"));
@@ -347,14 +354,13 @@ const EvaluationProcess = () => {
             paddingLeft: 10,
             paddingRight: 10,
             marginTop: 10,
-            marginBottom:5,
+            marginBottom: 5,
             width: "100%",
             height: 90,
             paddingTop: 15,
             paddingBottom: 15,
           }}
         >
-          
           <Text style={{ fontSize: 16, fontWeight: "500" }}>
             {evaluations.data.station_name}
           </Text>
@@ -363,25 +369,21 @@ const EvaluationProcess = () => {
               {studentIds[currentStudentIndex]} -
             </Text>
             {showCompetitorsStatus && (
-              <Text
-                style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
-              >
+              <Text style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}>
                 {studentfamilyname[currentStudentIndex]}{" "}
                 {studentfirstname[currentStudentIndex]}
               </Text>
             )}
             {showMarkStatus && (
-              <Text
-                style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}
-              >
+              <Text style={{ fontSize: 16, fontWeight: "500", marginLeft: 5 }}>
                 ({getTotalPoints()})
               </Text>
             )}
           </View>
-          
         </View>
         {/* <Text>{formattedAnswersArray}</Text> */}
         <FlatList
+          ref={flatListRef}
           data={sections}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
