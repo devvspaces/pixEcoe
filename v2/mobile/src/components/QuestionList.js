@@ -102,7 +102,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                   <Text
                     style={{
                       color: "#111F51",
-                      fontSize: 20,
+                      fontSize: 22,
                       fontWeight: "500",
                       marginBottom: 10,
                     }}
@@ -200,7 +200,7 @@ const QuestionList = ({ section, handleAnswerSelection, selectedAnswers }) => {
                             parseInt(answerNumber)
                               ? "#FFFFFF"
                               : "#111F51",
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: "500",
                           textAlign: "justify",
                         }}
