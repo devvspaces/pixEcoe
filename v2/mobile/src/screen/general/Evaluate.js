@@ -295,7 +295,7 @@ const Evaluate = () => {
       const mac = networkState.macAddress || "n/a";
 
       // Send POST request to check user's status
-      const response = await fetch("http://v.dinaten.com/customers", {
+      const response = await fetch("https://v.dinaten.com/customers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
